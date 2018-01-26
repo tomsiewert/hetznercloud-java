@@ -6,14 +6,58 @@
 
     <groupId>me.tomsdevsn</groupId>
     <artifactId>hetznercloud-api</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
+
+    <name>HetznerCloud-API</name>
+    <description>Java-client for the Hetzner Cloud</description>
+    <url>https://github.com/TomSDEVSN/hetznercloud-api</url>
+
+    <inceptionYear>2018</inceptionYear>
+
+    <distributionManagement>
+        <repository>
+            <id>hetznercloud-api</id>
+            <url>https://maven.tomsdevsn.me/repository/hetznercloud-api/</url>
+        </repository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>TomSDEVSN</id>
+            <name>Tom Siewert</name>
+            <email>tom@tomsdevsn.me</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:TomSDEVSN/hetznercloud-api.git</connection>
+        <developerConnection>scm:git:git@github.com:TomSDEVSN/hetznercloud-api.git</developerConnection>
+        <url>git@github.com:TomSDEVSN/hetznercloud-api.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/TomSDEVSN/hetznercloud-api/issues</url>
+    </issueManagement>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.0.3.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.0</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
