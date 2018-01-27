@@ -1,6 +1,8 @@
 Hetzner Cloud API for Java
 ==========================
 
+[![Build Status](https://travis-ci.org/TomSDEVSN/hetznercloud-java.svg?branch=master)](https://travis-ci.org/TomSDEVSN/hetznercloud-java)
+
 Simple Java client for the Hetzner Cloud API.
 
 The current version is **0.1**.
