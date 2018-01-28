@@ -1,10 +1,10 @@
 package me.tomsdevsn.hetznercloud.objects.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import me.tomsdevsn.hetznercloud.annotations.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.tomsdevsn.hetznercloud.annotations.Nullable;
 
 import java.util.List;
 
@@ -17,20 +17,19 @@ public class RequestServer {
 
     @JsonProperty("server_type")
     private String serverType;
-    @NotNull
+    @Nullable
     private String datacenter;
-    @NotNull
+    @Nullable
     private String location;
     private String image;
 
     @JsonProperty("start_after_create")
-    @NotNull
     private boolean startAfterCreate;
     @JsonProperty("ssh_keys")
-    @NotNull
+    @Nullable
     private List<Long> sshKeys;
 
     @JsonProperty("user_data")
-    @NotNull
+    @Nullable
     private String userData;
 }
