@@ -1,5 +1,6 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,11 +14,16 @@ public class Meta {
     @Setter
     public static class Pagination {
 
-        private Integer page;
-        private Integer perPage;
-        private Integer previousPage;
-        private Integer nextPage;
-        private Integer lastPage;
-        private Integer totalEntries;
+        private long page;
+        @JsonProperty("per_page")
+        private long perPage;
+        @JsonProperty("previous_page")
+        private long previousPage;
+        @JsonProperty("next_page")
+        private long nextPage;
+        @JsonProperty("last_page")
+        private long lastPage;
+        @JsonProperty("total_entries")
+        private long totalEntries;
     }
 }

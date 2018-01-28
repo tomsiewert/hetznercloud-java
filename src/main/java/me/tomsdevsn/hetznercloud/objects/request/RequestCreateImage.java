@@ -1,15 +1,12 @@
-package me.tomsdevsn.hetznercloud.objects.general;
+package me.tomsdevsn.hetznercloud.objects.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ISO {
+public class RequestCreateImage {
 
-    public long id;
-    public String name;
     public String description;
     public String type;
-
 }
