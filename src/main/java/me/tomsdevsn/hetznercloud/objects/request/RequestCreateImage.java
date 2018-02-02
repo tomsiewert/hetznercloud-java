@@ -1,10 +1,8 @@
 package me.tomsdevsn.hetznercloud.objects.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class RequestCreateImage {
 
     public String description;

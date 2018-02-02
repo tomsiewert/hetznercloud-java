@@ -4,16 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
-
 @Getter
 @Setter
 public class Server {
 
-    private Integer id;
+    private Long id;
     private String name;
     private String status;
-    private ZonedDateTime created;
+    private String created;
     @JsonProperty("public_net")
     private PublicNet publicNet;
     @JsonProperty("server_type")

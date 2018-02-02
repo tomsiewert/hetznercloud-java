@@ -9,11 +9,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,29 +25,22 @@ public class HetznerCloudAPI {
 
     private HttpEntity<String> httpEntity;
     private HttpHeaders httpHeaders;
-    private final RestTemplate restTemplate;
-    private List<HttpMessageConverter<?>> messageConverters;
-    private MappingJackson2HttpMessageConverter converter;
-
+    private RestTemplate restTemplate;
     /**
      * Initial method to use the API
+     *
      * @param token
      */
     public HetznerCloudAPI(String token) {
         this.token = token;
 
-        restTemplate = new RestTemplate();
-        messageConverters = new ArrayList<HttpMessageConverter<?>>();
-        converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(Arrays.asList(new MediaType[]{MediaType.ALL}));
-        messageConverters.add(converter);
-        restTemplate.setMessageConverters(messageConverters);
+        this.httpHeaders = new HttpHeaders();
+        this.httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        this.httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        this.httpHeaders.add("Authorization", "Bearer " + token);
+        this.httpEntity = new HttpEntity<>("parameters", httpHeaders);
 
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        httpHeaders.add("Authorization", "Bearer " + token);
-        httpEntity = new HttpEntity<>("parameters", httpHeaders);
+        restTemplate = new RestTemplate();
     }
 
     /**
@@ -92,7 +85,7 @@ public class HetznerCloudAPI {
     /**
      * Change the name of the server, in the Hetzner-Cloud Console
      *
-     * @param id of the server
+     * @param id            of the server
      * @param newServerName new server name
      * @return respond
      */
@@ -173,7 +166,7 @@ public class HetznerCloudAPI {
     /**
      * Enables the rescue mode from the server
      *
-     * @param id of the server
+     * @param id                  of the server
      * @param requestEnableRescue
      * @return respond
      */
@@ -184,7 +177,7 @@ public class HetznerCloudAPI {
     /**
      * Enables the rescue mode from the server and reset the server
      *
-     * @param id of the server
+     * @param id                  of the server
      * @param requestEnableRescue
      * @return respond
      */
@@ -218,7 +211,7 @@ public class HetznerCloudAPI {
      * Rebuild a server, with the specific image.
      * example: ubuntu-16.04
      *
-     * @param id of the server
+     * @param id                   of the server
      * @param requestRebuildServer
      * @return respond
      */
@@ -230,7 +223,7 @@ public class HetznerCloudAPI {
      * Change the type from the server
      * example: cx11 -> cx21
      *
-     * @param id of the server
+     * @param id                of the server
      * @param requestChangeType
      * @return respond
      */
@@ -241,10 +234,10 @@ public class HetznerCloudAPI {
     /**
      * Get the metrics from a server
      *
-     * @param id of the server
+     * @param id         of the server
      * @param metricType like cpu, disk or network (but also cpu,disk possible)
-     * @param start of the metric
-     * @param end of the metric
+     * @param start      of the metric
+     * @param end        of the metric
      * @return respond
      */
     public ResponseMetrics getMetrics(long id, String metricType, ZonedDateTime start, ZonedDateTime end) {
@@ -254,7 +247,7 @@ public class HetznerCloudAPI {
     /**
      * Create a image from a server
      *
-     * @param id of the server
+     * @param id                 of the server
      * @param requestCreateImage
      * @return respond
      */
@@ -266,7 +259,7 @@ public class HetznerCloudAPI {
      * Enable the backups from a server
      * Please reminder, that will increase the price of the server by 20%
      *
-     * @param id of the server
+     * @param id                  of the server
      * @param requestEnableBackup
      * @return respond
      */
@@ -300,13 +293,13 @@ public class HetznerCloudAPI {
 
     /**
      * Attach an ISO to a server.
-     *
+     * <p>
      * To get all ISO's
-     * @see HetznerCloudAPI#getISOS
      *
-     * @param id of the server
+     * @param id               of the server
      * @param requestAttachISO
      * @return respond
+     * @see HetznerCloudAPI#getISOS
      */
     public ResponseAttachISO attachISO(long id, RequestAttachISO requestAttachISO) {
         return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/attach_iso", HttpMethod.POST, new HttpEntity<>(requestAttachISO, httpHeaders), ResponseAttachISO.class).getBody();
@@ -324,10 +317,10 @@ public class HetznerCloudAPI {
 
     /**
      * Changes the reverse DNS entry from a server.
-     *
+     * <p>
      * Floating IPs assigned to the server are not affected!
      *
-     * @param id of the server
+     * @param id                  of the server
      * @param requestChangeDNSPTR
      * @return respond
      */

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
-
 @Getter
 @Setter
 public class Image {
@@ -19,7 +17,7 @@ public class Image {
     public Double imageSize;
     @JsonProperty("disk_size")
     public Double diskSize;
-    public ZonedDateTime created;
+    public String created;
     @JsonProperty("created_from")
     public CreatedFrom createdFrom;
     @JsonProperty("bound_to")

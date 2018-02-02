@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 public class Metrics {
 
-    public ZonedDateTime start;
-    public ZonedDateTime end;
+    public String start;
+    public String end;
     public long step;
     @JsonProperty("time_series")
     public TimeSeries timeSeries;

@@ -3,7 +3,6 @@ package me.tomsdevsn.hetznercloud.objects.response;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
@@ -14,7 +13,7 @@ public class Action {
     public String command;
     public String status;
     public long progress;
-    public ZonedDateTime started;
+    public String started;
     public boolean finished;
     public List<Resources> resources;
 
