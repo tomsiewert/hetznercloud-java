@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ResetPassword {
+public class ResponseResetPassword {
 
     @JsonProperty("root_password")
     public String rootPassword;

@@ -1,17 +1,17 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import me.tomsdevsn.hetznercloud.objects.general.Server;
 
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResponseServer {
 
-    public Server server;
-    public Action action;
-    public String rootPassword;
+    private Server server;
+    private Action action;
+    @JsonProperty("root_password")
+    private String rootPassword;
     private Error error;
 }

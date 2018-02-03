@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 public class ResponseServernameChange {
 
-    public List<Server> server;
-
+    public Server server;
+    public Error error;
 }

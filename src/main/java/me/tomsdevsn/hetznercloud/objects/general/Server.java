@@ -1,8 +1,12 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
+import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -11,7 +15,8 @@ public class Server {
     private Long id;
     private String name;
     private String status;
-    private String created;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date created;
     @JsonProperty("public_net")
     private PublicNet publicNet;
     @JsonProperty("server_type")

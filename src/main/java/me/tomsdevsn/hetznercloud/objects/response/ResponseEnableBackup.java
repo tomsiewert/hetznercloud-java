@@ -1,12 +1,10 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ResponseEnableBackup {
 
-    public Action action;
-    public Error error;
+    private BackupAction action;
+    private Error error;
 }

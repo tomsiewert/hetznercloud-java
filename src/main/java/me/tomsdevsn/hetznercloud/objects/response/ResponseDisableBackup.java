@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class ResponseDisableBackup {
 
-    public Action action;
+    public BackupAction action;
     public Error error;
 }

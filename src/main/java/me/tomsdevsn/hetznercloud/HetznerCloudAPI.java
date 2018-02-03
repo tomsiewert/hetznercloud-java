@@ -1,6 +1,5 @@
 package me.tomsdevsn.hetznercloud;
 
-import me.tomsdevsn.hetznercloud.objects.general.Server;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.springframework.http.HttpEntity;
@@ -9,13 +8,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class HetznerCloudAPI {
 
@@ -26,13 +24,22 @@ public class HetznerCloudAPI {
     private HttpEntity<String> httpEntity;
     private HttpHeaders httpHeaders;
     private RestTemplate restTemplate;
+
+    private List<HttpMessageConverter<?>> messageConverters;
+    private MappingJackson2HttpMessageConverter converter;
+
     /**
      * Initial method to use the API
      *
-     * @param token
+     * @param token which you created in the Hetzner-Cloud console
      */
     public HetznerCloudAPI(String token) {
         this.token = token;
+
+        messageConverters = new ArrayList<>();
+        converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(Arrays.asList(new MediaType[]{MediaType.APPLICATION_JSON}));
+        messageConverters.add(converter);
 
         this.httpHeaders = new HttpHeaders();
         this.httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -41,13 +48,14 @@ public class HetznerCloudAPI {
         this.httpEntity = new HttpEntity<>("parameters", httpHeaders);
 
         restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(messageConverters);
     }
 
     /**
      * Creates a Cloud-server
      *
-     * @param requestServer
-     * @return response of the API
+     * @param requestServer The new server to create.
+     * @return              response of the API
      */
     public ResponseServer createServer(RequestServer requestServer) {
         return restTemplate.postForEntity(API_URL + "/servers", new HttpEntity<>(requestServer, httpHeaders), ResponseServer.class).getBody();
@@ -56,7 +64,7 @@ public class HetznerCloudAPI {
     /**
      * Get all of your servers in a list
      *
-     * @return the server
+     * @return An object which contains all servers.
      */
     public Servers getServers() {
         return restTemplate.exchange(API_URL + "/servers", HttpMethod.GET, httpEntity, Servers.class).getBody();
@@ -65,32 +73,32 @@ public class HetznerCloudAPI {
     /**
      * Get the server by the name
      *
-     * @param name of the server
-     * @return the server
+     * @param name Servername of the server
+     * @return     An object which contains the server in a list
      */
-    public Servers getServersByName(String name) {
-        return restTemplate.exchange(API_URL + "/server?" + name, HttpMethod.GET, httpEntity, Servers.class).getBody();
+    public Servers getServerByName(String name) {
+        return restTemplate.exchange(API_URL + "/servers?name=" + name, HttpMethod.GET, httpEntity, Servers.class).getBody();
     }
 
     /**
      * Get the server by the server-id
      *
-     * @param id of the server
-     * @returns the server
+     * @param id The id of the server
+     * @return   The server with the specific ID
      */
-    public Server getServerById(long id) {
-        return restTemplate.exchange(API_URL + "/server/" + id, HttpMethod.GET, httpEntity, Server.class).getBody();
+    public ResponseGetServer getServerById(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.GET, httpEntity, ResponseGetServer.class).getBody();
     }
 
     /**
      * Change the name of the server, in the Hetzner-Cloud Console
      *
      * @param id            of the server
-     * @param newServerName new server name
-     * @return respond
+     * @param newServerName request
+     * @return              respond
      */
     public ResponseServernameChange changeServerName(int id, RequestServernameChange newServerName) {
-        return restTemplate.exchange(API_URL + "/server/" + id, HttpMethod.PUT, new HttpEntity<>(newServerName, httpHeaders), ResponseServernameChange.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.PUT, new HttpEntity<>(newServerName, httpHeaders), ResponseServernameChange.class).getBody();
     }
 
     /**
@@ -101,6 +109,16 @@ public class HetznerCloudAPI {
      */
     public ResponsePower powerOnServer(long id) {
         return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweron", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
+    }
+
+    /**
+     * Force power off a specific server with the id
+     *
+     * @param id of the server
+     * @return respond
+     */
+    public ResponsePower powerOffServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweroff", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
     }
 
     /**
@@ -134,23 +152,13 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Force power off a specific server with the id
-     *
-     * @param id of the server
-     * @return respond
-     */
-    public ResponsePower forceShutdownServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweroff", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
-    }
-
-    /**
      * Resets the root password from a specific server with the id
      *
      * @param id of the server
      * @return respond
      */
-    public ResetPassword resetRootPassword(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reset_password", HttpMethod.POST, httpEntity, ResetPassword.class).getBody();
+    public ResponseResetPassword resetRootPassword(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reset_password", HttpMethod.POST, httpEntity, ResponseResetPassword.class).getBody();
     }
 
     /**
@@ -160,7 +168,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ResponseEnableRescue enableRescue(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/enable_rescue", HttpMethod.POST, httpEntity, ResponseEnableRescue.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/enable_rescue", HttpMethod.POST, new HttpEntity<>(httpHeaders), ResponseEnableRescue.class).getBody();
     }
 
     /**
@@ -172,6 +180,18 @@ public class HetznerCloudAPI {
      */
     public ResponseEnableRescue enableRescue(long id, RequestEnableRescue requestEnableRescue) {
         return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/enable_rescue", HttpMethod.POST, new HttpEntity<>(requestEnableRescue, httpHeaders), ResponseEnableRescue.class).getBody();
+    }
+
+    /**
+     * Enables the rescue mode from the server and reset the server
+     *
+     * @param id of the server
+     * @return respond
+     */
+    public ResponseEnableRescue enableRescueAndReset(long id) {
+        ResponseEnableRescue request = restTemplate.exchange(API_URL + "/servers/" + id + "/actions/enable_rescue", HttpMethod.POST, new HttpEntity<>(httpHeaders), ResponseEnableRescue.class).getBody();
+        resetServer(id);
+        return request;
     }
 
     /**
@@ -216,19 +236,23 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ResponseRebuildServer rebuildServer(long id, RequestRebuildServer requestRebuildServer) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/rebuild", HttpMethod.POST, new HttpEntity<>(requestRebuildServer, httpHeaders), ResponseRebuildServer.class).getBody();
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/rebuild", new HttpEntity<>(requestRebuildServer, httpHeaders), ResponseRebuildServer.class).getBody();
     }
 
     /**
      * Change the type from the server
      * example: cx11 -> cx21
      *
-     * @param id                of the server
+     * Attention: It will stops the server, but it starts automatically after the upgrade
+     *
+     * @param id of the server
      * @param requestChangeType
      * @return respond
      */
-    public ResponseChangeType changeServerType(long id, RequestChangeType requestChangeType) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/change_type", HttpMethod.POST, new HttpEntity<>(requestChangeType, httpHeaders), ResponseChangeType.class).getBody();
+    public ResponseChangeType changeServerType(long id, RequestChangeType requestChangeType) throws InterruptedException {
+        this.powerOffServer(id);
+        TimeUnit.SECONDS.sleep(7);
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_type", new HttpEntity<>(requestChangeType, httpHeaders), ResponseChangeType.class).getBody();
     }
 
     /**
@@ -240,8 +264,8 @@ public class HetznerCloudAPI {
      * @param end        of the metric
      * @return respond
      */
-    public ResponseMetrics getMetrics(long id, String metricType, ZonedDateTime start, ZonedDateTime end) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/metrics?type=" + metricType + "&start=" + start.toString() + "&end=" + end.toString(), HttpMethod.GET, httpEntity, ResponseMetrics.class).getBody();
+    public ResponseMetrics getMetrics(long id, String metricType, String start, String end) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/metrics?type=" + metricType + "&start=" + start + "&end=" + end, HttpMethod.GET, httpEntity, ResponseMetrics.class).getBody();
     }
 
     /**
@@ -325,7 +349,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ResponseChangeDNSPTR changeDNSPTR(long id, RequestChangeDNSPTR requestChangeDNSPTR) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/change_dns_ptr", HttpMethod.POST, new HttpEntity<>(requestChangeDNSPTR, httpHeaders), ResponseChangeDNSPTR.class).getBody();
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_dns_ptr", new HttpEntity<>(requestChangeDNSPTR, httpHeaders), ResponseChangeDNSPTR.class).getBody();
     }
 
     /**
@@ -364,5 +388,18 @@ public class HetznerCloudAPI {
      */
     public ResponsePricing getPricing() {
         return restTemplate.exchange(API_URL + "/pricing", HttpMethod.GET, httpEntity, ResponsePricing.class).getBody();
+    }
+
+    /**
+     * Converts a Date to the ISO-8601 format
+     *
+     * @param date your time
+     * @return date in ISO-8601 format
+     */
+    public String convertToISO8601(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formatted = dateFormat.format(date);
+        return formatted;
     }
 }

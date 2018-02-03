@@ -1,8 +1,11 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
+import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -13,7 +16,8 @@ public class Action {
     public String command;
     public String status;
     public long progress;
-    public String started;
+    @JsonDeserialize(using = DateDeserializer.class)
+    public Date started;
     public boolean finished;
     public List<Resources> resources;
 

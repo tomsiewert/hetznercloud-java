@@ -1,8 +1,12 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
+import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -17,7 +21,8 @@ public class Image {
     public Double imageSize;
     @JsonProperty("disk_size")
     public Double diskSize;
-    public String created;
+    @JsonDeserialize(using = DateDeserializer.class)
+    public Date created;
     @JsonProperty("created_from")
     public CreatedFrom createdFrom;
     @JsonProperty("bound_to")
