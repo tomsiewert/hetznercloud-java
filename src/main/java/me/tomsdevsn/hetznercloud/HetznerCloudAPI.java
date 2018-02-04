@@ -8,6 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
@@ -52,16 +54,6 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Creates a Cloud-server
-     *
-     * @param requestServer The new server to create.
-     * @return              response of the API
-     */
-    public ResponseServer createServer(RequestServer requestServer) {
-        return restTemplate.postForEntity(API_URL + "/servers", new HttpEntity<>(requestServer, httpHeaders), ResponseServer.class).getBody();
-    }
-
-    /**
      * Get all of your servers in a list
      *
      * @return An object which contains all servers.
@@ -91,14 +83,55 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Creates a Cloud-server
+     *
+     * @param requestServer The new server to create.
+     * @return              response of the API
+     */
+    public ResponseServer createServer(RequestServer requestServer) {
+        return restTemplate.postForEntity(API_URL + "/servers", new HttpEntity<>(requestServer, httpHeaders), ResponseServer.class).getBody();
+    }
+
+    /**
+     * Delete a server instantly.
+     *
+     * @param id Server ID of the server.
+     * @return ResponseDeleteServer object
+     */
+    public ResponseDeleteServer deleteServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.DELETE, httpEntity, ResponseDeleteServer.class).getBody();
+    }
+
+    /**
      * Change the name of the server, in the Hetzner-Cloud Console
      *
      * @param id            of the server
      * @param newServerName request
      * @return              respond
      */
-    public ResponseServernameChange changeServerName(int id, RequestServernameChange newServerName) {
+    public ResponseServernameChange changeServerName(long id, RequestServernameChange newServerName) {
         return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.PUT, new HttpEntity<>(newServerName, httpHeaders), ResponseServernameChange.class).getBody();
+    }
+
+    /**
+     * Get all performed Actions for a Server
+     *
+     * @param id ID of the Server
+     * @return ResponseActionsServer object
+     */
+    public ResponseActionsServer getAllActionsOfServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions", HttpMethod.GET, httpEntity, ResponseActionsServer.class).getBody();
+    }
+
+    /**
+     * Get a Action for a server
+     *
+     * @param serverID ID of the Server
+     * @param actionID ID of the Action
+     * @return ResponseActionServer object
+     */
+    public ResponseActionServer getActionOfServer(long serverID, long actionID) {
+        return restTemplate.exchange(API_URL + "/servers/" + serverID + "/actions/" + actionID, HttpMethod.GET, httpEntity, ResponseActionServer.class).getBody();
     }
 
     /**
@@ -311,6 +344,12 @@ public class HetznerCloudAPI {
         return restTemplate.exchange(API_URL + "/isos", HttpMethod.GET, httpEntity, ResponseISOS.class).getBody();
     }
 
+    /**
+     * Get an ISO by ID
+     *
+     * @param id ID of the ISO
+     * @return ResponseISO Object
+     */
     public ResponseISO getISOById(long id) {
         return restTemplate.exchange(API_URL + "/isos/" + id, HttpMethod.GET, httpEntity, ResponseISO.class).getBody();
     }
