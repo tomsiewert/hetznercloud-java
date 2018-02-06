@@ -1,15 +1,12 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ResponseResetPassword {
 
     @JsonProperty("root_password")
     public String rootPassword;
     public Action action;
-    public Error error;
 }

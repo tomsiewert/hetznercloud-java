@@ -1,10 +1,8 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ResponseMetrics {
 
     public Metrics metrics;

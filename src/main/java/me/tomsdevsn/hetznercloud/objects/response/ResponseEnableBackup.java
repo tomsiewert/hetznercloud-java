@@ -6,5 +6,4 @@ import lombok.Data;
 public class ResponseEnableBackup {
 
     private BackupAction action;
-    private Error error;
 }

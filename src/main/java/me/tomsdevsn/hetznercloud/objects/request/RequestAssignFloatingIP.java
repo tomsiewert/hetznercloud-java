@@ -10,9 +10,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RequestChangeDNSPTR {
+public class RequestAssignFloatingIP {
 
-    public String ip;
-    @JsonProperty("dns_ptr")
-    public String dnsPTR;
+    @JsonProperty("server")
+    private Long serverID;
 }

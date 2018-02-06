@@ -10,37 +10,37 @@ import java.util.List;
 @Setter
 public class ServerType {
 
-    public Integer id;
-    public String name;
-    public String description;
-    public Integer cores;
-    public Integer memory;
-    public Integer disk;
-    public List<Prices> prices;
+    private Long id;
+    private String name;
+    private String description;
+    private Integer cores;
+    private Integer memory;
+    private Integer disk;
+    private List<Prices> prices;
     @JsonProperty("storage_type")
-    public String storageType;
+    private String storageType;
 
     @Getter
     @Setter
     public static class Prices {
-        public String location;
+        private String location;
         @JsonProperty("price_hourly")
-        public PriceHourly priceHourly;
+        private PriceHourly priceHourly;
         @JsonProperty("price_monthly")
-        public PriceMonthly priceMonthly;
+        private PriceMonthly priceMonthly;
 
         @Getter
         @Setter
         public static class PriceHourly {
-            public String net;
-            public String gross;
+            private String net;
+            private String gross;
         }
 
         @Getter
         @Setter
         public static class PriceMonthly {
-            public String net;
-            public String gross;
+            private String net;
+            private String gross;
         }
     }
 }

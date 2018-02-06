@@ -1,29 +1,26 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class Meta {
 
     private Pagination pagination;
 
-    @Getter
-    @Setter
+    @Data
     public static class Pagination {
 
-        private long page;
+        private Long page;
         @JsonProperty("per_page")
-        private long perPage;
+        private Long perPage;
         @JsonProperty("previous_page")
-        private long previousPage;
+        private Long previousPage;
         @JsonProperty("next_page")
-        private long nextPage;
+        private Long nextPage;
         @JsonProperty("last_page")
-        private long lastPage;
+        private Long lastPage;
         @JsonProperty("total_entries")
-        private long totalEntries;
+        private Long totalEntries;
     }
 }

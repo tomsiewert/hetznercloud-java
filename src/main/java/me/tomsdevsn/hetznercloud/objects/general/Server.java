@@ -30,9 +30,9 @@ public class Server {
     @JsonProperty("backup_window")
     private String backupWindow;
     @JsonProperty("outgoing_traffic")
-    private long outgoingTraffic;
+    private Long outgoingTraffic;
     @JsonProperty("ingoing_traffic")
-    private long ingoingTraffic;
+    private Long ingoingTraffic;
     @JsonProperty("included_traffic")
-    private long includedTraffic;
+    private Long includedTraffic;
 }

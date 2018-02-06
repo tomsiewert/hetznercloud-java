@@ -1,35 +1,32 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class Action {
 
-    public long id;
+    public Long id;
     public String command;
     public String status;
-    public long progress;
+    public Long progress;
     @JsonDeserialize(using = DateDeserializer.class)
     public Date started;
     public boolean finished;
     public List<Resources> resources;
+    private Error error;
 
-    @Getter
-    @Setter
+    @Data
     public static class Resources {
         public Integer id;
         public String type;
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class Error {
         public String code;
         public String message;

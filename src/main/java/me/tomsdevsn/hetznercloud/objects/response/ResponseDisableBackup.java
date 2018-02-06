@@ -8,5 +8,4 @@ import lombok.Setter;
 public class ResponseDisableBackup {
 
     public BackupAction action;
-    public Error error;
 }

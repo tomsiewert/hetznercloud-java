@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class ISO {
 
-    public long id;
-    public String name;
-    public String description;
-    public String type;
+    private Long id;
+    private String name;
+    private String description;
+    private String type;
 
 }

@@ -1,11 +1,9 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ResponseRebuildServer {
 
     public Action action;

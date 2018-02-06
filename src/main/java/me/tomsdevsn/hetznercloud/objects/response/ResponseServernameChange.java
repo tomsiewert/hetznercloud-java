@@ -1,15 +1,10 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import me.tomsdevsn.hetznercloud.objects.general.Server;
 
-import java.util.List;
-
-@Getter
-@Setter
+@Data
 public class ResponseServernameChange {
 
     public Server server;
-    public Error error;
 }

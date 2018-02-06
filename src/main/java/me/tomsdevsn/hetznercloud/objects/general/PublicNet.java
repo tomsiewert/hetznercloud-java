@@ -18,8 +18,8 @@ public class PublicNet {
     @Getter
     @Setter
     public static class IPv4 {
-        public String ip;
-        public boolean blocked;
+        private String ip;
+        private boolean blocked;
         @JsonProperty("dns_ptr")
         public String dnsPTR;
     }
@@ -27,17 +27,17 @@ public class PublicNet {
     @Getter
     @Setter
     public static class IPv6 {
-        public String ip;
-        public boolean blocked;
+        private String ip;
+        private boolean blocked;
         @JsonProperty("dns_ptr")
-        public List<DNSPTR> dnsPTR;
+        private List<DNSPTR> dnsPTR;
 
         @Getter
         @Setter
         public static class DNSPTR {
-            public String ip;
+            private String ip;
             @JsonProperty("dns_ptr")
-            public String dnsPTR;
+            private String dnsPTR;
         }
     }
 }

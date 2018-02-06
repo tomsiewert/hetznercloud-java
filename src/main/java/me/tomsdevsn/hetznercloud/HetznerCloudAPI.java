@@ -8,8 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
@@ -96,10 +94,10 @@ public class HetznerCloudAPI {
      * Delete a server instantly.
      *
      * @param id Server ID of the server.
-     * @return ResponseDeleteServer object
+     * @return ResponseAction object
      */
-    public ResponseDeleteServer deleteServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.DELETE, httpEntity, ResponseDeleteServer.class).getBody();
+    public ResponseAction deleteServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.DELETE, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -117,10 +115,10 @@ public class HetznerCloudAPI {
      * Get all performed Actions for a Server
      *
      * @param id ID of the Server
-     * @return ResponseActionsServer object
+     * @return ResponseActions object
      */
-    public ResponseActionsServer getAllActionsOfServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions", HttpMethod.GET, httpEntity, ResponseActionsServer.class).getBody();
+    public ResponseActions getAllActionsOfServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions", HttpMethod.GET, httpEntity, ResponseActions.class).getBody();
     }
 
     /**
@@ -128,10 +126,31 @@ public class HetznerCloudAPI {
      *
      * @param serverID ID of the Server
      * @param actionID ID of the Action
-     * @return ResponseActionServer object
+     * @return ResponseAction object
      */
-    public ResponseActionServer getActionOfServer(long serverID, long actionID) {
-        return restTemplate.exchange(API_URL + "/servers/" + serverID + "/actions/" + actionID, HttpMethod.GET, httpEntity, ResponseActionServer.class).getBody();
+    public ResponseAction getActionOfServer(long serverID, long actionID) {
+        return restTemplate.exchange(API_URL + "/servers/" + serverID + "/actions/" + actionID, HttpMethod.GET, httpEntity, ResponseAction.class).getBody();
+    }
+
+    /**
+     * Get all performed Actions of a Floating IP
+     *
+     * @param id ID of the FloatingIP
+     * @return ResponseActions object
+     */
+    public ResponseActions getActionsOfFloatingIP(long id) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + id + "/actions", HttpMethod.GET, httpEntity, ResponseActions.class).getBody();
+    }
+
+    /**
+     * Get a Action for a server
+     *
+     * @param floatingIPID ID of the Floating IP
+     * @param actionID ID of the Action
+     * @return ResponseAction object
+     */
+    public ResponseAction getActionOfFloatingIP(long floatingIPID, long actionID) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + floatingIPID + "/actions/" + actionID, HttpMethod.GET, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -140,8 +159,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponsePower powerOnServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweron", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
+    public ResponseAction powerOnServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweron", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -150,8 +169,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponsePower powerOffServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweroff", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
+    public ResponseAction powerOffServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweroff", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -160,8 +179,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponsePower softRebootServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reboot", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
+    public ResponseAction softRebootServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reboot", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -170,8 +189,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponsePower resetServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reset", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
+    public ResponseAction resetServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reset", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -180,8 +199,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponsePower shutdownServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/shutdown", HttpMethod.POST, httpEntity, ResponsePower.class).getBody();
+    public ResponseAction shutdownServer(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/shutdown", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -247,8 +266,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponseDisableRescue disableRescue(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/disable_rescue", HttpMethod.POST, httpEntity, ResponseDisableRescue.class).getBody();
+    public ResponseAction disableRescue(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/disable_rescue", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -274,7 +293,7 @@ public class HetznerCloudAPI {
 
     /**
      * Change the type from the server
-     * example: cx11 -> cx21
+     * example: cx11 to cx21
      *
      * Attention: It will stops the server, but it starts automatically after the upgrade
      *
@@ -282,10 +301,10 @@ public class HetznerCloudAPI {
      * @param requestChangeType
      * @return respond
      */
-    public ResponseChangeType changeServerType(long id, RequestChangeType requestChangeType) throws InterruptedException {
+    public ResponseAction changeServerType(long id, RequestChangeType requestChangeType) throws InterruptedException {
         this.powerOffServer(id);
         TimeUnit.SECONDS.sleep(7);
-        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_type", new HttpEntity<>(requestChangeType, httpHeaders), ResponseChangeType.class).getBody();
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_type", new HttpEntity<>(requestChangeType, httpHeaders), ResponseAction.class).getBody();
     }
 
     /**
@@ -357,15 +376,14 @@ public class HetznerCloudAPI {
     /**
      * Attach an ISO to a server.
      * <p>
-     * To get all ISO's
+     * To get all ISO's {@link #getISOS}
      *
      * @param id               of the server
-     * @param requestAttachISO
-     * @return respond
-     * @see HetznerCloudAPI#getISOS
+     * @param requestAttachISO Request object
+     * @return ResponseAction object
      */
-    public ResponseAttachISO attachISO(long id, RequestAttachISO requestAttachISO) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/attach_iso", HttpMethod.POST, new HttpEntity<>(requestAttachISO, httpHeaders), ResponseAttachISO.class).getBody();
+    public ResponseAction attachISO(long id, RequestAttachISO requestAttachISO) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/attach_iso", HttpMethod.POST, new HttpEntity<>(requestAttachISO, httpHeaders), ResponseAction.class).getBody();
     }
 
     /**
@@ -374,8 +392,8 @@ public class HetznerCloudAPI {
      * @param id of the server
      * @return respond
      */
-    public ResponseDetachISO detachISO(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/detach_iso", HttpMethod.POST, httpEntity, ResponseDetachISO.class).getBody();
+    public ResponseAction detachISO(long id) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/detach_iso", HttpMethod.POST, httpEntity, ResponseAction.class).getBody();
     }
 
     /**
@@ -384,11 +402,12 @@ public class HetznerCloudAPI {
      * Floating IPs assigned to the server are not affected!
      *
      * @param id                  of the server
-     * @param requestChangeDNSPTR
+     * @param requestChangeReverseDNS
      * @return respond
      */
-    public ResponseChangeDNSPTR changeDNSPTR(long id, RequestChangeDNSPTR requestChangeDNSPTR) {
-        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_dns_ptr", new HttpEntity<>(requestChangeDNSPTR, httpHeaders), ResponseChangeDNSPTR.class).getBody();
+    public ResponseAction changeDNSPTR(long id, RequestChangeReverseDNS requestChangeReverseDNS) {
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_dns_ptr", new HttpEntity<>(requestChangeReverseDNS, httpHeaders),
+                                          ResponseAction.class).getBody();
     }
 
     /**
@@ -430,10 +449,98 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Get all Floating IP's in a object
+     *
+     * @return ResponseFloatingIPs object
+     */
+    public ResponseFloatingIPs getFloatingIPs() {
+        return restTemplate.exchange(API_URL + "/floating_ips", HttpMethod.GET, httpEntity, ResponseFloatingIPs.class).getBody();
+    }
+
+    /**
+     * Get a specific Floating IP.
+     *
+     * @param id ID of the Floating IP
+     * @return ResponseGetFloatingIP object
+     */
+    public ResponseGetFloatingIP getFloatingIP(long id) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + id, HttpMethod.GET, httpEntity, ResponseGetFloatingIP.class).getBody();
+    }
+
+    /**
+     * Create a Floating IP for the project or for a Server.
+     *
+     * @param requestFloatingIP Request object
+     * @return ResponseFloatingIP object
+     */
+    public ResponseFloatingIP createFloatingIP(RequestFloatingIP requestFloatingIP) {
+        return restTemplate.postForEntity(API_URL + "/floating_ips", new HttpEntity<>(requestFloatingIP, httpHeaders), ResponseFloatingIP.class).getBody();
+    }
+
+    /**
+     * Change the description of a Floating IP.
+     *
+     * @param id ID of the Floating IP
+     * @param requestDescriptionFloatingIP Request object
+     * @return ResponseGetFloatingIP object
+     */
+    public ResponseGetFloatingIP changeDescriptionOfFloatingIP(long id, RequestDescriptionFloatingIP requestDescriptionFloatingIP) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + id, HttpMethod.PUT, new HttpEntity<>(requestDescriptionFloatingIP, httpHeaders),
+                                         ResponseGetFloatingIP.class).getBody();
+    }
+
+    /**
+     * Assign a Floating IP to a server
+     *
+     * @param id ID of the Floating IP
+     * @param requestAssignFloatingIP Request object
+     * @return ResponseAction object
+     */
+    public ResponseAction assignFloatingIP(long id, RequestAssignFloatingIP requestAssignFloatingIP) {
+        return restTemplate.postForEntity(API_URL + "/floating_ips/" + id + "/actions/assign", new HttpEntity<>(requestAssignFloatingIP, httpHeaders),
+                                          ResponseAction.class).getBody();
+    }
+
+    /**
+     * Unassign a Floating IP from a server
+     *
+     * @param id ID of the Floating IP
+     * @return ResponseAction object
+     */
+    public ResponseAction unassignFloatingIP(long id) {
+        return restTemplate.postForEntity(API_URL + "/floating_ips/" + id + "/actions/unassign", new HttpEntity<>(httpHeaders),
+                ResponseAction.class).getBody();
+    }
+
+    /**
+     * Change the reverse DNS entry for a Floating IP
+     *
+     * @param id ID of the Floating IP
+     * @param requestChangeReverseDNS Request object
+     * @return ResponseAction object
+     */
+    public ResponseAction changeFloatingReverseDNS(long id, RequestChangeReverseDNS requestChangeReverseDNS) {
+        return restTemplate.postForEntity(API_URL + "/floating_ips/" + id + "/actions/change_dns_ptr", new HttpEntity<>(requestChangeReverseDNS, httpHeaders),
+                                          ResponseAction.class).getBody();
+    }
+
+    /**
+     * Delete a Floating IP.
+     *
+     * This object does not have a respond!
+     *
+     * @param id ID of the Floating ID
+     * @return
+     */
+    public String deleteFloatingIP(long id) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
      * Converts a Date to the ISO-8601 format
      *
-     * @param date your time
-     * @return date in ISO-8601 format
+     * @param date your Date
+     * @return Date in ISO-8601 format
      */
     public String convertToISO8601(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

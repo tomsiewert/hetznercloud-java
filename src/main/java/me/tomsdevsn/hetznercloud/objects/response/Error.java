@@ -1,13 +1,11 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class Error {
 
     public Code code;
@@ -32,14 +30,12 @@ public class Error {
         private String description;
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class Details {
 
         public static List<Field> fields;
 
-        @Getter
-        @Setter
+        @Data
         public static class Field {
             public String name;
             public String[] message;

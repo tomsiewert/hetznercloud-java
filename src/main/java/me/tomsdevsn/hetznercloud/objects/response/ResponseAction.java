@@ -3,8 +3,7 @@ package me.tomsdevsn.hetznercloud.objects.response;
 import lombok.Data;
 
 @Data
-public class ResponseDeleteServer {
+public class ResponseAction {
 
     private Action action;
-    private Error error;
 }

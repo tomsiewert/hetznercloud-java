@@ -12,33 +12,33 @@ import java.util.Date;
 @Setter
 public class Image {
 
-    public long id;
-    public String type;
-    public String status;
-    public String name;
-    public String description;
+    public Long id;
+    private String type;
+    private String status;
+    private String name;
+    private String description;
     @JsonProperty("image_size")
-    public Double imageSize;
+    private Double imageSize;
     @JsonProperty("disk_size")
-    public Double diskSize;
+    private Double diskSize;
     @JsonDeserialize(using = DateDeserializer.class)
-    public Date created;
+    private Date created;
     @JsonProperty("created_from")
-    public CreatedFrom createdFrom;
+    private CreatedFrom createdFrom;
     @JsonProperty("bound_to")
-    public Integer boundTo;
+    private Integer boundTo;
     @JsonProperty("os_flavor")
-    public String osFlavor;
+    private String osFlavor;
     @JsonProperty("os_version")
-    public String osVersion;
+    private String osVersion;
     @JsonProperty("rapid_redeploy")
-    public boolean rapidRedeploy;
+    private boolean rapidRedeploy;
 
     @Getter
     @Setter
     public static class CreatedFrom {
-        public long id;
-        public String name;
+        private Long id;
+        private String name;
     }
 
 }

@@ -9,8 +9,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RequestCreateImage {
+public class RequestDescriptionFloatingIP {
 
-    public String description;
-    public String type;
+    private String description;
 }

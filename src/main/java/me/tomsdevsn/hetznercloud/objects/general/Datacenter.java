@@ -10,29 +10,29 @@ import java.util.List;
 @Setter
 public class Datacenter {
 
-    public long id;
-    public String command;
-    public String description;
-    public Location location;
+    private Long id;
+    private String command;
+    private String description;
+    private Location location;
     @JsonProperty("server_types")
-    public ServerTypes serverTypes;
+    private ServerTypes serverTypes;
 
     @Getter
     @Setter
     public static class Location {
-        public Integer id;
-        public String name;
-        public String description;
-        public String country;
-        public String city;
-        public Double latitude;
-        public Double longitude;
+        private Integer id;
+        private String name;
+        private String description;
+        private String country;
+        private String city;
+        private Double latitude;
+        private Double longitude;
     }
 
     @Getter
     @Setter
     public static class ServerTypes {
-        public List<Long> supported;
-        public List<Long> available;
+        private List<Long> supported;
+        private List<Long> available;
     }
 }

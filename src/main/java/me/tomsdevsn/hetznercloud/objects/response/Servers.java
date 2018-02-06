@@ -9,6 +9,4 @@ import java.util.List;
 public class Servers {
 
     private List<Server> servers;
-    private Meta meta;
-    private Error error;
 }
