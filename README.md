@@ -5,7 +5,7 @@ Hetzner Cloud API for Java
 
 Simple Java client for the Hetzner Cloud API.
 
-The current version is **0.6**.
+The current version is **1.0**.
 
 It would be nice, if you submit pull requests.
 
@@ -37,7 +37,7 @@ Dependency:
     <dependency>
         <groupId>me.tomsdevsn</groupId>
         <artifactId>hetznercloud-api</artifactId>
-        <version>0.6</version>
+        <version>1.0</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -55,7 +55,7 @@ repositories({
 })
 
 dependencies({
-    compile "me.tomsdevsn:hetznercloud-api:0.6"
+    compile "me.tomsdevsn:hetznercloud-api:1.0"
 })
 ```
 

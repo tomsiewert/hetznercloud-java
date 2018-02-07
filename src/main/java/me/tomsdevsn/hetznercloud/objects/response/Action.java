@@ -22,7 +22,7 @@ public class Action {
 
     @Data
     public static class Resources {
-        public Integer id;
+        public Long id;
         public String type;
     }
 

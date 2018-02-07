@@ -6,7 +6,7 @@ import me.tomsdevsn.hetznercloud.objects.general.Image;
 import java.util.List;
 
 @Data
-public class Images {
+public class ResponseImages {
 
     public List<Image> images;
     public Meta meta;

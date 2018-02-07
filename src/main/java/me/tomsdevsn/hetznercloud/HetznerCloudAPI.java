@@ -271,15 +271,6 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all available Images
-     *
-     * @return respond
-     */
-    public Images getImages() {
-        return restTemplate.exchange(API_URL + "/images", HttpMethod.GET, httpEntity, Images.class).getBody();
-    }
-
-    /**
      * Rebuild a server, with the specific image.
      * example: ubuntu-16.04
      *
@@ -530,10 +521,189 @@ public class HetznerCloudAPI {
      * This object does not have a respond!
      *
      * @param id ID of the Floating ID
-     * @return
+     * @return String
      */
     public String deleteFloatingIP(long id) {
         return restTemplate.exchange(API_URL + "/floating_ips/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
+     * Get all SSH keys.
+     *
+     * @return ResponseSSHKeys object
+     */
+    public ResponseSSHKeys getSSHKeys() {
+        return restTemplate.exchange(API_URL + "/ssh_keys", HttpMethod.GET, httpEntity, ResponseSSHKeys.class).getBody();
+    }
+
+    /**
+     * Get a SSH key by ID.
+     *
+     * @param id ID of the SSH key
+     * @return ResponseSSHKey object
+     */
+    public ResponseSSHKey getSSHKey(long id) {
+        return restTemplate.exchange(API_URL + "/ssh_keys/" + id, HttpMethod.GET, httpEntity, ResponseSSHKey.class).getBody();
+    }
+
+    /**
+     * Get a SSH key by name.
+     *
+     * @param name name of the SSH key
+     * @return ResponseSSHKeys object
+     */
+    public ResponseSSHKeys getSSHKeyByName(String name) {
+        return restTemplate.exchange(API_URL + "/ssh_keys?" + name, HttpMethod.GET, httpEntity, ResponseSSHKeys.class).getBody();
+    }
+
+    /**
+     * Create a SSH key.
+     *
+     * @param requestSSHKey Request object
+     * @return ResponseSSHKey object
+     */
+    public ResponseSSHKey createSSHKey(RequestSSHKey requestSSHKey) {
+        return restTemplate.postForEntity(API_URL + "/ssh_keys", new HttpEntity<>(requestSSHKey, httpHeaders), ResponseSSHKey.class).getBody();
+    }
+
+    /**
+     * Change the name of a SSH key
+     *
+     * @param id ID of the SSH key
+     * @param requestChangeSSHKeyName Request object
+     * @return ResponseSSHKey object
+     */
+    public ResponseSSHKey changeSSHKeyName(long id, RequestChangeSSHKeyName requestChangeSSHKeyName) {
+        return restTemplate.exchange(API_URL + "/ssh_keys/" + id, HttpMethod.PUT, new HttpEntity<>(requestChangeSSHKeyName, httpHeaders),
+                                         ResponseSSHKey.class).getBody();
+    }
+
+    /**
+     * Delete a SSH key.
+     *
+     * This object does not have a respond!
+     *
+     * @param id ID of the SSH key
+     * @return String
+     */
+    public String deleteSSHKey(long id) {
+        return restTemplate.exchange(API_URL + "/ssh_keys/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
+     * Get all Server types.
+     *
+     * @return ResponseServerTypes object
+     */
+    public ResponseServerTypes getServerTypes() {
+        return restTemplate.exchange(API_URL + "/server_types", HttpMethod.GET, httpEntity, ResponseServerTypes.class).getBody();
+    }
+
+    /**
+     * Get a Server type by name.
+     *
+     * @param name name of the Server type
+     * @return ResponseServerTypes object
+     */
+    public ResponseServerTypes getServerTypeByName(String name) {
+        return restTemplate.exchange(API_URL + "/server_types?name=" + name, HttpMethod.GET, httpEntity, ResponseServerTypes.class).getBody();
+    }
+
+    /**
+     * Create a SSH key.
+     *
+     * @param id ID of the Server type
+     * @return ResponseServerType object
+     */
+    public ResponseServerType getServerType(long id) {
+        return restTemplate.exchange(API_URL + "/server_types/" + id, HttpMethod.GET, httpEntity, ResponseServerType.class).getBody();
+    }
+
+    public ResponseLocations getLocations() {
+        return restTemplate.exchange(API_URL + "/locations", HttpMethod.GET, httpEntity, ResponseLocations.class).getBody();
+    }
+
+    /**
+     * Get a Location by name.
+     *
+     * @param name Name of the location
+     * @return ResponseLocations object
+     */
+    public ResponseLocations getLocationByName(String name) {
+        return restTemplate.exchange(API_URL + "/locations?name=" + name, HttpMethod.GET, httpEntity, ResponseLocations.class).getBody();
+    }
+
+    /**
+     * Get a location;
+     *
+     * @param id ID of the location
+     * @return ResponseServerType object
+     */
+    public ResponseLocation getLocation(long id) {
+        return restTemplate.exchange(API_URL + "/locations/" + id, HttpMethod.GET, httpEntity, ResponseLocation.class).getBody();
+    }
+
+    /**
+     * Get all available ResponseImages
+     *
+     * @return respond
+     */
+    public ResponseImages getImages() {
+        return restTemplate.exchange(API_URL + "/images", HttpMethod.GET, httpEntity, ResponseImages.class).getBody();
+    }
+
+    /**
+     * Get all images by type.
+     *
+     * @param type Type of the images
+     * @return ResponseImages object
+     */
+    public ResponseImages getImages(ImageType type) {
+        return restTemplate.exchange(API_URL + "/images?type=" + type.toString(), HttpMethod.GET, httpEntity, ResponseImages.class).getBody();
+    }
+
+    /**
+     * Get an image by name.
+     *
+     * @param name Name of the image
+     * @return ResponseImages object
+     */
+    public ResponseImages getImageByName(String name) {
+        return restTemplate.exchange(API_URL + "/images?name=" + name, HttpMethod.GET, httpEntity, ResponseImages.class).getBody();
+    }
+
+    /**
+     * Get image by ID.
+     *
+     * @param id ID of the image
+     * @return ResponseImage object
+     */
+    public ResponseImage getImage(long id) {
+        return restTemplate.exchange(API_URL + "/images/" + id, HttpMethod.GET, httpEntity, ResponseImage.class).getBody();
+    }
+
+    /**
+     * Update the description or the type of a image.
+     *
+     * @param id ID of the image
+     * @param requestUpdateImage Request object
+     * @return ResponseImage object
+     */
+    public ResponseImage updateImage(long id, RequestUpdateImage requestUpdateImage) {
+        return restTemplate.exchange(API_URL + "/images/" + id, HttpMethod.PUT, new HttpEntity<>(requestUpdateImage, httpHeaders),
+                                              ResponseImage.class).getBody();
+    }
+
+    /**
+     * Delete an image,
+     *
+     * This object does not have a respond!
+     *
+     * @param id ID of the image
+     * @return String
+     */
+    public String deleteImage(long id) {
+        return restTemplate.exchange(API_URL + "/images/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
     }
 
     /**

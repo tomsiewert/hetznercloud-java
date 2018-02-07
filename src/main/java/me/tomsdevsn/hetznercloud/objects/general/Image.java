@@ -2,14 +2,12 @@ package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 public class Image {
 
     public Long id;
@@ -26,7 +24,7 @@ public class Image {
     @JsonProperty("created_from")
     private CreatedFrom createdFrom;
     @JsonProperty("bound_to")
-    private Integer boundTo;
+    private Long boundTo;
     @JsonProperty("os_flavor")
     private String osFlavor;
     @JsonProperty("os_version")
@@ -34,8 +32,7 @@ public class Image {
     @JsonProperty("rapid_redeploy")
     private boolean rapidRedeploy;
 
-    @Getter
-    @Setter
+    @Data
     public static class CreatedFrom {
         private Long id;
         private String name;
