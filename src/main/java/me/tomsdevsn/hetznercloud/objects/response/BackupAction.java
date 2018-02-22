@@ -1,6 +1,10 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -10,8 +14,10 @@ public class BackupAction {
     private String command;
     private String status;
     private Long progress;
-    private String started;
-    private String finished;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date started;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date finished;
     private List<Resources> resources;
     private Error error;
 

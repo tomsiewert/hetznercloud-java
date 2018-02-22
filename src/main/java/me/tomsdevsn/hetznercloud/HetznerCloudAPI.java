@@ -30,7 +30,7 @@ public class HetznerCloudAPI {
 
     /**
      * Initial method to use the API
-     *
+     * <p>
      * @param token which you created in the Hetzner-Cloud console
      */
     public HetznerCloudAPI(String token) {
@@ -109,6 +109,16 @@ public class HetznerCloudAPI {
      */
     public ResponseServernameChange changeServerName(long id, RequestServernameChange newServerName) {
         return restTemplate.exchange(API_URL + "/servers/" + id, HttpMethod.PUT, new HttpEntity<>(newServerName, httpHeaders), ResponseServernameChange.class).getBody();
+    }
+
+    /**
+     * Request a VNC over websocket Console
+     *
+     * @param id ID of the server
+     * @return ResponseConsole object
+     */
+    public ResponseConsole requestConsole(long id) {
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/request_console", httpEntity, ResponseConsole.class).getBody();
     }
 
     /**
@@ -261,6 +271,7 @@ public class HetznerCloudAPI {
 
     /**
      * Disables the rescue mode from the server.
+     * <p>
      * Only needed, if the server doesn't booted into the rescue mode.
      *
      * @param id of the server
@@ -272,6 +283,7 @@ public class HetznerCloudAPI {
 
     /**
      * Rebuild a server, with the specific image.
+     * <p>
      * example: ubuntu-16.04
      *
      * @param id                   of the server
@@ -284,8 +296,9 @@ public class HetznerCloudAPI {
 
     /**
      * Change the type from the server
+     * <p>
      * example: cx11 to cx21
-     *
+     * <p>
      * Attention: It will stops the server, but it starts automatically after the upgrade
      *
      * @param id of the server
@@ -324,6 +337,7 @@ public class HetznerCloudAPI {
 
     /**
      * Enable the backups from a server
+     * <p>
      * Please reminder, that will increase the price of the server by 20%
      *
      * @param id                  of the server
@@ -336,6 +350,7 @@ public class HetznerCloudAPI {
 
     /**
      * Disable the backups from a server
+     * <p>
      * Caution!: This will delete all existing backups immediately
      *
      * @param id of the server
@@ -379,7 +394,7 @@ public class HetznerCloudAPI {
 
     /**
      * Detach an ISO from a server.
-     *
+     * <p>
      * @param id of the server
      * @return respond
      */
@@ -403,7 +418,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a Datacenter by ID
-     *
+     * <p>
      * @param id of the datacenter
      * @return respond
      */
@@ -413,7 +428,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all available datacenters and the recommendation
-     *
+     * <p>
      * @return respond
      */
     public ResponseDatacenters getDatacenters() {
@@ -422,7 +437,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a datacenter by name
-     *
+     * <p>
      * @param name of the datacenter
      * @return respond
      */
@@ -432,7 +447,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all prices from the products
-     *
+     * <p>
      * @return respond
      */
     public ResponsePricing getPricing() {
@@ -441,7 +456,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all Floating IP's in a object
-     *
+     * <p>
      * @return ResponseFloatingIPs object
      */
     public ResponseFloatingIPs getFloatingIPs() {
@@ -450,7 +465,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a specific Floating IP.
-     *
+     * <p>
      * @param id ID of the Floating IP
      * @return ResponseGetFloatingIP object
      */
@@ -460,7 +475,7 @@ public class HetznerCloudAPI {
 
     /**
      * Create a Floating IP for the project or for a Server.
-     *
+     * <p>
      * @param requestFloatingIP Request object
      * @return ResponseFloatingIP object
      */
@@ -470,7 +485,7 @@ public class HetznerCloudAPI {
 
     /**
      * Change the description of a Floating IP.
-     *
+     * <p>
      * @param id ID of the Floating IP
      * @param requestDescriptionFloatingIP Request object
      * @return ResponseGetFloatingIP object
@@ -482,7 +497,7 @@ public class HetznerCloudAPI {
 
     /**
      * Assign a Floating IP to a server
-     *
+     * <p>
      * @param id ID of the Floating IP
      * @param requestAssignFloatingIP Request object
      * @return ResponseAction object
@@ -494,7 +509,7 @@ public class HetznerCloudAPI {
 
     /**
      * Unassign a Floating IP from a server
-     *
+     * <p>
      * @param id ID of the Floating IP
      * @return ResponseAction object
      */
@@ -505,7 +520,7 @@ public class HetznerCloudAPI {
 
     /**
      * Change the reverse DNS entry for a Floating IP
-     *
+     * <p>
      * @param id ID of the Floating IP
      * @param requestChangeReverseDNS Request object
      * @return ResponseAction object
@@ -517,9 +532,9 @@ public class HetznerCloudAPI {
 
     /**
      * Delete a Floating IP.
-     *
+     * <p>
      * This object does not have a respond!
-     *
+     * <p>
      * @param id ID of the Floating ID
      * @return String
      */
@@ -529,7 +544,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all SSH keys.
-     *
+     * <p>
      * @return ResponseSSHKeys object
      */
     public ResponseSSHKeys getSSHKeys() {
@@ -538,7 +553,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a SSH key by ID.
-     *
+     * <p>
      * @param id ID of the SSH key
      * @return ResponseSSHKey object
      */
@@ -548,7 +563,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a SSH key by name.
-     *
+     * <p>
      * @param name name of the SSH key
      * @return ResponseSSHKeys object
      */
@@ -558,7 +573,7 @@ public class HetznerCloudAPI {
 
     /**
      * Create a SSH key.
-     *
+     * <p>
      * @param requestSSHKey Request object
      * @return ResponseSSHKey object
      */
@@ -568,7 +583,7 @@ public class HetznerCloudAPI {
 
     /**
      * Change the name of a SSH key
-     *
+     * <p>
      * @param id ID of the SSH key
      * @param requestChangeSSHKeyName Request object
      * @return ResponseSSHKey object
@@ -580,9 +595,9 @@ public class HetznerCloudAPI {
 
     /**
      * Delete a SSH key.
-     *
+     * <p>
      * This object does not have a respond!
-     *
+     * <p>
      * @param id ID of the SSH key
      * @return String
      */
@@ -592,7 +607,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all Server types.
-     *
+     * <p>
      * @return ResponseServerTypes object
      */
     public ResponseServerTypes getServerTypes() {
@@ -601,7 +616,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a Server type by name.
-     *
+     * <p>
      * @param name name of the Server type
      * @return ResponseServerTypes object
      */
@@ -611,7 +626,7 @@ public class HetznerCloudAPI {
 
     /**
      * Create a SSH key.
-     *
+     * <p>
      * @param id ID of the Server type
      * @return ResponseServerType object
      */
@@ -619,13 +634,18 @@ public class HetznerCloudAPI {
         return restTemplate.exchange(API_URL + "/server_types/" + id, HttpMethod.GET, httpEntity, ResponseServerType.class).getBody();
     }
 
+    /**
+     * Get all available Locations.
+     * <p>
+     * @return ResponseLocations object
+     */
     public ResponseLocations getLocations() {
         return restTemplate.exchange(API_URL + "/locations", HttpMethod.GET, httpEntity, ResponseLocations.class).getBody();
     }
 
     /**
      * Get a Location by name.
-     *
+     * <p>
      * @param name Name of the location
      * @return ResponseLocations object
      */
@@ -635,7 +655,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get a location;
-     *
+     * <p>
      * @param id ID of the location
      * @return ResponseServerType object
      */
@@ -645,7 +665,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all available ResponseImages
-     *
+     * <p>
      * @return respond
      */
     public ResponseImages getImages() {
@@ -654,7 +674,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get all images by type.
-     *
+     * <p>
      * @param type Type of the images
      * @return ResponseImages object
      */
@@ -664,7 +684,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get an image by name.
-     *
+     * <p>
      * @param name Name of the image
      * @return ResponseImages object
      */
@@ -674,7 +694,7 @@ public class HetznerCloudAPI {
 
     /**
      * Get image by ID.
-     *
+     * <p>
      * @param id ID of the image
      * @return ResponseImage object
      */
@@ -684,7 +704,7 @@ public class HetznerCloudAPI {
 
     /**
      * Update the description or the type of a image.
-     *
+     * <p>
      * @param id ID of the image
      * @param requestUpdateImage Request object
      * @return ResponseImage object
@@ -696,9 +716,9 @@ public class HetznerCloudAPI {
 
     /**
      * Delete an image,
-     *
+     * <p>
      * This object does not have a respond!
-     *
+     * <p>
      * @param id ID of the image
      * @return String
      */
@@ -708,7 +728,7 @@ public class HetznerCloudAPI {
 
     /**
      * Converts a Date to the ISO-8601 format
-     *
+     * <p>
      * @param date your Date
      * @return Date in ISO-8601 format
      */
