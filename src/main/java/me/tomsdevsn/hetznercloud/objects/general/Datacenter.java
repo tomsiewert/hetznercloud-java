@@ -9,7 +9,7 @@ import java.util.List;
 public class Datacenter {
 
     private Long id;
-    private String command;
+    private String name;
     private String description;
     private Location location;
     @JsonProperty("server_types")
