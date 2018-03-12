@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ResponseEnableBackup {
 
-    private BackupAction action;
+    private Action action;
 }

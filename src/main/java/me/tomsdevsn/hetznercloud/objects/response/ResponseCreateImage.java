@@ -6,6 +6,6 @@ import me.tomsdevsn.hetznercloud.objects.general.Image;
 @Data
 public class ResponseCreateImage {
 
-    public Image image;
-    public Action action;
+    private Image image;
+    private Action action;
 }

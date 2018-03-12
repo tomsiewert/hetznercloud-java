@@ -14,7 +14,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestEnableRescue {
 
-    public String type;
+    private String type;
     @JsonProperty("ssh_keys")
-    public List<Long> sshKeys;
+    private List<Long> sshKeys;
 }

@@ -1,73 +1,64 @@
 package me.tomsdevsn.hetznercloud.objects.pricing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import me.tomsdevsn.hetznercloud.objects.general.ServerType;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class Pricing {
 
-    public String currency;
+    private String currency;
     @JsonProperty("vat_rate")
-    public double vatRate;
-    public Pricing.Image image;
+    private double vatRate;
+    private Pricing.Image image;
     @JsonProperty("floating_ip")
-    public Pricing.FloatingIP floatingIP;
-    public Pricing.Traffic traffic;
+    private Pricing.FloatingIP floatingIP;
+    private Pricing.Traffic traffic;
     @JsonProperty("server_backup")
-    public Pricing.ServerBackup serverBackup;
+    private Pricing.ServerBackup serverBackup;
     @JsonProperty("server_types")
-    public List<ServerType> serverTypes;
+    private List<ServerType> serverTypes;
 
-    @Getter
-    @Setter
+    @Data
     public static class Image {
         @JsonProperty("price_per_gb_month")
-        public PricePerGBMonth pricePerGBMonth;
+        private PricePerGBMonth pricePerGBMonth;
 
-        @Getter
-        @Setter
+        @Data
         public static class PricePerGBMonth {
-            public double net;
-            public double gross;
+            private Double net;
+            private Double gross;
         }
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class FloatingIP {
         @JsonProperty("price_monthly")
-        public PriceMonthly priceMonthly;
+        private PriceMonthly priceMonthly;
 
-        @Getter
-        @Setter
+        @Data
         public static class PriceMonthly {
-            public double net;
-            public double gross;
+            private Double net;
+            private Double gross;
         }
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class Traffic {
         @JsonProperty("price_per_tb")
-        public PricePerTB pricePerTB;
+        private PricePerTB pricePerTB;
 
-        @Getter
-        @Setter
+        @Data
         public static class PricePerTB {
-            public double net;
-            public double gross;
+            private Double net;
+            private Double gross;
         }
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class ServerBackup {
-        public double percentage;
+        private Double percentage;
     }
 }

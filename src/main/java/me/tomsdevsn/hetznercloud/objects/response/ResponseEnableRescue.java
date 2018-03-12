@@ -7,6 +7,6 @@ import lombok.Data;
 public class ResponseEnableRescue {
 
     @JsonProperty("root_password")
-    public String rootPassword;
-    public Action action;
+    private String rootPassword;
+    private Action action;
 }

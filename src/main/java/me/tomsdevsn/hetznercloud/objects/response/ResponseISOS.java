@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class ResponseISOS {
 
-    public List<ISO> isos;
+    private List<ISO> isos;
 }

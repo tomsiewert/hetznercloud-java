@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ResponseMetrics {
 
-    public Metrics metrics;
+    private Metrics metrics;
 
 }

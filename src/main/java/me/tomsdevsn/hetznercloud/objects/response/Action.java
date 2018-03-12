@@ -10,25 +10,26 @@ import java.util.List;
 @Data
 public class Action {
 
-    public Long id;
-    public String command;
-    public String status;
-    public Long progress;
+    private Long id;
+    private String command;
+    private String status;
+    private Long progress;
     @JsonDeserialize(using = DateDeserializer.class)
-    public Date started;
-    public boolean finished;
-    public List<Resources> resources;
+    private Date started;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date finished;
+    private List<Resources> resources;
     private Error error;
 
     @Data
     public static class Resources {
-        public Long id;
-        public String type;
+        private Long id;
+        private String type;
     }
 
     @Data
     public static class Error {
-        public String code;
-        public String message;
+        private String code;
+        private String message;
     }
 }

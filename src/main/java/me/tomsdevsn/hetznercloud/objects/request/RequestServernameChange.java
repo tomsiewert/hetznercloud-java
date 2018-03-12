@@ -11,6 +11,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestServernameChange {
 
-    public String name;
+    private String name;
 
 }

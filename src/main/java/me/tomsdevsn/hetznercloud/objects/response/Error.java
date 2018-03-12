@@ -8,9 +8,9 @@ import java.util.List;
 @Data
 public class Error {
 
-    public Code code;
-    public String message;
-    public Details details;
+    private Code code;
+    private String message;
+    private Details details;
 
     @Getter
     @AllArgsConstructor
@@ -33,12 +33,12 @@ public class Error {
     @Data
     public static class Details {
 
-        public static List<Field> fields;
+        private static List<Field> fields;
 
         @Data
         public static class Field {
-            public String name;
-            public String[] message;
+            private String name;
+            private String[] message;
         }
     }
 }

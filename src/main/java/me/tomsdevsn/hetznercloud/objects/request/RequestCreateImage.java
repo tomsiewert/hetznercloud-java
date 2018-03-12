@@ -11,6 +11,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestCreateImage {
 
-    public String description;
-    public String type;
+    private String description;
+    private String type;
 }

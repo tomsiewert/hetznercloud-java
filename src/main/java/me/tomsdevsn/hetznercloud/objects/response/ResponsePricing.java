@@ -8,5 +8,5 @@ import me.tomsdevsn.hetznercloud.objects.pricing.Pricing;
 public class ResponsePricing {
 
     @JsonProperty("pricing")
-    public Pricing pricing;
+    private Pricing pricing;
 }

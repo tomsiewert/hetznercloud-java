@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ResponseRebuildServer {
 
-    public Action action;
+    private Action action;
     @JsonProperty("root_password")
-    public String rootPassword;
+    private String rootPassword;
 }

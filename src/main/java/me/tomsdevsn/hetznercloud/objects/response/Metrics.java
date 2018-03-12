@@ -12,22 +12,22 @@ import java.util.List;
 public class Metrics {
 
     @JsonDeserialize(using = DateDeserializer.class)
-    public Date start;
+    private Date start;
     @JsonDeserialize(using = DateDeserializer.class)
-    public Date end;
-    public Long step;
+    private Date end;
+    private Long step;
     @JsonProperty("time_series")
-    public TimeSeries timeSeries;
+    private TimeSeries timeSeries;
 
     @Data
     public static class TimeSeries {
 
         @JsonProperty("name_of_timeseries")
-        public NameOfTimeSeries nameOfTimeseries;
+        private NameOfTimeSeries nameOfTimeseries;
 
         @Data
         public static class NameOfTimeSeries {
-            public List<List<String>> values;
+            private List<List<String>> values;
         }
     }
 }

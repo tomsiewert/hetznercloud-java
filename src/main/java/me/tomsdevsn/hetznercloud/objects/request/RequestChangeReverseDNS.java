@@ -12,7 +12,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestChangeReverseDNS {
 
-    public String ip;
+    private String ip;
     @JsonProperty("dns_ptr")
-    public String dnsPTR;
+    private String dnsPTR;
 }

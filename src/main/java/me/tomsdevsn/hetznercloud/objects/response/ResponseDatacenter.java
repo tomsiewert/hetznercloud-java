@@ -6,5 +6,5 @@ import me.tomsdevsn.hetznercloud.objects.general.Datacenter;
 @Data
 public class ResponseDatacenter {
 
-    public Datacenter datacenter;
+    private Datacenter datacenter;
 }

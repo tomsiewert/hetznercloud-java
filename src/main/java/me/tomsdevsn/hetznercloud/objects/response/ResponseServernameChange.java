@@ -6,5 +6,5 @@ import me.tomsdevsn.hetznercloud.objects.general.Server;
 @Data
 public class ResponseServernameChange {
 
-    public Server server;
+    private Server server;
 }

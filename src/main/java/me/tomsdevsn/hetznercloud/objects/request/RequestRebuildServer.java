@@ -11,5 +11,5 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestRebuildServer {
 
-    public String image;
+    private String image;
 }

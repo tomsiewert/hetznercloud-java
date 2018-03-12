@@ -11,5 +11,5 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestAttachISO {
 
-    public String iso;
+    private String iso;
 }

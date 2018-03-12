@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public class Image {
 
-    public Long id;
+    private Long id;
     private String type;
     private String status;
     private String name;

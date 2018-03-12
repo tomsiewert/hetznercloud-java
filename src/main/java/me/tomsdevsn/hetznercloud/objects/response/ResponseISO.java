@@ -6,5 +6,5 @@ import me.tomsdevsn.hetznercloud.objects.general.ISO;
 @Data
 public class ResponseISO {
 
-    public ISO iso;
+    private ISO iso;
 }

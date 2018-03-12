@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class ResponseDatacenters {
 
-    public List<Datacenter> datacenters;
-    public Long recommendation;
+    private List<Datacenter> datacenters;
+    private Long recommendation;
 }

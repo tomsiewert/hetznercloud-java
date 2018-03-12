@@ -18,7 +18,7 @@ public class PublicNet {
         private String ip;
         private boolean blocked;
         @JsonProperty("dns_ptr")
-        public String dnsPTR;
+        private String dnsPTR;
     }
 
     @Data

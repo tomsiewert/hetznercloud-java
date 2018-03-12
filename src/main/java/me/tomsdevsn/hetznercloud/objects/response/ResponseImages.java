@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class ResponseImages {
 
-    public List<Image> images;
-    public Meta meta;
+    private List<Image> images;
+    private Meta meta;
 }

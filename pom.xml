@@ -6,7 +6,7 @@
 
     <groupId>me.tomsdevsn</groupId>
     <artifactId>hetznercloud-api</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 
     <name>HetznerCloud-API</name>
     <description>Java-client for the Hetzner Cloud</description>
@@ -21,6 +21,14 @@
         </repository>
     </distributionManagement>
 
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <developers>
         <developer>
             <id>TomSDEVSN</id>
@@ -32,7 +40,7 @@
     <scm>
         <connection>scm:git:git@github.com:TomSDEVSN/hetznercloud-api.git</connection>
         <developerConnection>scm:git:git@github.com:TomSDEVSN/hetznercloud-api.git</developerConnection>
-        <url>git@github.com:TomSDEVSN/hetznercloud-api.git</url>
+        <url>https://github.com/TomSDEVSN/hetznercloud-api/tree/master</url>
     </scm>
 
     <issueManagement>

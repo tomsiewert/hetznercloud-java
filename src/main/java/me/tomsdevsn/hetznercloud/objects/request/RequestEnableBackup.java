@@ -13,5 +13,5 @@ import lombok.Data;
 public class RequestEnableBackup {
 
     @JsonProperty("backup_window")
-    public String backupWindow;
+    private String backupWindow;
 }

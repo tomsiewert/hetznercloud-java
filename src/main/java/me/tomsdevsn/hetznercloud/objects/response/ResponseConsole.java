@@ -9,5 +9,5 @@ public class ResponseConsole {
     @JsonProperty("wss_url")
     private String wssURL;
     private String password;
-    private BackupAction action;
+    private Action action;
 }
