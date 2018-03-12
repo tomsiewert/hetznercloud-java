@@ -16,7 +16,8 @@ public class Action {
     public Long progress;
     @JsonDeserialize(using = DateDeserializer.class)
     public Date started;
-    public boolean finished;
+    @JsonDeserialize(using = DateDeserializer.class)
+    public Date finished;
     public List<Resources> resources;
     private Error error;
 
