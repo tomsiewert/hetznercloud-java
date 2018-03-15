@@ -33,7 +33,7 @@ public class FloatingIP {
         private String description;
         private String country;
         private String city;
-        private double latitude;
-        private double longitude;
+        private Double latitude;
+        private Double longitude;
     }
 }

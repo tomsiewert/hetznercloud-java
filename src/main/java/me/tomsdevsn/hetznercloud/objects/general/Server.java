@@ -3,8 +3,6 @@ package me.tomsdevsn.hetznercloud.objects.general;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
 import java.util.Date;

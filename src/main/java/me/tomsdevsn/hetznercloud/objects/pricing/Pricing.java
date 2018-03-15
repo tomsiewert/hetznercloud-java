@@ -11,7 +11,7 @@ public class Pricing {
 
     private String currency;
     @JsonProperty("vat_rate")
-    private double vatRate;
+    private Double vatRate;
     private Pricing.Image image;
     @JsonProperty("floating_ip")
     private Pricing.FloatingIP floatingIP;
