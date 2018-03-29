@@ -1,5 +1,6 @@
 package me.tomsdevsn.hetznercloud;
 
+import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.springframework.http.HttpEntity;
@@ -87,6 +88,9 @@ public class HetznerCloudAPI {
      * @return              response of the API
      */
     public ServerResponse createServer(ServerRequest serverRequest) {
+        serverRequest.getSshKeys().forEach(object -> {
+            if (!(object instanceof Long || object instanceof String)) throw new InvalidParametersException("Object not Long or String");
+        });
         return restTemplate.postForEntity(API_URL + "/servers", new HttpEntity<>(serverRequest, httpHeaders), ServerResponse.class).getBody();
     }
 
@@ -112,7 +116,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Request a VNC over websocket Console
+     * Request a VNC over Websocket-console
      *
      * @param id ID of the server
      * @return ConsoleResponse object
@@ -569,6 +573,16 @@ public class HetznerCloudAPI {
      */
     public SSHKeysResponse getSSHKeyByName(String name) {
         return restTemplate.exchange(API_URL + "/ssh_keys?" + name, HttpMethod.GET, httpEntity, SSHKeysResponse.class).getBody();
+    }
+
+    /**
+     * Get a SSH key by the fingerprint.
+     *
+     * @param fingerprint Fingerprint of the SSH key
+     * @return SSHKeysResponse object
+     */
+    public SSHKeysResponse getSSHKeyByFingerprint(String fingerprint) {
+        return restTemplate.exchange(API_URL + "/ssh_keys?" + fingerprint, HttpMethod.GET, httpEntity, SSHKeysResponse.class).getBody();
     }
 
     /**

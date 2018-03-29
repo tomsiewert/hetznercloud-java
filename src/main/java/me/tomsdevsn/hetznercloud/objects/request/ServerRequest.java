@@ -23,8 +23,11 @@ public class ServerRequest {
     @JsonProperty("start_after_create")
     private boolean startAfterCreate;
 
+    /**
+     * The objects in the list have to be a Long or a String, or it will throw an Exception {@link me.tomsdevsn.hetznercloud.exception.InvalidParametersException}
+     */
     @JsonProperty("ssh_keys")
-    private List<Long> sshKeys;
+    private List<Object> sshKeys;
 
     @JsonProperty("user_data")
     private String userData;
