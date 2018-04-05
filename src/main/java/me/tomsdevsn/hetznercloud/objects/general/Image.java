@@ -31,6 +31,8 @@ public class Image {
     private String osVersion;
     @JsonProperty("rapid_redeploy")
     private boolean rapidRedeploy;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date deprecated;
 
     @Data
     public static class CreatedFrom {
