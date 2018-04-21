@@ -33,4 +33,12 @@ public class Server {
     private Long ingoingTraffic;
     @JsonProperty("included_traffic")
     private Long includedTraffic;
+    private Protect protection;
+
+    @Data
+    public static class Protect {
+        private boolean delete;
+        private boolean rebuild;
+    }
+
 }

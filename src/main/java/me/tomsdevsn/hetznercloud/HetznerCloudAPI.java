@@ -126,6 +126,17 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Change the protection configuration from a server
+     *
+     * @param id ID of the server
+     * @param changeProtection Request Object (both optional)
+     * @return ActionResponse object
+     */
+    public ActionResponse changeServerProtection(long id, ChangeProtectionRequest changeProtection) {
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_protection", new HttpEntity<>(changeProtection, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
      * Get all performed Actions for a Server
      *
      * @param id ID of the Server
@@ -174,7 +185,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ActionResponse powerOnServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweron", HttpMethod.POST, httpEntity, ActionResponse.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweron", HttpMethod.POST, new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -184,7 +195,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ActionResponse powerOffServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweroff", HttpMethod.POST, httpEntity, ActionResponse.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/poweroff", HttpMethod.POST, new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -194,7 +205,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ActionResponse softRebootServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reboot", HttpMethod.POST, httpEntity, ActionResponse.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reboot", HttpMethod.POST, new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -204,7 +215,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ActionResponse resetServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reset", HttpMethod.POST, httpEntity, ActionResponse.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/reset", HttpMethod.POST, new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -214,7 +225,7 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ActionResponse shutdownServer(long id) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/shutdown", HttpMethod.POST, httpEntity, ActionResponse.class).getBody();
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/shutdown", HttpMethod.POST, new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -337,6 +348,18 @@ public class HetznerCloudAPI {
      */
     public CreateImageResponse createImage(long id, CreateImageRequest createImageRequest) {
         return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/create_image", HttpMethod.POST, new HttpEntity<>(createImageRequest, httpHeaders), CreateImageResponse.class).getBody();
+    }
+
+
+    /**
+     * Enable or disable the Protection of an Image
+     *
+     * @param id ID of the Image
+     * @param protectionRequest Only the delete parameter!
+     * @return ActionResponse object
+     */
+    public ActionResponse changeImageProtection(long id, ChangeProtectionRequest protectionRequest) {
+        return restTemplate.postForEntity(API_URL + "/images/" + id + "/actions/change_protection", new HttpEntity<>(protectionRequest, httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -485,6 +508,17 @@ public class HetznerCloudAPI {
      */
     public FloatingIPResponse createFloatingIP(FloatingIPRequest floatingIPRequest) {
         return restTemplate.postForEntity(API_URL + "/floating_ips", new HttpEntity<>(floatingIPRequest, httpHeaders), FloatingIPResponse.class).getBody();
+    }
+
+    /**
+     * Enable or disable the Protection of a Floating IP
+     *
+     * @param id ID of the Floating IP
+     * @param protectionRequest Only the delete parameter!
+     * @return ActionResponse object
+     */
+    public ActionResponse changeFloatingIPProtection(long id, ChangeProtectionRequest protectionRequest) {
+        return restTemplate.postForEntity(API_URL + "/floating_ips/" + id + "/actions/change_protection", new HttpEntity<>(protectionRequest, httpHeaders), ActionResponse.class).getBody();
     }
 
     /**

@@ -1,6 +1,7 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
@@ -33,6 +34,7 @@ public class Image {
     private boolean rapidRedeploy;
     @JsonDeserialize(using = DateDeserializer.class)
     private Date deprecated;
+    private Protect protection;
 
     @Data
     public static class CreatedFrom {
@@ -40,4 +42,8 @@ public class Image {
         private String name;
     }
 
+    @Data
+    public static class Protect {
+        private boolean delete;
+    }
 }
