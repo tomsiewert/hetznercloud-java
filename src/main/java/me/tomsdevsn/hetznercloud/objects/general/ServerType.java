@@ -17,6 +17,8 @@ public class ServerType {
     private List<Prices> prices;
     @JsonProperty("storage_type")
     private String storageType;
+    @JsonProperty("cpu_type")
+    private String cpuType;
 
     @Data
     public static class Prices {
