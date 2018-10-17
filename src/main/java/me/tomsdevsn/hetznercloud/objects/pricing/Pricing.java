@@ -18,6 +18,7 @@ public class Pricing {
     private Pricing.Traffic traffic;
     @JsonProperty("server_backup")
     private Pricing.ServerBackup serverBackup;
+    private Pricing.Volume volume;
     @JsonProperty("server_types")
     private List<ServerType> serverTypes;
 
@@ -60,5 +61,17 @@ public class Pricing {
     @Data
     public static class ServerBackup {
         private Double percentage;
+    }
+
+    @Data
+    public static class Volume {
+        @JsonProperty("price_per_gb_month")
+        private PricePerGBMonth pricePerGBMonth;
+
+        @Data
+        public static class PricePerGBMonth {
+            private Double net;
+            private Double gross;
+        }
     }
 }

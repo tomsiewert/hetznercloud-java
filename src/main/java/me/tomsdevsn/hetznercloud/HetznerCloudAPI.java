@@ -221,7 +221,7 @@ public class HetznerCloudAPI {
     /**
      * Soft-shutdown a specific server with the id
      *
-     * @param id of the server
+     * @param id ID of the server
      * @return respond
      */
     public ActionResponse shutdownServer(long id) {
@@ -231,7 +231,7 @@ public class HetznerCloudAPI {
     /**
      * Resets the root password from a specific server with the id
      *
-     * @param id of the server
+     * @param id ID of the server
      * @return respond
      */
     public ResetRootPasswordResponse resetRootPassword(long id) {
@@ -241,7 +241,7 @@ public class HetznerCloudAPI {
     /**
      * Enables the rescue mode from the server
      *
-     * @param id of the server
+     * @param id ID of the server
      * @return respond
      */
     public EnableRescueResponse enableRescue(long id) {
@@ -251,8 +251,8 @@ public class HetznerCloudAPI {
     /**
      * Enables the rescue mode from the server
      *
-     * @param id                  of the server
-     * @param enableRescueRequest
+     * @param id                  ID of the server
+     * @param enableRescueRequest Request object
      * @return respond
      */
     public EnableRescueResponse enableRescue(long id, EnableRescueRequest enableRescueRequest) {
@@ -262,7 +262,7 @@ public class HetznerCloudAPI {
     /**
      * Enables the rescue mode from the server and reset the server
      *
-     * @param id of the server
+     * @param id ID of the server
      * @return respond
      */
     public EnableRescueResponse enableRescueAndReset(long id) {
@@ -274,8 +274,8 @@ public class HetznerCloudAPI {
     /**
      * Enables the rescue mode from the server and reset the server
      *
-     * @param id                  of the server
-     * @param enableRescueRequest
+     * @param id                  ID of the server
+     * @param enableRescueRequest Request object
      * @return respond
      */
     public EnableRescueResponse enableRescueAndReset(long id, EnableRescueRequest enableRescueRequest) {
@@ -289,7 +289,7 @@ public class HetznerCloudAPI {
      * <p>
      * Only needed, if the server doesn't booted into the rescue mode.
      *
-     * @param id of the server
+     * @param id ID of the server
      * @return respond
      */
     public ActionResponse disableRescue(long id) {
@@ -301,8 +301,8 @@ public class HetznerCloudAPI {
      * <p>
      * example: ubuntu-16.04
      *
-     * @param id                   of the server
-     * @param rebuildServerRequest
+     * @param id                   ID of the server
+     * @param rebuildServerRequest Request object
      * @return respond
      */
     public RebuildServerResponse rebuildServer(long id, RebuildServerRequest rebuildServerRequest) {
@@ -316,8 +316,9 @@ public class HetznerCloudAPI {
      * <p>
      * Attention: It will stops the server, but it starts automatically after the upgrade
      *
-     * @param id of the server
-     * @param changeTypeRequest
+     * @throws java.lang.InterruptedException because there is a timeout
+     * @param id ID of the server
+     * @param changeTypeRequest Request object
      * @return respond
      */
     public ActionResponse changeServerType(long id, ChangeTypeRequest changeTypeRequest) throws InterruptedException {
@@ -329,7 +330,7 @@ public class HetznerCloudAPI {
     /**
      * Get the metrics from a server
      *
-     * @param id         of the server
+     * @param id         ID of the server
      * @param metricType like cpu, disk or network (but also cpu,disk possible)
      * @param start      of the metric
      * @param end        of the metric
@@ -342,8 +343,8 @@ public class HetznerCloudAPI {
     /**
      * Create a image from a server
      *
-     * @param id                 of the server
-     * @param createImageRequest
+     * @param id                 ID of the server
+     * @param createImageRequest Request object
      * @return respond
      */
     public CreateImageResponse createImage(long id, CreateImageRequest createImageRequest) {
@@ -354,7 +355,7 @@ public class HetznerCloudAPI {
     /**
      * Enable or disable the Protection of an Image
      *
-     * @param id ID of the Image
+     * @param id ID of the image
      * @param protectionRequest Only the delete parameter!
      * @return ActionResponse object
      */
@@ -367,8 +368,8 @@ public class HetznerCloudAPI {
      * <p>
      * Please reminder, that will increase the price of the server by 20%
      *
-     * @param id                  of the server
-     * @param enableBackupRequest
+     * @param id                  ID of the server
+     * @param enableBackupRequest Request object
      * @return respond
      */
     public EnableBackupResponse enableBackup(long id, EnableBackupRequest enableBackupRequest) {
@@ -380,7 +381,7 @@ public class HetznerCloudAPI {
      * <p>
      * Caution!: This will delete all existing backups immediately
      *
-     * @param id of the server
+     * @param id ID of the server
      * @return respond
      */
     public DisableBackupResponse disableBackup(long id) {
@@ -434,8 +435,8 @@ public class HetznerCloudAPI {
      * <p>
      * Floating IPs assigned to the server are not affected!
      *
-     * @param id                  of the server
-     * @param changeReverseDNSRequest
+     * @param id                  ID of the server
+     * @param changeReverseDNSRequest Request object
      * @return respond
      */
     public ActionResponse changeDNSPTR(long id, ChangeReverseDNSRequest changeReverseDNSRequest) {
@@ -446,7 +447,7 @@ public class HetznerCloudAPI {
     /**
      * Get a Datacenter by ID
      * <p>
-     * @param id of the datacenter
+     * @param id of the Datacenter
      * @return respond
      */
     public DatacenterResponse getDatacenter(long id) {
@@ -772,6 +773,129 @@ public class HetznerCloudAPI {
      */
     public String deleteImage(long id) {
         return restTemplate.exchange(API_URL + "/images/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
+     * Get all available volumes from your project.
+     *
+     * @return Volume Array
+     */
+    public GetVolumesResponse getVolumes() {
+        return restTemplate.exchange(API_URL + "/volumes", HttpMethod.GET, httpEntity, GetVolumesResponse.class).getBody();
+    }
+
+    /**
+     * Get a specific volume from your project by id.
+     *
+     * @param id ID of the volume
+     * @return Volume object
+     */
+    public GetVolumeResponse getVolume(long id) {
+        return restTemplate.exchange(API_URL + "/volumes/" + id, HttpMethod.GET, httpEntity, GetVolumeResponse.class).getBody();
+    }
+
+    /**
+     * Create a new volume.
+     *
+     * @param volumeRequest Volume request object
+     * @return Volume object with action
+     */
+    public VolumeResponse createVolume(VolumeRequest volumeRequest) {
+        if (volumeRequest.getSize() < 10 || volumeRequest.getSize() > 10240) throw new InvalidParametersException("Size have to be between 10 and 10240");
+        if (volumeRequest.getName() == null) throw new InvalidParametersException("Name must be given");
+        if (volumeRequest.getLocation() == null) throw new InvalidParametersException("Location must be given."); // Normally not needed, but currently if not defined, it will throw an exception
+        return restTemplate.postForEntity(API_URL + "/volumes", new HttpEntity<>(volumeRequest, httpHeaders), VolumeResponse.class).getBody();
+    }
+
+    /**
+     * Update some specific options of a volume.
+     *
+     * @param id ID of the volume
+     * @param updateVolumeRequest Update volume request object
+     * @return GetVolume object
+     */
+    public GetVolumeResponse updateVolume(long id, UpdateVolumeRequest updateVolumeRequest) {
+        if (updateVolumeRequest.getName() == null) throw new InvalidParametersException("Name must be specified");
+        return restTemplate.exchange(API_URL + "/volumes/" + id, HttpMethod.PUT, new HttpEntity<>(updateVolumeRequest, httpHeaders),
+                GetVolumeResponse.class).getBody();
+    }
+
+    /**
+     * Delete a volume
+     *
+     * @param id ID of the volume
+     * @return no return object
+     */
+    public String deleteVolume(long id) {
+        return restTemplate.exchange(API_URL + "/volumes/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
+     * Get all actions of a volume.
+     *
+     * @param id ID of the volume
+     * @return Action array
+     */
+    public ActionsResponse getAllActionsOfVolume(long id) {
+        return restTemplate.exchange(API_URL + "/volumes/" + id + "/actions", HttpMethod.GET, httpEntity, ActionsResponse.class).getBody();
+    }
+
+    /**
+     * Get a specific action of a volume.
+     *
+     * @param id ID of the volume
+     * @param actionID ID of the action
+     * @return Action object
+     */
+    public ActionResponse getActionOfVolume(long id, long actionID) {
+        return restTemplate.exchange(API_URL + "/volumes/" + id + "/actions/" + actionID, HttpMethod.GET, httpEntity, ActionResponse.class).getBody();
+    }
+
+    /**
+     * Attach a volume to a server.
+     *
+     * @param id ID of the volume
+     * @param attachVolumeRequest Request object
+     * @return Action object
+     */
+    public ActionResponse attachVolumeToServer(long id, AttachVolumeRequest attachVolumeRequest) {
+        if (attachVolumeRequest.getServerID() == null) throw new InvalidParametersException("Server id must be specified");
+        return restTemplate.postForEntity(API_URL + "/volumes/" + id + "/actions/attach", new HttpEntity<>(attachVolumeRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Detach a volume from a server.
+     *
+     * @param id ID of the volume
+     * @return Action object
+     */
+    public ActionResponse detachVolume(long id) {
+        return restTemplate.postForEntity(API_URL + "/volumes/" + id + "/actions/detach", new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Resize a volume.
+     * Downsizing not possible!
+     *
+     * @param id ID of the volume
+     * @param resizeVolumeRequest Request object
+     * @return Action object
+     */
+    public ActionResponse resizeVolume(long id, ResizeVolumeRequest resizeVolumeRequest) {
+        if (resizeVolumeRequest.getSize() < 10 || resizeVolumeRequest.getSize() > 10240) throw new InvalidParametersException("Size have to be between 10 and 10240");
+        return restTemplate.postForEntity(API_URL + "/volumes/" + id + "/actions/resize", new HttpEntity<>(resizeVolumeRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Change the protection mode of the volume.
+     * You can only use delete, no rebuild!
+     * @param id ID of the volume
+     * @param changeProtectionRequest Request object
+     * @return Action object
+     */
+    public ActionResponse changeVolumeProtection(long id, ChangeProtectionRequest changeProtectionRequest) {
+        if (changeProtectionRequest.isRebuild()) throw new InvalidParametersException("Rebuild can't be used at volumes.");
+        return restTemplate.postForEntity(API_URL + "/volumes/" + id + "/actions/change_protection", new HttpEntity<>(changeProtectionRequest, httpHeaders), ActionResponse.class).getBody();
     }
 
     /**

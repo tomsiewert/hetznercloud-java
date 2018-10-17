@@ -10,9 +10,8 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EnableBackupRequest {
+public class AttachVolumeRequest {
 
-    @JsonProperty("backup_window")
-    @Deprecated
-    private String backupWindow;
+    @JsonProperty("server")
+    private Long serverID;
 }
