@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -22,6 +24,8 @@ public class ServerRequest {
 
     @JsonProperty("start_after_create")
     private boolean startAfterCreate;
+
+    private Map<String, String> labels = new HashMap<>();
 
     /**
      * The objects in the list have to be a Long or a String, or it will throw an Exception {@link me.tomsdevsn.hetznercloud.exception.InvalidParametersException}
