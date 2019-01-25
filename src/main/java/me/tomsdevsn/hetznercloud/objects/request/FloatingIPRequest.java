@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,6 +21,7 @@ public class FloatingIPRequest {
     private String homeLocation;
     private Long server;
     private String description;
+    private Map<String, String> labels = new HashMap<>();
 
     @Getter
     @AllArgsConstructor
