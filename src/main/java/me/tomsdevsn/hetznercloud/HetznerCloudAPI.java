@@ -1,5 +1,6 @@
 package me.tomsdevsn.hetznercloud;
 
+import me.tomsdevsn.hetznercloud.exception.InvalidFormatException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
@@ -88,9 +89,13 @@ public class HetznerCloudAPI {
      * @return              response of the API
      */
     public ServerResponse createServer(ServerRequest serverRequest) {
-        serverRequest.getSshKeys().forEach(object -> {
-            if (!(object instanceof Long || object instanceof String)) throw new InvalidParametersException("Object not Long or String");
-        });
+        if (serverRequest.getSshKeys() != null) {
+            serverRequest.getSshKeys().forEach(object -> {
+                if (!(object instanceof Long || object instanceof String))
+                    throw new InvalidParametersException("Object not Long or String");
+            });
+        }
+        serverRequest.setServerType(serverRequest.getServerType().toLowerCase());   // Case-sensitive fix
         return restTemplate.postForEntity(API_URL + "/servers", new HttpEntity<>(serverRequest, httpHeaders), ServerResponse.class).getBody();
     }
 
@@ -804,6 +809,9 @@ public class HetznerCloudAPI {
         if (volumeRequest.getSize() < 10 || volumeRequest.getSize() > 10240) throw new InvalidParametersException("Size have to be between 10 and 10240");
         if (volumeRequest.getName() == null) throw new InvalidParametersException("Name must be given");
         if (volumeRequest.getLocation() == null) throw new InvalidParametersException("Location must be given."); // Normally not needed, but currently if not defined, it will throw an exception
+        if (volumeRequest.getFormat() != null && (volumeRequest.getFormat().equals("ext4") || volumeRequest.getFormat().equals("xfs"))) throw new InvalidFormatException("Invalid filesystem. Currently only ext4 and xfs");
+        if ((volumeRequest.getServer() == null && volumeRequest.isAutomount())) throw new InvalidParametersException("server has to be specified if automount is used.");
+        volumeRequest.setFormat(volumeRequest.getFormat().toLowerCase());   // case-sensitive fix
         return restTemplate.postForEntity(API_URL + "/volumes", new HttpEntity<>(volumeRequest, httpHeaders), VolumeResponse.class).getBody();
     }
 

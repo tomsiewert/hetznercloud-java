@@ -6,7 +6,7 @@
 
     <groupId>me.tomsdevsn</groupId>
     <artifactId>hetznercloud-api</artifactId>
-    <version>2.5.0</version>
+    <version>2.5.1</version>
 
     <name>HetznerCloud-API</name>
     <description>Java-client for the Hetzner Cloud</description>
@@ -33,8 +33,8 @@
         <developer>
             <id>TomSDEVSN</id>
             <name>Tom Siewert</name>
-            <email>tom@tomsdevsn.me</email>
-            <url>https://tomsdevsn.me</url>
+            <email>tom@siewert.io</email>
+            <url>https://siewert.io</url>
         </developer>
     </developers>
 

@@ -6,6 +6,8 @@ import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class Volume {
@@ -20,7 +22,9 @@ public class Volume {
     @JsonProperty("linux_device")
     private String linuxDevice;
     private Protect protection;
+    private Map<String, String> labels = new HashMap<>();
     private String status;
+    private String format;
 
     @Data
     public static class Protect {

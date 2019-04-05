@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -12,4 +15,5 @@ import lombok.Data;
 public class UpdateVolumeRequest {
 
     private String name;
+    private Map<String, String> labels = new HashMap<>();
 }
