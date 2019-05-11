@@ -19,17 +19,6 @@ Just run ``mvn clean install`` to install it in your local Maven-repository.
 
 ##### Maven
 
-Repository:
-
-```xml
-<repositories>
-    <repository>
-           <id>hetznercloud-api</id>
-           <url>https://maven.tomsdevsn.me/repository/hetznercloud-api/</url>
-    </repository>
-</repositories>
-```
-
 Dependency:
 
 ```xml
@@ -49,9 +38,7 @@ You have to edit the ``build.gradle``
 
 ```
 repositories({
-    maven {
-        url 'https://maven.tomsdevsn.me/repository/hetznercloud-api/'
-    }
+    mavenCentral()
 })
 
 dependencies({
