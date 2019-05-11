@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public class EnableRescueRequest {
 
     private String type;
     @JsonProperty("ssh_keys")
+    @Singular
     private List<Long> sshKeys;
 }

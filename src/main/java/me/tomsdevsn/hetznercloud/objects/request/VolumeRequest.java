@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,5 +21,6 @@ public class VolumeRequest {
     private boolean automount;
     private String format;
     private Long server;
+    @Singular
     private Map<String, String> labels;
 }

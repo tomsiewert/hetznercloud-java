@@ -2,10 +2,7 @@ package me.tomsdevsn.hetznercloud.objects.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +18,7 @@ public class FloatingIPRequest {
     private String homeLocation;
     private Long server;
     private String description;
+    @Singular
     private Map<String, String> labels;
 
     @Getter

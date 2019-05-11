@@ -25,17 +25,20 @@ public class ServerRequest {
     @JsonProperty("start_after_create")
     private boolean startAfterCreate;
 
+    @Singular
     private Map<String, String> labels;
 
     /**
      * The objects in the list have to be a Long or a String, or it will throw an Exception {@link me.tomsdevsn.hetznercloud.exception.InvalidParametersException}
      */
     @JsonProperty("ssh_keys")
+    @Singular
     private List<Object> sshKeys;
 
     @JsonProperty("user_data")
     private String userData;
 
+    @Singular
     private List<Long> volumes;
     private boolean automount;
 }

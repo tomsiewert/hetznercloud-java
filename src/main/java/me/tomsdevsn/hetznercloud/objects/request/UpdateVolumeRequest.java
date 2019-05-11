@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,5 +16,6 @@ import java.util.Map;
 public class UpdateVolumeRequest {
 
     private String name;
+    @Singular
     private Map<String, String> labels;
 }

@@ -6,7 +6,7 @@
 
     <groupId>me.tomsdevsn</groupId>
     <artifactId>hetznercloud-api</artifactId>
-    <version>2.6.0</version>
+    <version>2.6.1</version>
 
     <name>HetznerCloud-API</name>
     <description>Java-client for the Hetzner Cloud</description>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>LATEST</version>
+            <version>1.18.8</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
