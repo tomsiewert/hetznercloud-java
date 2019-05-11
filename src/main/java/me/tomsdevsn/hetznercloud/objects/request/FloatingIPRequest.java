@@ -21,7 +21,7 @@ public class FloatingIPRequest {
     private String homeLocation;
     private Long server;
     private String description;
-    private Map<String, String> labels = new HashMap<>();
+    private Map<String, String> labels;
 
     @Getter
     @AllArgsConstructor

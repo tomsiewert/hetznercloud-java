@@ -20,5 +20,5 @@ public class VolumeRequest {
     private boolean automount;
     private String format;
     private Long server;
-    private Map<String, String> labels = new HashMap<>();
+    private Map<String, String> labels;
 }

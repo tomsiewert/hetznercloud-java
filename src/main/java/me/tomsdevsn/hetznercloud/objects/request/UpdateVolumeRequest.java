@@ -15,5 +15,5 @@ import java.util.Map;
 public class UpdateVolumeRequest {
 
     private String name;
-    private Map<String, String> labels = new HashMap<>();
+    private Map<String, String> labels;
 }

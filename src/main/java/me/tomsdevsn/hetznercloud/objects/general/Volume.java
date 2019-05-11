@@ -22,7 +22,7 @@ public class Volume {
     @JsonProperty("linux_device")
     private String linuxDevice;
     private Protect protection;
-    private Map<String, String> labels = new HashMap<>();
+    private Map<String, String> labels;
     private String status;
     private String format;
 

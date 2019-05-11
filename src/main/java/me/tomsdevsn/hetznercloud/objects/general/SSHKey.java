@@ -3,6 +3,8 @@ package me.tomsdevsn.hetznercloud.objects.general;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class SSHKey {
 
@@ -11,4 +13,5 @@ public class SSHKey {
     private String fingerprint;
     @JsonProperty("public_key")
     private String publicKey;
+    private Map<String, String> labels;
 }

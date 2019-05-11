@@ -40,7 +40,7 @@ public class HetznerCloudAPI {
 
         messageConverters = new ArrayList<>();
         converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(Arrays.asList(new MediaType[]{MediaType.APPLICATION_JSON}));
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
         messageConverters.add(converter);
 
         this.httpHeaders = new HttpHeaders();
@@ -641,10 +641,25 @@ public class HetznerCloudAPI {
      * @param id ID of the SSH key
      * @param changeSSHKeyNameRequest Request object
      * @return SSHKeyResponse object
+     *
+     * @deprecated use {@link HetznerCloudAPI#updateSSHKey(long, UpdateSSHKeyRequest)} instead
      */
+    @Deprecated
     public SSHKeyResponse changeSSHKeyName(long id, ChangeSSHKeyNameRequest changeSSHKeyNameRequest) {
         return restTemplate.exchange(API_URL + "/ssh_keys/" + id, HttpMethod.PUT, new HttpEntity<>(changeSSHKeyNameRequest, httpHeaders),
                                          SSHKeyResponse.class).getBody();
+    }
+
+    /**
+     * Update parameters of a SSH key
+     * <p>
+     * @param id ID of the SSH key
+     * @param updateSSHKeyRequest Request Object
+     * @return SSHKeyResponse object
+     */
+    public SSHKeyResponse updateSSHKey(long id, UpdateSSHKeyRequest updateSSHKeyRequest) {
+        return restTemplate.exchange(API_URL + "/ssh_keys/" + id, HttpMethod.PUT, new HttpEntity<>(updateSSHKeyRequest, httpHeaders),
+                                        SSHKeyResponse.class).getBody();
     }
 
     /**
@@ -811,7 +826,7 @@ public class HetznerCloudAPI {
         if (volumeRequest.getLocation() == null) throw new InvalidParametersException("Location must be given."); // Normally not needed, but currently if not defined, it will throw an exception
         if (volumeRequest.getFormat() != null && (volumeRequest.getFormat().equals("ext4") || volumeRequest.getFormat().equals("xfs"))) throw new InvalidFormatException("Invalid filesystem. Currently only ext4 and xfs");
         if ((volumeRequest.getServer() == null && volumeRequest.isAutomount())) throw new InvalidParametersException("server has to be specified if automount is used.");
-        volumeRequest.setFormat(volumeRequest.getFormat().toLowerCase());   // case-sensitive fix
+        if ((volumeRequest.getFormat() != null)) volumeRequest.setFormat(volumeRequest.getFormat().toLowerCase());   // case-sensitive fix
         return restTemplate.postForEntity(API_URL + "/volumes", new HttpEntity<>(volumeRequest, httpHeaders), VolumeResponse.class).getBody();
     }
 
