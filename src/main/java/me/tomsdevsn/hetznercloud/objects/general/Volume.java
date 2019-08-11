@@ -6,7 +6,6 @@ import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Data

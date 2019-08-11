@@ -1,9 +1,13 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class FloatingIP {
@@ -18,6 +22,10 @@ public class FloatingIP {
     @JsonProperty("home_location")
     private HomeLocation homeLocation;
     private boolean blocked;
+    private Protection protection;
+    private Map<String, String> labels;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date created;
 
     @Data
     public static class DnsPTR {
@@ -35,5 +43,12 @@ public class FloatingIP {
         private String city;
         private Double latitude;
         private Double longitude;
+        @JsonProperty("network_zone")
+        private String networkZone;
+    }
+
+    @Data
+    public static class Protection {
+        private boolean delete;
     }
 }

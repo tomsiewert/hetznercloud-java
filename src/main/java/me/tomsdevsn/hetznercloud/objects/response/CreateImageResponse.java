@@ -1,6 +1,7 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.objects.general.Action;
 import me.tomsdevsn.hetznercloud.objects.general.Image;
 
 @Data

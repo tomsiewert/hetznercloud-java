@@ -12,9 +12,10 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UpdateVolumeRequest {
+public class UpdateFloatingIPRequest {
 
-    private String name;
+    private String description;
     @Singular
     private Map<String, String> labels;
+
 }

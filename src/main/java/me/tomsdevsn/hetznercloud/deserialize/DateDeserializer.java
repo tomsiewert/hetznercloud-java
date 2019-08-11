@@ -28,7 +28,8 @@ public class DateDeserializer extends StdDeserializer<Date> {
             String date = jsonParser.getText();
             return formatter.parse(date);
         } catch (IOException | ParseException ex) {
-            throw new RuntimeException(ex);
+            ex.printStackTrace();
         }
+        return null;
     }
 }

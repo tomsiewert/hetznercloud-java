@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
+
+import java.util.Map;
 
 @Data
 @Builder
@@ -13,4 +16,6 @@ public class CreateImageRequest {
 
     private String description;
     private String type;
+    @Singular
+    private Map<String, String> labels;
 }

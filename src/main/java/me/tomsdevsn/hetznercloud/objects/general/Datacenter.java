@@ -14,6 +14,7 @@ public class Datacenter {
     private Location location;
     @JsonProperty("server_types")
     private ServerTypes serverTypes;
+    private Long recommendation;
 
     @Data
     public static class ServerTypes {

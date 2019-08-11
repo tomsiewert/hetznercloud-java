@@ -14,6 +14,7 @@ public class ServerType {
     private Long cores;
     private Long memory;
     private Long disk;
+    private boolean deprecated;
     private List<Prices> prices;
     @JsonProperty("storage_type")
     private String storageType;

@@ -5,7 +5,7 @@ Hetzner Cloud API for Java
 
 Simple Java client for the Hetzner Cloud API.
 
-The current version is **2.6.1**.
+The current version is **2.7.0**.
 
 It would be nice, if you submit pull requests.
 
@@ -26,7 +26,7 @@ Dependency:
     <dependency>
         <groupId>me.tomsdevsn</groupId>
         <artifactId>hetznercloud-api</artifactId>
-        <version>2.6.1</version>
+        <version>2.7.0</version>
         <scope>compile</scope>
     </dependency>
 </dependencies>
@@ -42,10 +42,17 @@ repositories({
 })
 
 dependencies({
-    compile "me.tomsdevsn:hetznercloud-api:2.6.1"
+    compile "me.tomsdevsn:hetznercloud-api:2.7.0"
 })
 ```
 
 ## JavaDocs
 
 The JavaDocs are available [here](https://docs.hcloud.siewert.io)
+
+## Dependencies
+
+The following dependencies were used in this project:
+ * [jackson-databind](https://github.com/FasterXML/jackson-databind) under Apache2.0 License
+ * [spring-web](https://github.com/spring-projects/spring-framework/tree/master/spring-web) under Apache 2.0 License
+ * [Lombok](https://projectlombok.org) under MIT License

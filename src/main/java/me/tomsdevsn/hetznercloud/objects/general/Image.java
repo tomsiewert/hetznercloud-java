@@ -3,9 +3,11 @@ package me.tomsdevsn.hetznercloud.objects.general;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import lombok.Singular;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 
 import java.util.Date;
+import java.util.Map;
 
 @Data
 public class Image {
@@ -34,6 +36,8 @@ public class Image {
     @JsonDeserialize(using = DateDeserializer.class)
     private Date deprecated;
     private Protect protection;
+    @Singular
+    private Map<String, String> labels;
 
     @Data
     public static class CreatedFrom {

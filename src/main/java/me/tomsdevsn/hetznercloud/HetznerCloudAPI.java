@@ -152,7 +152,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get a Action for a server
+     * Get an action for a server
      *
      * @param serverID ID of the Server
      * @param actionID ID of the Action
@@ -173,7 +173,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get a Action for a server
+     * Get an action for a server
      *
      * @param floatingIPID ID of the Floating IP
      * @param actionID ID of the Action
@@ -360,12 +360,28 @@ public class HetznerCloudAPI {
     /**
      * Enable or disable the Protection of an Image
      *
-     * @param id ID of the image
+     * @param id                ID of the image
      * @param protectionRequest Only the delete parameter!
-     * @return ActionResponse object
+     * @return                  ActionResponse object
      */
     public ActionResponse changeImageProtection(long id, ChangeProtectionRequest protectionRequest) {
         return restTemplate.postForEntity(API_URL + "/images/" + id + "/actions/change_protection", new HttpEntity<>(protectionRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * @deprecated due Hetzner changed Request header
+     *
+     * Enable the backups from a server
+     * <p>
+     * Please reminder, that will increase the price of the server by 20%
+     *
+     * @param id                  ID of the server
+     * @param enableBackupRequest Request object
+     * @return                    respone
+     */
+    @Deprecated
+    public EnableBackupResponse enableBackup(long id, EnableBackupRequest enableBackupRequest) {
+        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/enable_backup", HttpMethod.POST, new HttpEntity<>(enableBackupRequest, httpHeaders), EnableBackupResponse.class).getBody();
     }
 
     /**
@@ -373,12 +389,11 @@ public class HetznerCloudAPI {
      * <p>
      * Please reminder, that will increase the price of the server by 20%
      *
-     * @param id                  ID of the server
-     * @param enableBackupRequest Request object
-     * @return respond
+     * @param id    ID of the server
+     * @return      respone
      */
-    public EnableBackupResponse enableBackup(long id, EnableBackupRequest enableBackupRequest) {
-        return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/enable_backup", HttpMethod.POST, new HttpEntity<>(enableBackupRequest, httpHeaders), EnableBackupResponse.class).getBody();
+    public ActionResponse enableBackup(long id) {
+        return restTemplate.postForEntity(API_URL + "/images/" + id + "/actions/change_protection", new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
@@ -386,8 +401,8 @@ public class HetznerCloudAPI {
      * <p>
      * Caution!: This will delete all existing backups immediately
      *
-     * @param id ID of the server
-     * @return respond
+     * @param id    ID of the server
+     * @return      respond
      */
     public DisableBackupResponse disableBackup(long id) {
         return restTemplate.exchange(API_URL + "/servers/" + id + "/actions/disable_backup", HttpMethod.POST, httpEntity, DisableBackupResponse.class).getBody();
@@ -584,6 +599,18 @@ public class HetznerCloudAPI {
      */
     public String deleteFloatingIP(long id) {
         return restTemplate.exchange(API_URL + "/floating_ips/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
+     * Update` the description or labels of a Floating IP.
+     *
+     * @param id                        ID of the Floating IP
+     * @param updateFloatingIPRequest   Request Object
+     * @return                          Response from API (Action will be null)
+     */
+    public FloatingIPResponse updateFloatingIP(long id, UpdateFloatingIPRequest updateFloatingIPRequest) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + id, HttpMethod.PUT, new HttpEntity<>(updateFloatingIPRequest, httpHeaders),
+                FloatingIPResponse.class).getBody();
     }
 
     /**
@@ -906,6 +933,7 @@ public class HetznerCloudAPI {
      */
     public ActionResponse resizeVolume(long id, ResizeVolumeRequest resizeVolumeRequest) {
         if (resizeVolumeRequest.getSize() < 10 || resizeVolumeRequest.getSize() > 10240) throw new InvalidParametersException("Size have to be between 10 and 10240");
+        if (getVolume(id).getVolume().getSize() <= resizeVolumeRequest.getSize()) throw new InvalidParametersException("Size must be greater than " + resizeVolumeRequest.getSize());
         return restTemplate.postForEntity(API_URL + "/volumes/" + id + "/actions/resize", new HttpEntity<>(resizeVolumeRequest, httpHeaders), ActionResponse.class).getBody();
     }
 
@@ -917,8 +945,211 @@ public class HetznerCloudAPI {
      * @return Action object
      */
     public ActionResponse changeVolumeProtection(long id, ChangeProtectionRequest changeProtectionRequest) {
-        if (changeProtectionRequest.isRebuild()) throw new InvalidParametersException("Rebuild can't be used at volumes.");
+        if (changeProtectionRequest.isRebuild()) throw new InvalidParametersException("Rebuild can't be used on volumes.");
         return restTemplate.postForEntity(API_URL + "/volumes/" + id + "/actions/change_protection", new HttpEntity<>(changeProtectionRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Get all networks which are in project.
+     *
+     * @return Response from API
+     */
+    public NetworksResponse getAllNetworks() {
+        return restTemplate.exchange(API_URL + "/networks", HttpMethod.GET, httpEntity, NetworksResponse.class).getBody();
+    }
+
+    /**
+     * Get all networks with specific name.
+     *
+     * @param name  Name of the network
+     * @return      Response from API
+     */
+    public NetworksResponse getNetworksByName(String name) {
+        return restTemplate.exchange(API_URL + "/networks?name=" + name, HttpMethod.GET, httpEntity, NetworksResponse.class).getBody();
+    }
+
+    /**
+     * Get all networks with specific label.
+     *
+     * @param label Label which is attached to network
+     * @return      Response from API
+     */
+    public NetworksResponse getNetworksByLabel(String label) {
+        return restTemplate.exchange(API_URL + "/networks?label_selector=" + label, HttpMethod.GET, httpEntity, NetworksResponse.class).getBody();
+    }
+
+    /**
+     * Get a network with it's specific ID.
+     * @param id    ID of the network
+     * @return      Response from API
+     */
+    public NetworkResponse getNetwork(long id) {
+        return restTemplate.exchange(API_URL + "/networks/" + id, HttpMethod.GET, httpEntity, NetworkResponse.class).getBody();
+    }
+
+    /**
+     * Update the labels or the name of a network.
+     *
+     * @param id                        ID of the network
+     * @param updateNetworkRequest      Request object
+     * @return                          Response from API
+     */
+    public NetworkResponse updateNetwork(long id, UpdateNetworkRequest updateNetworkRequest) {
+        return restTemplate.exchange(API_URL + "/networks/" + id, HttpMethod.PUT, new HttpEntity<>(updateNetworkRequest, httpHeaders), NetworkResponse.class).getBody();
+    }
+
+
+    /**
+     * Create a new network in your project.
+     *
+     * @param networkRequest  Request object
+     * @return                      Response from API
+     */
+    public NetworkResponse createNetwork(NetworkRequest networkRequest) {
+        if (networkRequest.getIpRange() == null) throw new InvalidParametersException("IP-Range missing!");
+        if (networkRequest.getName() == null) throw new InvalidParametersException("Name missing!");
+        return restTemplate.postForEntity(API_URL + "/networks", new HttpEntity<>(networkRequest, httpHeaders), NetworkResponse.class).getBody();
+    }
+
+    /**
+     * Delete a network.
+     * @param id    ID of the network
+     * @return      There is no response.
+     */
+    public String deleteNetwork(long id) {
+        return restTemplate.exchange(API_URL + "/networks/" + id, HttpMethod.DELETE, httpEntity, String.class).getBody();
+    }
+
+    /**
+     * Attaches a server to a private network.
+     *
+     * @param id                                ID of the server
+     * @param attachServerToNetworkRequest      Request object
+     * @return                                  Response from API
+     */
+    public ActionResponse attachServerToNetwork(long id, AttachServerToNetworkRequest attachServerToNetworkRequest) {
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/attach_to_network", new HttpEntity<>(attachServerToNetworkRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+
+    /**
+     * Detaches a server from a private network.
+     *
+     * @param id                                ID of the server
+     * @param detachServerFromNetworkRequest    Request object
+     * @return                                  Response from API
+     */
+    public ActionResponse detachServerFromNetwork(long id, DetachServerFromNetworkRequest detachServerFromNetworkRequest) {
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/detach_from_network", new HttpEntity<>(detachServerFromNetworkRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Change alias IPs of a network.
+     *
+     * @param id                                ID of the server
+     * @param changeAliasIPsofNetworkRequest    Request object
+     * @return                                  Response from API
+     */
+    public ActionResponse changeAliasIPsofNetwork(long id, ChangeAliasIPsofNetworkRequest changeAliasIPsofNetworkRequest) {
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/change_alias_ips", new HttpEntity<>(changeAliasIPsofNetworkRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Change the protection configuration for a network
+     *
+     * @param id                ID of the network
+     * @param changeProtection  Request Object
+     * @return                  Response from API
+     */
+    public ActionResponse changeNetworkProtection(long id, ChangeProtectionRequest changeProtection) {
+        if (changeProtection.isRebuild()) throw new InvalidParametersException("Rebuild not allowed in Network protection!");
+        return restTemplate.postForEntity(API_URL + "/networks/" + id + "/actions/change_protection", new HttpEntity<>(changeProtection, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Get all performed Actions for a network
+     *
+     * @param id        ID of the network
+     * @return          Response from API
+     */
+    public ActionsResponse getActionsForNetwork(long id) {
+        return restTemplate.exchange(API_URL + "/networks/" + id + "/actions", HttpMethod.GET, httpEntity, ActionsResponse.class).getBody();
+    }
+
+    /**
+     * Get an action for a network
+     *
+     * @param serverID  ID of the network
+     * @param actionID  ID of the Action
+     * @return          Response from API
+     */
+    public ActionResponse getActionForNetwork(long serverID, long actionID) {
+        return restTemplate.exchange(API_URL + "/networks/" + serverID + "/actions/" + actionID, HttpMethod.GET, httpEntity, ActionResponse.class).getBody();
+    }
+
+    /**
+     * Add a new subnet to a network.
+     *
+     * @param id                            ID of the network
+     * @param addSubnetToNetworkRequest     Request object
+     * @return                              Response from API
+     */
+    public ActionResponse addSubnetToNetwork(long id, AddSubnetToNetworkRequest addSubnetToNetworkRequest) {
+        if (addSubnetToNetworkRequest.getNetworkZone() == null) throw new InvalidParametersException("Network zone required!");
+        if (addSubnetToNetworkRequest.getType() == null) throw new InvalidParametersException("Type required!");
+        return restTemplate.postForEntity(API_URL + "/networks/" + id + "/actions/add_subnet", new HttpEntity<>(addSubnetToNetworkRequest, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Delete a subnet from a network.
+     *
+     * @param id                        ID of the network
+     * @param deleteSubnetFromNetwork   Request object
+     * @return                          Response from API
+     */
+    public ActionResponse deleteSubnetFromNetwork(long id, DeleteSubnetFromNetwork deleteSubnetFromNetwork) {
+        if (deleteSubnetFromNetwork.getIpRange() == null) throw new InvalidParametersException("Subnet missing");
+        return restTemplate.postForEntity(API_URL + "/networks/" + id + "/actions/delete_subnet", new HttpEntity<>(deleteSubnetFromNetwork, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Add a route to a network.
+     *
+     * @param id                    ID of the network
+     * @param routeToNetwork        Request object
+     * @return                      Response from API
+     */
+    public ActionResponse addRouteToNetwork(long id, RouteToNetwork routeToNetwork) {
+        if (routeToNetwork.getDestination() == null) throw new InvalidParametersException("Destination missing!");
+        if (routeToNetwork.getGateway() == null) throw new InvalidParametersException("Gateway missing!");
+        if (routeToNetwork.getGateway().equals("172.31.1.1")) throw new InvalidParametersException("Gateway cannot be 172.31.1.1!");
+        return restTemplate.postForEntity(API_URL + "/networks/" + id + "/actions/add_route", new HttpEntity<>(routeToNetwork, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Delete a route from a network.
+     *
+     * @param id                    ID of the network
+     * @param routeToNetwork        Request object
+     * @return                      Response from API
+     */
+    public ActionResponse deleteRouteFromNetwork(long id, RouteToNetwork routeToNetwork) {
+        if (routeToNetwork.getDestination() == null) throw new InvalidParametersException("Destination missing!");
+        if (routeToNetwork.getGateway() == null) throw new InvalidParametersException("Gateway missing!");
+        if (routeToNetwork.getGateway().equals("172.31.1.1")) throw new InvalidParametersException("Gateway cannot be 172.31.1.1!");
+        return restTemplate.postForEntity(API_URL + "/networks/" + id + "/actions/delete_route", new HttpEntity<>(routeToNetwork, httpHeaders), ActionResponse.class).getBody();
+    }
+
+    /**
+     * Change the IP range of a network.
+     * Shrinking not possible!
+     *
+     * @param id                        ID of the network
+     * @param changeIPRangeOfNetwork    Request object
+     * @return                          Response from API
+     */
+    public ActionResponse changeIPRangeOfNetwork(long id, ChangeIPRangeOfNetwork changeIPRangeOfNetwork) {
+        return restTemplate.postForEntity(API_URL + "/networks/" + id + "/actions/change_ip_range", new HttpEntity<>(changeIPRangeOfNetwork, httpHeaders), ActionResponse.class).getBody();
     }
 
     /**

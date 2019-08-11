@@ -12,7 +12,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UpdateVolumeRequest {
+public class UpdateServerRequest {
 
     private String name;
     @Singular

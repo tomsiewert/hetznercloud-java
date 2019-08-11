@@ -1,4 +1,4 @@
-package me.tomsdevsn.hetznercloud.objects.response;
+package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;

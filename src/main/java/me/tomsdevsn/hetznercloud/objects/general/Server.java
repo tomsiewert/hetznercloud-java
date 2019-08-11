@@ -19,6 +19,8 @@ public class Server {
     private Date created;
     @JsonProperty("public_net")
     private PublicNet publicNet;
+    @JsonProperty("private_net")
+    private List<PrivateNet> privateNet;
     @JsonProperty("server_type")
     private ServerType serverType;
     private Datacenter datacenter;

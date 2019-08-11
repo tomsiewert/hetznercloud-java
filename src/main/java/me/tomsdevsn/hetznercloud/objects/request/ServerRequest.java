@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,4 +40,7 @@ public class ServerRequest {
     @Singular
     private List<Long> volumes;
     private boolean automount;
+
+    @Singular
+    private List<Long> networks;
 }

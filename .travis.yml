@@ -5,8 +5,11 @@ install: true
 jdk:
   - oraclejdk8
   - oraclejdk9
+  - oraclejdk10
+  - oraclejdk11
 
 script:
+  - mvn clean test -B
   - mvn clean package
 
 cache:
