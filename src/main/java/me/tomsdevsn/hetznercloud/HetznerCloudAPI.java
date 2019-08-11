@@ -393,7 +393,7 @@ public class HetznerCloudAPI {
      * @return      respone
      */
     public ActionResponse enableBackup(long id) {
-        return restTemplate.postForEntity(API_URL + "/images/" + id + "/actions/change_protection", new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
+        return restTemplate.postForEntity(API_URL + "/servers/" + id + "/actions/enable_backup", new HttpEntity<>(httpHeaders), ActionResponse.class).getBody();
     }
 
     /**
