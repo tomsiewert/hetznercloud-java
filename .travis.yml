@@ -3,10 +3,10 @@ sudo: false
 install: true
 
 jdk:
-  - oraclejdk8
-  - oraclejdk9
-  - oraclejdk10
-  - oraclejdk11
+  - openjdk8
+  - openjdk9
+  - openjdk10
+  - openjdk11
 
 script:
   - mvn clean test -B
