@@ -17,6 +17,7 @@ public class FloatingIPRequest {
     private String homeLocation;
     private Long server;
     private String description;
+    private String name;
     @Singular
     private Map<String, String> labels;
 

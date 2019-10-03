@@ -14,6 +14,7 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateFloatingIPRequest {
 
+    private String name;
     private String description;
     @Singular
     private Map<String, String> labels;

@@ -13,6 +13,7 @@ import java.util.Map;
 public class FloatingIP {
 
     private Long id;
+    private String name;
     private String description;
     private String ip;
     private String type;
