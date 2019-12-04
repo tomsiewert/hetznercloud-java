@@ -6,7 +6,7 @@
 
     <groupId>me.tomsdevsn</groupId>
     <artifactId>hetznercloud-api</artifactId>
-    <version>2.8.0</version>
+    <version>2.8.1</version>
 
     <name>HetznerCloud-API</name>
     <description>Java-client for the Hetzner Cloud</description>
