@@ -9,7 +9,7 @@ public class Subnet {
     private String type;
     @JsonProperty("ip_range")
     private String ipRange;
-    @JsonProperty("neetwork_zone")
+    @JsonProperty("network_zone")
     private String networkZone;
     private String gateway;
 }

@@ -6,6 +6,7 @@ import me.tomsdevsn.hetznercloud.objects.general.Action;
 import me.tomsdevsn.hetznercloud.objects.general.Volume;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class VolumeResponse {
@@ -14,5 +15,5 @@ public class VolumeResponse {
     private Action action;
     @JsonProperty("next_actions")
     private List<Action> nextActions;
-
+    private Map<String, String> labels;
 }
