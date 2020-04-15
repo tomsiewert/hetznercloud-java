@@ -36,7 +36,12 @@ public class ChangeTypeRequest {
         CCX21("ccx21"),
         CCX31("ccx31"),
         CCX41("ccx41"),
-        CCX51("ccx51");
+        CCX51("ccx51"),
+        CPX11("cpx11"),
+        CPX21("cpx21"),
+        CPX31("cpx31"),
+        CPX41("cpx41"),
+        CPX51("cpx51");
 
         private String type;
 
