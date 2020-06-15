@@ -20,14 +20,12 @@ public class Network {
     private List<Subnet> subnets;
     private List<Route> routes;
     private List<Long> servers;
+    @JsonProperty("load_balancers")
+    private List<Long> loadBalancers;
     private Protection protection;
     @Singular
     private Map<String, String> labels;
     @JsonSerialize(using = DateSerializer.class)
     private Date created;
 
-    @Data
-    public static class Protection {
-        private boolean delete;
-    }
 }

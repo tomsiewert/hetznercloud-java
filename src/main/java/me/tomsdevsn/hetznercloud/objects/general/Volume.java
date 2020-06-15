@@ -20,12 +20,13 @@ public class Volume {
     private Long size;
     @JsonProperty("linux_device")
     private String linuxDevice;
-    private Protect protection;
+    private Protection protection;
     private Map<String, String> labels;
     private String status;
     private String format;
 
     @Data
+    @Deprecated
     public static class Protect {
         private boolean delete;
     }
