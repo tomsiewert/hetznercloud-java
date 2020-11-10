@@ -37,11 +37,12 @@ public class Server {
     private Long ingoingTraffic;
     @JsonProperty("included_traffic")
     private Long includedTraffic;
-    private Protect protection;
+    private Protection protection;
     private Map<String, String> labels;
     private List<Long> volumes;
 
     @Data
+    @Deprecated
     public static class Protect {
         private boolean delete;
         private boolean rebuild;

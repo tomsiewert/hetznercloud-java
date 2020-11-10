@@ -1,0 +1,44 @@
+---
+include:
+  - template: 'Security/License-Scanning.gitlab-ci.yml'
+  - template: 'SAST.gitlab-ci.yml'
+  - template: 'Dependency-Scanning.gitlab-ci.yml'
+  - template: 'Code-Quality.gitlab-ci.yml'
+
+variables:
+  SAST_DISABLE_DIND: "true"
+  DS_DISABLE_DIND: "true"
+  MAVEN_CLI_OPTS: '-Dgpg.skip=true'
+
+stages: [test, build, deploy]
+
+cache:
+  paths:
+    - "$HOME/.m2/"
+
+build-jdk-8:
+  image: maven:3-jdk-8
+  stage: build
+  script:
+    - "mvn clean package -Dgpg.skip=true"
+  artifacts:
+    paths:
+      - "target/*.jar"
+
+test-jdk-8:
+  image: maven:3-jdk-8
+  stage: test
+  script:
+    - "mvn test -Dgpg.skip=true"
+
+pages:
+  image: maven:3-jdk-8
+  stage: deploy
+  script:
+    - "mkdir .public"
+    - "mvn javadoc:javadoc"
+    - "cp -R target/site/apidocs/* .public/"
+    - "mv .public public"
+  artifacts:
+    paths:
+      - public

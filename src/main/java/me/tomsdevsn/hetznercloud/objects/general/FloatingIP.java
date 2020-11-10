@@ -47,9 +47,4 @@ public class FloatingIP {
         @JsonProperty("network_zone")
         private String networkZone;
     }
-
-    @Data
-    public static class Protection {
-        private boolean delete;
-    }
 }

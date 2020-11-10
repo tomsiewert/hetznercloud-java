@@ -35,7 +35,7 @@ public class Image {
     private boolean rapidRedeploy;
     @JsonDeserialize(using = DateDeserializer.class)
     private Date deprecated;
-    private Protect protection;
+    private Protection protection;
     @Singular
     private Map<String, String> labels;
 
@@ -46,6 +46,7 @@ public class Image {
     }
 
     @Data
+    @Deprecated
     public static class Protect {
         private boolean delete;
     }
