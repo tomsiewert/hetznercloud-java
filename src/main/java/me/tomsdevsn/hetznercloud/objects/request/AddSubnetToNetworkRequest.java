@@ -17,4 +17,6 @@ public class AddSubnetToNetworkRequest {
     private String ipRange;
     @JsonProperty("network_zone")
     private String networkZone;
+    @JsonProperty("vswitch_id")
+    private Long vSwitchID;
 }
