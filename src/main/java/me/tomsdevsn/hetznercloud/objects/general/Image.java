@@ -41,7 +41,7 @@ public class Image {
 
     @Data
     public static class CreatedFrom {
-        private Long id;
+        private String id;
         private String name;
     }
 
