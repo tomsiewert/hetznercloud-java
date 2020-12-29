@@ -116,6 +116,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                </configuration>
             </plugin>
             <!-- Source plugin -->
             <plugin>
