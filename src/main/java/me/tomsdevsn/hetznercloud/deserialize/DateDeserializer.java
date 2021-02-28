@@ -12,7 +12,6 @@ import java.util.Date;
 public class DateDeserializer extends StdDeserializer<Date> {
 
     private static final long serialVersionUID = 1L;
-    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     public DateDeserializer() {
         this(null);
@@ -25,6 +24,7 @@ public class DateDeserializer extends StdDeserializer<Date> {
     @Override
     public Date deserialize(JsonParser jsonParser, DeserializationContext context) {
         try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
             String date = jsonParser.getText();
             return formatter.parse(date);
         } catch (IOException | ParseException ignored) {}
