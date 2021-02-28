@@ -13,6 +13,9 @@ public class DateDeserializer extends StdDeserializer<Date> {
 
     private static final long serialVersionUID = 1L;
 
+    private final ThreadLocal<SimpleDateFormat> dateFormatThreadLocal = ThreadLocal.withInitial(() ->
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX"));
+
     public DateDeserializer() {
         this(null);
     }
@@ -24,9 +27,8 @@ public class DateDeserializer extends StdDeserializer<Date> {
     @Override
     public Date deserialize(JsonParser jsonParser, DeserializationContext context) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
             String date = jsonParser.getText();
-            return formatter.parse(date);
+            return dateFormatThreadLocal.get().parse(date);
         } catch (IOException | ParseException ignored) {}
         return null;
     }
