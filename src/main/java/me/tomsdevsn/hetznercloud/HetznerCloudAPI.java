@@ -1,8 +1,7 @@
 package me.tomsdevsn.hetznercloud;
 
-import me.tomsdevsn.hetznercloud.exception.InvalidFormatException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
-import me.tomsdevsn.hetznercloud.objects.general.Action;
+import me.tomsdevsn.hetznercloud.objects.parameter.PaginationParameters;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.springframework.http.HttpEntity;
@@ -22,14 +21,9 @@ public class HetznerCloudAPI {
 
     private static final String API_URL = "https://api.hetzner.cloud/v1";
 
-    private final String token;
-
     private final HttpEntity<String> httpEntity;
     private final HttpHeaders httpHeaders;
     private final RestTemplate restTemplate;
-
-    private final List<HttpMessageConverter<?>> messageConverters;
-    private final MappingJackson2HttpMessageConverter converter;
 
     /**
      * Initial method to use the API
@@ -38,10 +32,9 @@ public class HetznerCloudAPI {
      * @param token which you created in the Hetzner-Cloud console
      */
     public HetznerCloudAPI(String token) {
-        this.token = token;
 
-        messageConverters = new ArrayList<>();
-        converter = new MappingJackson2HttpMessageConverter();
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
         messageConverters.add(converter);
 
@@ -61,8 +54,12 @@ public class HetznerCloudAPI {
      * @return An object which contains all servers.
      */
     public Servers getServers() {
+        return getServers(PaginationParameters.empty());
+    }
+
+    public Servers getServers(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/servers",
+                API_URL + "/servers" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 Servers.class).getBody();
@@ -75,8 +72,12 @@ public class HetznerCloudAPI {
      * @return An object which contains the server in a list
      */
     public Servers getServerByName(String name) {
+        return getServerByName(name, PaginationParameters.empty());
+    }
+
+    public Servers getServerByName(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/servers?name=" + name,
+                API_URL + "/servers?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 Servers.class).getBody();
@@ -179,8 +180,12 @@ public class HetznerCloudAPI {
      * @return ActionsResponse object
      */
     public ActionsResponse getAllActionsOfServer(long id) {
+        return getAllActionsOfServer(id, PaginationParameters.empty());
+    }
+
+    public ActionsResponse getAllActionsOfServer(long id, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/servers/" + id + "/actions",
+                API_URL + "/servers/" + id + "/actions" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ActionsResponse.class).getBody();
@@ -208,7 +213,11 @@ public class HetznerCloudAPI {
      * @return ActionsResponse object
      */
     public ActionsResponse getActionsOfFloatingIP(long id) {
-        return restTemplate.exchange(API_URL + "/floating_ips/" + id + "/actions",
+        return getActionsOfFloatingIP(id, PaginationParameters.empty());
+    }
+
+    public ActionsResponse getActionsOfFloatingIP(long id, PaginationParameters pageParams) {
+        return restTemplate.exchange(API_URL + "/floating_ips/" + id + "/actions" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ActionsResponse.class).getBody();
@@ -529,8 +538,12 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ISOSResponse getISOS() {
+        return getISOS(PaginationParameters.empty());
+    }
+
+    public ISOSResponse getISOS(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/isos",
+                API_URL + "/isos" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ISOSResponse.class).getBody();
@@ -620,8 +633,12 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public DatacentersResponse getDatacenters() {
+        return getDatacenters(PaginationParameters.empty());
+    }
+
+    public DatacentersResponse getDatacenters(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/datacenters",
+                API_URL + "/datacenters" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 DatacentersResponse.class).getBody();
@@ -635,8 +652,12 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public DatacentersResponse getDatacenter(String name) {
+        return getDatacenter(name, PaginationParameters.empty());
+    }
+
+    public DatacentersResponse getDatacenter(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/datacenters?" + name,
+                API_URL + "/datacenters?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 DatacentersResponse.class).getBody();
@@ -663,8 +684,12 @@ public class HetznerCloudAPI {
      * @return FloatingIPsResponse object
      */
     public FloatingIPsResponse getFloatingIPs() {
+        return getFloatingIPs(PaginationParameters.empty());
+    }
+
+    public FloatingIPsResponse getFloatingIPs(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/floating_ips",
+                API_URL + "/floating_ips" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 FloatingIPsResponse.class).getBody();
@@ -812,8 +837,12 @@ public class HetznerCloudAPI {
      * @return SSHKeysResponse object
      */
     public SSHKeysResponse getSSHKeys() {
+        return getSSHKeys(PaginationParameters.empty());
+    }
+
+    public SSHKeysResponse getSSHKeys(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/ssh_keys",
+                API_URL + "/ssh_keys" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 SSHKeysResponse.class).getBody();
@@ -842,8 +871,12 @@ public class HetznerCloudAPI {
      * @return SSHKeysResponse object
      */
     public SSHKeysResponse getSSHKeyByName(String name) {
+        return getSSHKeyByName(name, PaginationParameters.empty());
+    }
+
+    public SSHKeysResponse getSSHKeyByName(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/ssh_keys?" + name,
+                API_URL + "/ssh_keys?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 SSHKeysResponse.class).getBody();
@@ -856,8 +889,12 @@ public class HetznerCloudAPI {
      * @return SSHKeysResponse object
      */
     public SSHKeysResponse getSSHKeyByFingerprint(String fingerprint) {
+        return getSSHKeyByFingerprint(fingerprint, PaginationParameters.empty());
+    }
+
+    public SSHKeysResponse getSSHKeyByFingerprint(String fingerprint, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/ssh_keys?" + fingerprint,
+                API_URL + "/ssh_keys?fingerprint=" + fingerprint + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 SSHKeysResponse.class).getBody();
@@ -935,8 +972,12 @@ public class HetznerCloudAPI {
      * @return ServerTypesResponse object
      */
     public ServerTypesResponse getServerTypes() {
+        return getServerTypes(PaginationParameters.empty());
+    }
+
+    public ServerTypesResponse getServerTypes(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/server_types",
+                API_URL + "/server_types" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ServerTypesResponse.class).getBody();
@@ -950,8 +991,12 @@ public class HetznerCloudAPI {
      * @return ServerTypesResponse object
      */
     public ServerTypesResponse getServerTypeByName(String name) {
+        return getServerTypeByName(name, PaginationParameters.empty());
+    }
+
+    public ServerTypesResponse getServerTypeByName(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/server_types?name=" + name,
+                API_URL + "/server_types?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ServerTypesResponse.class).getBody();
@@ -979,8 +1024,12 @@ public class HetznerCloudAPI {
      * @return LocationsResponse object
      */
     public LocationsResponse getLocations() {
+        return getLocations(PaginationParameters.empty());
+    }
+
+    public LocationsResponse getLocations(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/locations",
+                API_URL + "/locations" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 LocationsResponse.class).getBody();
@@ -994,8 +1043,12 @@ public class HetznerCloudAPI {
      * @return LocationsResponse object
      */
     public LocationsResponse getLocationByName(String name) {
+        return getLocationByName(name, PaginationParameters.empty());
+    }
+
+    public LocationsResponse getLocationByName(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/locations?name=" + name,
+                API_URL + "/locations?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 LocationsResponse.class).getBody();
@@ -1023,8 +1076,12 @@ public class HetznerCloudAPI {
      * @return respond
      */
     public ImagesResponse getImages() {
+        return getImages(PaginationParameters.empty());
+    }
+
+    public ImagesResponse getImages(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/images",
+                API_URL + "/images" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ImagesResponse.class).getBody();
@@ -1038,8 +1095,12 @@ public class HetznerCloudAPI {
      * @return ImagesResponse object
      */
     public ImagesResponse getImages(ImageType type) {
+        return getImages(type, PaginationParameters.empty());
+    }
+
+    public ImagesResponse getImages(ImageType type, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/images?type=" + type.toString(),
+                API_URL + "/images?type=" + type.toString() + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ImagesResponse.class).getBody();
@@ -1053,8 +1114,12 @@ public class HetznerCloudAPI {
      * @return ImagesResponse object
      */
     public ImagesResponse getImageByName(String name) {
+        return getImageByName(name, PaginationParameters.empty());
+    }
+
+    public ImagesResponse getImageByName(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/images?name=" + name,
+                API_URL + "/images?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ImagesResponse.class).getBody();
@@ -1114,8 +1179,12 @@ public class HetznerCloudAPI {
      * @return Volume Array
      */
     public GetVolumesResponse getVolumes() {
+        return getVolumes(PaginationParameters.empty());
+    }
+
+    public GetVolumesResponse getVolumes(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/volumes",
+                API_URL + "/volumes" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 GetVolumesResponse.class).getBody();
@@ -1187,8 +1256,12 @@ public class HetznerCloudAPI {
      * @return Action array
      */
     public ActionsResponse getAllActionsOfVolume(long id) {
+        return getAllActionsOfVolume(id, PaginationParameters.empty());
+    }
+
+    public ActionsResponse getAllActionsOfVolume(long id, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/volumes/" + id + "/actions",
+                API_URL + "/volumes/" + id + "/actions" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ActionsResponse.class).getBody();
@@ -1280,8 +1353,12 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public NetworksResponse getAllNetworks() {
+        return getAllNetworks(PaginationParameters.empty());
+    }
+
+    public NetworksResponse getAllNetworks(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/networks",
+                API_URL + "/networks" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 NetworksResponse.class).getBody();
@@ -1294,8 +1371,12 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public NetworksResponse getNetworksByName(String name) {
+        return getNetworksByName(name, PaginationParameters.empty());
+    }
+
+    public NetworksResponse getNetworksByName(String name, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/networks?name=" + name,
+                API_URL + "/networks?name=" + name + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 NetworksResponse.class).getBody();
@@ -1308,8 +1389,12 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public NetworksResponse getNetworksByLabel(String label) {
+        return getNetworksByLabel(label, PaginationParameters.empty());
+    }
+
+    public NetworksResponse getNetworksByLabel(String label, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/networks?label_selector=" + label,
+                API_URL + "/networks?label_selector=" + label + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 NetworksResponse.class).getBody();
@@ -1440,8 +1525,12 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public ActionsResponse getActionsForNetwork(long id) {
+        return getActionsForNetwork(id, PaginationParameters.empty());
+    }
+
+    public ActionsResponse getActionsForNetwork(long id, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/networks/" + id + "/actions",
+                API_URL + "/networks/" + id + "/actions" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ActionsResponse.class).getBody();
@@ -1551,8 +1640,12 @@ public class HetznerCloudAPI {
      * @return CertificatesResponse
      */
     public CertificatesResponse getCertificates() {
+        return getCertificates(PaginationParameters.empty());
+    }
+
+    public CertificatesResponse getCertificates(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/certificates",
+                API_URL + "/certificates" + getPaginationParameters(pageParams),
                 HttpMethod.GET, httpEntity,
                 CertificatesResponse.class).getBody();
     }
@@ -1622,8 +1715,12 @@ public class HetznerCloudAPI {
      * @return returns LoadBalancersResponse
      */
     public LoadBalancersResponse getLoadBalancers() {
+        return getLoadBalancers(PaginationParameters.empty());
+    }
+
+    public LoadBalancersResponse getLoadBalancers(PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/load_balancers",
+                API_URL + "/load_balancers" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 LoadBalancersResponse.class).getBody();
@@ -1635,7 +1732,7 @@ public class HetznerCloudAPI {
      * @param id    ID of the Load Balancer
      * @return      returns LoadBalancerResponse
      */
-    private LoadBalancerResponse getLoadBalancer(long id) {
+    public LoadBalancerResponse getLoadBalancer(long id) {
         return restTemplate.exchange(
                 API_URL + "/load_balancers/" + id,
                 HttpMethod.GET,
@@ -1692,8 +1789,12 @@ public class HetznerCloudAPI {
      * @return      returns ActionsResponse
      */
     public ActionsResponse getAllActionsOfLoadBalancer(long id) {
+        return getAllActionsOfLoadBalancer(id, PaginationParameters.empty());
+    }
+
+    public ActionsResponse getAllActionsOfLoadBalancer(long id, PaginationParameters pageParams) {
         return restTemplate.exchange(
-                API_URL + "/load_balancers/" + id + "/actions",
+                API_URL + "/load_balancers/" + id + "/actions" + getPaginationParameters(pageParams),
                 HttpMethod.GET,
                 httpEntity,
                 ActionsResponse.class).getBody();
@@ -1905,7 +2006,18 @@ public class HetznerCloudAPI {
     public String convertToISO8601(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String formatted = dateFormat.format(date);
-        return formatted;
+        return dateFormat.format(date);
+    }
+
+    private String getPaginationParameters(PaginationParameters pageParams) {
+        return pageParams != null ? getPageParameterIfNotNull(pageParams.getPage()) + getPerPageParameterIfNotNull(pageParams.getPerPage()) : "";
+    }
+
+    private String getPageParameterIfNotNull(Integer page) {
+        return page != null ? "?page=" + page :  "";
+    }
+
+    private String getPerPageParameterIfNotNull(Integer perPage) {
+        return perPage != null ? "?per_page=" + perPage : "";
     }
 }
