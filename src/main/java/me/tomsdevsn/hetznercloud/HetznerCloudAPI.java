@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -941,6 +942,39 @@ public class HetznerCloudAPI {
                 httpEntity,
                 ServerTypesResponse.class).getBody();
     }
+
+
+    /**
+     * Get all Load Balancer types.
+     *
+     *
+     * @return ServerTypesResponse object
+     */
+    public LoadBalancerTypeResponse getAllLoadBalancerTypes() {
+        return restTemplate.exchange(
+                API_URL + "/load_balancer_types",
+                HttpMethod.GET,
+                httpEntity,
+                LoadBalancerTypeResponse.class).getBody();
+    }
+
+    /**
+     * Get all Load Balancer types.
+     *
+     *
+     * @return ServerTypesResponse object
+     */
+    public LoadBalancerTypeResponse getAllLoadBalancerTypesByName(String name) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL + "/load_balancer_types")
+                .queryParam("name", name);
+
+        return restTemplate.exchange(
+                builder.toUriString() ,
+                HttpMethod.GET,
+                httpEntity,
+                LoadBalancerTypeResponse.class).getBody();
+    }
+
 
     /**
      * Get a Server type by name.
