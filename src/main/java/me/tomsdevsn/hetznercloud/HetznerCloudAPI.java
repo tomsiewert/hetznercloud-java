@@ -1669,7 +1669,7 @@ public class HetznerCloudAPI {
      * @param id    ID of the Load Balancer
      * @return      returns LoadBalancerResponse
      */
-    private LoadBalancerResponse getLoadBalancer(long id) {
+    public LoadBalancerResponse getLoadBalancer(long id) {
         return restTemplate.exchange(
                 API_URL + "/load_balancers/" + id,
                 HttpMethod.GET,
