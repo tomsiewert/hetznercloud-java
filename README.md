@@ -7,7 +7,7 @@ Simple Java client for the Hetzner Cloud API.
 
 The current version is **2.12.0**.
 
-It would be nice, if you submit pull requests.
+**Important message about this project [here](https://github.com/TomSDEVSN/hetznercloud-java/discussions/45)**
 
 ## Compile
 
