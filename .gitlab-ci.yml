@@ -6,8 +6,6 @@ include:
   - template: 'Code-Quality.gitlab-ci.yml'
 
 variables:
-  SAST_DISABLE_DIND: "true"
-  DS_DISABLE_DIND: "true"
   MAVEN_CLI_OPTS: '-Dgpg.skip=true'
 
 stages: [build, test, deploy]
