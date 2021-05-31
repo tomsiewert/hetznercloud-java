@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Subnet {
 
-    private SubnetType type;
+    private String type;
     @JsonProperty("ip_range")
     private String ipRange;
     @JsonProperty("network_zone")
