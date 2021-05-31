@@ -28,6 +28,7 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = App.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HetznerCloudAPITest {
+
     private static final Logger logger= LoggerFactory.getLogger(HetznerCloudAPITest.class);
 
     @Autowired
