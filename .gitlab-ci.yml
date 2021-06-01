@@ -56,7 +56,7 @@ test:jdk8:
   needs:
     - job: build:jdk8
   script:
-    - "mvn test -Dgpg.skip=true"
+    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 test:jdk9:
   image: maven:3-jdk-9
@@ -64,7 +64,7 @@ test:jdk9:
   needs:
     - job: build:jdk9
   script:
-    - "mvn test -Dgpg.skip=true"
+    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 test:jdk11:
   image: maven:3-jdk-11
@@ -72,7 +72,7 @@ test:jdk11:
   needs:
     - job: build:jdk11
   script:
-    - "mvn test -Dgpg.skip=true"
+    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 test:jdk14:
   image: maven:3-jdk-14
@@ -80,7 +80,7 @@ test:jdk14:
   needs:
     - job: build:jdk14
   script:
-    - "mvn test -Dgpg.skip=true"
+    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 pages:
   image: maven:3-jdk-8
