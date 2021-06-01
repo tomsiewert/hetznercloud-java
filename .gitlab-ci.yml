@@ -6,7 +6,7 @@ include:
   - template: 'Code-Quality.gitlab-ci.yml'
 
 variables:
-  MAVEN_CLI_OPTS: '-Dgpg.skip=true'
+  MAVEN_CLI_OPTS: '-Dgpg.skip=true -Dmaven.test.skip=true'
 
 stages: [build, test, deploy]
 
@@ -14,73 +14,58 @@ cache:
   paths:
     - "$HOME/.m2/"
 
-build:jdk8:
-  image: maven:3-jdk-8
+.build:
   stage: build
   script:
-    - "mvn clean package -Dgpg.skip=true"
+    - "mvn clean package -Dmaven.test.skip=true -Dgpg.skip=true"
   artifacts:
     paths:
       - "target/*.jar"
+
+.test:
+  stage: test
+  script:
+    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
+
+build:jdk8:
+  image: maven:3-jdk-8
+  extends: [".build"]
 
 build:jdk9:
   image: maven:3-jdk-9
-  stage: build
-  script:
-    - "mvn clean package -Dgpg.skip=true"
-  artifacts:
-    paths:
-      - "target/*.jar"
+  extends: [".build"]
 
 build:jdk11:
   image: maven:3-jdk-11
-  stage: build
-  script:
-    - "mvn clean package -Dgpg.skip=true"
-  artifacts:
-    paths:
-      - "target/*.jar"
+  extends: [".build"]
 
 build:jdk14:
   image: maven:3-jdk-14
-  stage: build
-  script:
-    - "mvn clean package -Dgpg.skip=true"
-  artifacts:
-    paths:
-      - "target/*.jar"
+  extends: [".build"]
 
 test:jdk8:
   image: maven:3-jdk-8
-  stage: test
+  extends: [".test"]
   needs:
     - job: build:jdk8
-  script:
-    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 test:jdk9:
   image: maven:3-jdk-9
-  stage: test
+  extends: [".test"]
   needs:
     - job: build:jdk9
-  script:
-    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 test:jdk11:
   image: maven:3-jdk-11
-  stage: test
+  extends: [".test"]
   needs:
     - job: build:jdk11
-  script:
-    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 test:jdk14:
   image: maven:3-jdk-14
-  stage: test
+  extends: [".test"]
   needs:
     - job: build:jdk14
-  script:
-    - "mvn test -Dgpg.skip=true -Dhetzner.token=${HETZNER_TOKEN}"
 
 pages:
   image: maven:3-jdk-8
