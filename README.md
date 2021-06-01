@@ -46,6 +46,14 @@ dependencies({
 })
 ```
 
+## How to run tests
+```
+mvn -Dhetzner.token=<YOUR HETZNER TOKEN> test
+```
+
+The tests require a token.
+more on how to obtain the token [here](https://docs.hetzner.cloud/#getting-started).
+
 ## JavaDocs
 
 The JavaDocs are available [here](https://docs.hcloud.siewert.io)
