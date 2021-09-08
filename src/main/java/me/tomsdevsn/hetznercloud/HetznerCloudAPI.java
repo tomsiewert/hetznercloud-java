@@ -3,6 +3,8 @@ package me.tomsdevsn.hetznercloud;
 import me.tomsdevsn.hetznercloud.exception.InvalidFormatException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.general.Action;
+import me.tomsdevsn.hetznercloud.objects.general.PlacementGroup;
+import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.springframework.http.HttpEntity;
@@ -170,6 +172,35 @@ public class HetznerCloudAPI {
         return restTemplate.postForEntity(
                 API_URL + "/servers/" + id + "/actions/change_protection",
                 new HttpEntity<>(changeProtection, httpHeaders),
+                ActionResponse.class).getBody();
+    }
+
+    /**
+     * Add a server to a placement group.
+     *
+     * Server has to be stopped.
+     *
+     * @param serverId server id
+     * @param placementGroupId placement group id
+     * @return ActionResponse
+     */
+    public ActionResponse addServerToPlacementGroup(long serverId, long placementGroupId) {
+        return restTemplate.postForEntity(
+                API_URL + "/servers/" + serverId + "/actions/add_to_placement_group",
+                new HttpEntity<>("{\"placement_group\": " + placementGroupId + "}", httpHeaders),
+                ActionResponse.class).getBody();
+    }
+
+    /**
+     * Remove a server from a placement group.
+     *
+     * @param serverId server id
+     * @return ActionResponse
+     */
+    public ActionResponse removeServerFromPlacementGroup(long serverId) {
+        return restTemplate.postForEntity(
+                API_URL + "/servers/" + serverId + "/actions/remove_from_placement_group",
+                httpEntity,
                 ActionResponse.class).getBody();
     }
 
@@ -1928,6 +1959,111 @@ public class HetznerCloudAPI {
                 API_URL + "/load_balancers/" + id + "/actions/change_protection",
                 new HttpEntity<>("{\"delete\": " + delete + "}", httpHeaders),
                 ActionResponse.class).getBody();
+    }
+
+    /**
+     * Get a specific placement group.
+     *
+     * @param id placement group ID
+     * @return PlacementGroupResponse
+     */
+    public PlacementGroupResponse getPlacementGroup(long id) {
+        return restTemplate.exchange(
+                API_URL + "/placement_groups/" + id,
+                HttpMethod.GET,
+                httpEntity,
+                PlacementGroupResponse.class).getBody();
+    }
+
+    /**
+     * Get all placement groups.
+     *
+     * @return PlacementGroupsResponse
+     */
+    public PlacementGroupsResponse getPlacementGroups() {
+        return restTemplate.exchange(
+                API_URL + "/placement_groups",
+                HttpMethod.GET,
+                httpEntity,
+                PlacementGroupsResponse.class).getBody();
+    }
+
+    /**
+     * Get placement group by name.
+     *
+     * @param name name of the placement grouo
+     * @return PlacementGroupsResponse
+     */
+    public PlacementGroupsResponse getPlacementGroupByName(String name) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL + "/placement_groups")
+                .queryParam("name", name);
+
+        return restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                PlacementGroupsResponse.class).getBody();
+    }
+
+    /**
+     * Get placement groups by label selector.
+     *
+     * @param labelSelector label selector used by resource
+     * @return PlacementGroupsResponse
+     */
+    public PlacementGroupsResponse getPlacementGroupByLabelSelector(String labelSelector) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL + "/placement_groups")
+                .queryParam("label_selector", labelSelector);
+
+        return restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                PlacementGroupsResponse.class).getBody();
+    }
+
+    /**
+     * Get placement groups by type
+     *
+     * @param type Type of the placement group
+     * @return PlacementGroupsResponse
+     */
+    public PlacementGroupsResponse getPlacementGroupByLabelSelector(PlacementGroupType type) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL + "/placement_groups")
+                .queryParam("type", type);
+
+        return restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                PlacementGroupsResponse.class).getBody();
+    }
+
+    /**
+     * Create a placement group.
+     *
+     * @param placementGroupRequest PlacementGroupRequest object
+     * @return PlacementGroupResponse
+     */
+    public PlacementGroupResponse createPlacementGroup(PlacementGroupRequest placementGroupRequest) {
+        return restTemplate.postForEntity(
+                API_URL + "/placement_groups",
+                new HttpEntity<>(placementGroupRequest, httpHeaders),
+                PlacementGroupResponse.class).getBody();
+    }
+
+    /**
+     * Delete a placement group.
+     *
+     * @param id placement group ID
+     * @return ActionResponse
+     */
+    public String deletePlacementGroup(long id) {
+        return restTemplate.exchange(
+                API_URL + "/placement_groups/" + id,
+                HttpMethod.DELETE,
+                httpEntity,
+                String.class).getBody();
     }
 
     /**
