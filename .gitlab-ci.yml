@@ -32,7 +32,7 @@ build:jdk8:
   extends: [".build"]
 
 build:jdk16:
-  image: maven:3-jdk-16
+  image: maven:3-openjdk-16
   extends: [".build"]
 
 test:jdk8:
