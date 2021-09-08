@@ -31,16 +31,8 @@ build:jdk8:
   image: maven:3-jdk-8
   extends: [".build"]
 
-build:jdk9:
-  image: maven:3-jdk-9
-  extends: [".build"]
-
-build:jdk11:
-  image: maven:3-jdk-11
-  extends: [".build"]
-
-build:jdk14:
-  image: maven:3-jdk-14
+build:jdk16:
+  image: maven:3-jdk-16
   extends: [".build"]
 
 test:jdk8:
@@ -48,24 +40,6 @@ test:jdk8:
   extends: [".test"]
   needs:
     - job: build:jdk8
-
-test:jdk9:
-  image: maven:3-jdk-9
-  extends: [".test"]
-  needs:
-    - job: build:jdk9
-
-test:jdk11:
-  image: maven:3-jdk-11
-  extends: [".test"]
-  needs:
-    - job: build:jdk11
-
-test:jdk14:
-  image: maven:3-jdk-14
-  extends: [".test"]
-  needs:
-    - job: build:jdk14
 
 pages:
   image: maven:3-jdk-8
