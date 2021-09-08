@@ -4,9 +4,8 @@ import me.tomsdevsn.hetznercloud.init.App;
 import me.tomsdevsn.hetznercloud.objects.general.*;
 import me.tomsdevsn.hetznercloud.objects.request.LoadBalancerRequest;
 import me.tomsdevsn.hetznercloud.objects.request.NetworkRequest;
-import me.tomsdevsn.hetznercloud.objects.response.ActionResponse;
-import me.tomsdevsn.hetznercloud.objects.response.LoadBalancerResponse;
-import me.tomsdevsn.hetznercloud.objects.response.NetworkResponse;
+import me.tomsdevsn.hetznercloud.objects.request.PlacementGroupRequest;
+import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -29,17 +28,16 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HetznerCloudAPITest {
 
-    private static final Logger logger= LoggerFactory.getLogger(HetznerCloudAPITest.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(HetznerCloudAPITest.class);
+    private final List<CleanupObject> cleanupObjects = new ArrayList<>();
     @Autowired
     private HetznerCloudAPI hetznerCloudAPI;
-    private final List<CleanupObject> cleanupObjects = new ArrayList<>();
 
     @AfterAll
     public void cleanUp() {
-        cleanupObjects.forEach(cleanupObject->{
+        cleanupObjects.forEach(cleanupObject -> {
             Object response = cleanup(cleanupObject);
-            logger.info("Cleanup "+cleanupObject +" response: "+response);
+            logger.info("Cleanup " + cleanupObject + " response: " + response);
         });
     }
 
@@ -51,6 +49,14 @@ public class HetznerCloudAPITest {
                 return hetznerCloudAPI.deleteLoadBalancer(cleanupObject.getId());
             case NETWORK:
                 return hetznerCloudAPI.deleteNetwork(cleanupObject.getId());
+            case IMAGE:
+                return hetznerCloudAPI.deleteImage(cleanupObject.getId());
+            case SSH_KEY:
+                return hetznerCloudAPI.deleteSSHKey(cleanupObject.getId());
+            case FLOATING_IP:
+                return hetznerCloudAPI.deleteFloatingIP(cleanupObject.getId());
+            case PLACEMENT_GROUP:
+                return hetznerCloudAPI.deletePlacementGroup(cleanupObject.getId());
             default:
                 return null;
         }
@@ -182,11 +188,20 @@ public class HetznerCloudAPITest {
     }
 
     @Test
-    void getISOS() {
+    void getISOs() {
+        ISOSResponse isos = hetznerCloudAPI.getISOS();
+        Assertions.assertNotNull(isos);
+        Assertions.assertNotNull(isos.getIsos());
     }
 
     @Test
     void getISOById() {
+        ISOSResponse isos = hetznerCloudAPI.getISOS();
+        Long firstIso = isos.getIsos().stream().findFirst().get().getId();
+        ISOResponse iso = hetznerCloudAPI.getISOById(firstIso);
+
+        Assertions.assertNotNull(iso);
+        Assertions.assertNotNull(iso.getIso());
     }
 
     @Test
@@ -207,10 +222,6 @@ public class HetznerCloudAPITest {
 
     @Test
     void getDatacenters() {
-    }
-
-    @Test
-    void testGetDatacenter() {
     }
 
     @Test
@@ -426,7 +437,7 @@ public class HetznerCloudAPITest {
     }
 
     @Test
-    void changeAliasIPsofNetwork() {
+    void changeAliasIPsOfNetwork() {
     }
 
     @Test
@@ -491,7 +502,7 @@ public class HetznerCloudAPITest {
 
     @Test
     void createLoadBalancer() {
-        LoadBalancerResponse loadBalancer= null;
+        LoadBalancerResponse loadBalancer = null;
         NetworkResponse networkResponse = null;
         try {
             String networkName = "testNetwork" + System.currentTimeMillis();
@@ -521,13 +532,12 @@ public class HetznerCloudAPITest {
             Assertions.assertNotNull(loadBalancer.getLoadBalancer());
         } catch (HttpClientErrorException e) {
             Assertions.fail(e.getResponseBodyAsString());
-        }
-        finally {
-            if(loadBalancer!=null){
-                cleanupObjects.add(new CleanupObject(loadBalancer.getLoadBalancer().getId(),CleanupType.LOAD_BALANCER));
+        } finally {
+            if (loadBalancer != null) {
+                cleanupObjects.add(new CleanupObject(loadBalancer.getLoadBalancer().getId(), CleanupType.LOAD_BALANCER));
             }
-            if(networkResponse!=null){
-                cleanupObjects.add(new CleanupObject(networkResponse.getNetwork().getId(),CleanupType.NETWORK));
+            if (networkResponse != null) {
+                cleanupObjects.add(new CleanupObject(networkResponse.getNetwork().getId(), CleanupType.NETWORK));
             }
         }
     }
@@ -639,6 +649,29 @@ public class HetznerCloudAPITest {
 
     @Test
     void changeProtectionOfLoadBalancer() {
+    }
+
+    @Test
+    void createPlacementGroup() {
+        PlacementGroupResponse placementGroup = null;
+        try {
+            String name = "test-" + System.currentTimeMillis();
+            PlacementGroupRequest placementGroupRequest = PlacementGroupRequest.builder()
+                    .name(name)
+                    .type(PlacementGroupType.spread)
+                    .build();
+
+            placementGroup = hetznerCloudAPI.createPlacementGroup(placementGroupRequest);
+            Assertions.assertNotNull(placementGroup);
+            Assertions.assertNotNull(placementGroup.getPlacementGroup());
+        } catch (HttpClientErrorException ex) {
+            Assertions.fail(ex.getResponseBodyAsString());
+        } finally {
+            if (placementGroup != null)
+                cleanupObjects.add(new CleanupObject(
+                        placementGroup.getPlacementGroup().getId(),
+                        CleanupType.PLACEMENT_GROUP));
+        }
     }
 
     @Test
