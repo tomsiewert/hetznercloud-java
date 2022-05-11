@@ -20,5 +20,7 @@ public class Datacenter {
     public static class ServerTypes {
         private List<Long> supported;
         private List<Long> available;
+        @JsonProperty("available_for_migration")
+        private List<Long> availableForMigration;
     }
 }

@@ -15,6 +15,7 @@ public class PublicNet {
 
     @Data
     public static class IPv4 {
+        private Long id;
         private String ip;
         private boolean blocked;
         @JsonProperty("dns_ptr")
@@ -23,6 +24,7 @@ public class PublicNet {
 
     @Data
     public static class IPv6 {
+        private Long id;
         private String ip;
         private boolean blocked;
         @JsonProperty("dns_ptr")
