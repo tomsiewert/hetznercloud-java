@@ -40,6 +40,12 @@ public class Server {
     private Protection protection;
     private Map<String, String> labels;
     private List<Long> volumes;
+    @JsonProperty("primary_disk_size")
+    private Long primaryDiskSize;
+    @JsonProperty("load_balancers")
+    private List<Long> loadBalancers;
+    @JsonProperty("placement_group")
+    private PlacementGroup placementGroup;
 
     @Data
     @Deprecated
