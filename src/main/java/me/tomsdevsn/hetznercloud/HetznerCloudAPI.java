@@ -1668,6 +1668,23 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Retry an issuance or renewal for a managed certificate.
+     * 
+     * This method is only applicable to managed certificate where either the issuance
+     * or renewal status is failed.
+     * 
+     * @param id ID of the certificate
+     * @return ActionResponse
+     */
+    public ActionResponse retryCertificate(long id) {
+        return restTemplate.exchange(
+            API_URL + "/certificates/" + id + "/actions/retry",
+            HttpMethod.POST,
+            httpEntity,
+            ActionResponse.class).getBody();
+    }
+
+    /**
      * Delete a certificate.
      *
      * @param id ID of the certificate
