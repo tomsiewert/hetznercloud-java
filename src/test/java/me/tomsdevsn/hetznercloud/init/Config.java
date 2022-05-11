@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
 
-    @Value("${hetzner.token}")
+    @Value("#{environment.HCLOUD_TOKEN}")
     private String token;
 
     @Bean
