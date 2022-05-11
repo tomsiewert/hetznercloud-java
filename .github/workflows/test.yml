@@ -1,0 +1,25 @@
+---
+name: Test
+on: [ push, workflow_dispatch ]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        version: [11, 17]
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '${{ matrix.version }}'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Test
+        run: mvn --batch-mode -Dgpg.skip=true test
+        env:
+          HCLOUD_TOKEN: ${{ secrets.HETZNER_CI_TOKEN }}

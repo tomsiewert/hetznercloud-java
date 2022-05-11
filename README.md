@@ -1,11 +1,10 @@
 Hetzner Cloud API for Java
 ==========================
 
-[![Build Status](https://travis-ci.org/TomSDEVSN/hetznercloud-java.svg?branch=master)](https://travis-ci.org/TomSDEVSN/hetznercloud-java)
+![Test Action Status](https://github.com/TomSDEVSN/hetznercloud-java/actions/workflows/test.yml/badge.svg)
+![Build Action Status](https://github.com/TomSDEVSN/hetznercloud-java/actions/workflows/build.yml/badge.svg)
 
 Simple Java client for the Hetzner Cloud API.
-
-The current version is **2.13.1**.
 
 **Important message about this project [here](https://github.com/TomSDEVSN/hetznercloud-java/discussions/45)**
 
@@ -26,8 +25,6 @@ Dependency:
     <dependency>
         <groupId>me.tomsdevsn</groupId>
         <artifactId>hetznercloud-api</artifactId>
-        <version>2.13.1</version>
-        <scope>compile</scope>
     </dependency>
 </dependencies>
 ```
@@ -42,17 +39,18 @@ repositories({
 })
 
 dependencies({
-    implementation "me.tomsdevsn:hetznercloud-api:2.13.1"
+    implementation "me.tomsdevsn:hetznercloud-api"
 })
 ```
 
 ## How to run tests
-```
-mvn -Dhetzner.token=<YOUR HETZNER TOKEN> test
-```
+The tests need an API Token for the Hetzner Cloud. The API token has to be set as an environment variable called `HCLOUD_TOKEN`.
 
-The tests require a token.
-more on how to obtain the token [here](https://docs.hetzner.cloud/#getting-started).
+To obtain an API key, please see [the official API documentation](https://docs.hetzner.cloud/#getting-started).
+
+```
+HCLOUD_TOKEN="" mvn test
+```
 
 ## JavaDocs
 
