@@ -21,7 +21,7 @@ public class FloatingIP {
     @JsonProperty("dns_ptr")
     private List<DnsPTR> dnsPTR;
     @JsonProperty("home_location")
-    private HomeLocation homeLocation;
+    private Location homeLocation;
     private boolean blocked;
     private Protection protection;
     private Map<String, String> labels;
@@ -35,6 +35,7 @@ public class FloatingIP {
         private String dnsPTR;
     }
 
+    @Deprecated
     @Data
     public static class HomeLocation {
         private Long id;
