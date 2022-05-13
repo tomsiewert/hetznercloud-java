@@ -1,6 +1,7 @@
 ---
 name: Test
-on: [ push, workflow_dispatch ]
+on:
+  workflow_dispatch: {}
 
 jobs:
   test:
@@ -8,7 +9,6 @@ jobs:
       matrix:
         version: [11, 17]
     runs-on: ubuntu-latest
-    concurrency: ci-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
 

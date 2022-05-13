@@ -29,10 +29,16 @@ jobs:
           passphrase: ${{ secrets.OSSRH_GPG_SECRET_PASS }}
 
       - name: Deploy package
-        run: mvn --batch-mode -Dmaven.test.skip=true -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_PASS }} clean deploy
+        run: mvn --batch-mode -Dmaven.test.skip=true -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_PASS }} clean package deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            target/hetznercloud-api*.jar
 
   pages:
     runs-on: ubuntu-latest
@@ -47,7 +53,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Generate Javadocs
-        run: mvn javadoc:javadoc
+        run: mvn --batch-mode -Dgpg.skip=true javadoc:javadoc
 
       - name: Deploy to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4.3.3
