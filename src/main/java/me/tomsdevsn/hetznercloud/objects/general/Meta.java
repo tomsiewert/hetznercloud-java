@@ -1,4 +1,4 @@
-package me.tomsdevsn.hetznercloud.objects.response;
+package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -10,7 +10,6 @@ public class Meta {
 
     @Data
     public static class Pagination {
-
         private Long page;
         @JsonProperty("per_page")
         private Long perPage;

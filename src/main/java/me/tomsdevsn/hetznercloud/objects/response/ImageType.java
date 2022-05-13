@@ -9,7 +9,8 @@ public enum ImageType {
 
     SYSTEM("system"),
     SNAPSHOT("snapshot"),
-    BACKUP("backup");
+    BACKUP("backup"),
+    APP("app");
 
     private String name;
 

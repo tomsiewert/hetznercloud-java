@@ -1,6 +1,7 @@
 package me.tomsdevsn.hetznercloud.objects.response;
 
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.objects.general.Meta;
 import me.tomsdevsn.hetznercloud.objects.general.Network;
 
 import java.util.List;
@@ -9,4 +10,5 @@ import java.util.List;
 public class NetworksResponse {
 
     private List<Network> networks;
+    private Meta meta;
 }
