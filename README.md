@@ -10,9 +10,9 @@ Simple Java client for the Hetzner Cloud API.
 
 ## Compile
 
-You can simply compile it with Maven.
+This project uses Maven as build automation.
 
-Just run ``mvn clean install`` to install it in your local Maven-repository.
+Just run ``mvn clean install`` to install it in the local Maven repository cache.
 
 ## How to use
 
@@ -31,7 +31,7 @@ Dependency:
 
 ##### Gradle 
 
-You have to edit the ``build.gradle``
+Put this in the ``build.gradle`` file of the project:
 
 ```
 repositories({

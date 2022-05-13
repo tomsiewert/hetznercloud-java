@@ -1,9 +1,6 @@
 package me.tomsdevsn.hetznercloud;
 
-import me.tomsdevsn.hetznercloud.exception.InvalidFormatException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
-import me.tomsdevsn.hetznercloud.objects.general.Action;
-import me.tomsdevsn.hetznercloud.objects.general.PlacementGroup;
 import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
@@ -31,20 +28,17 @@ public class HetznerCloudAPI {
     private final HttpHeaders httpHeaders;
     private final RestTemplate restTemplate;
 
-    private final List<HttpMessageConverter<?>> messageConverters;
-    private final MappingJackson2HttpMessageConverter converter;
-
     /**
      * Initial method to use the API
      *
-     *
-     * @param token which you created in the Hetzner-Cloud console
+     * @param token API-Token for Hetzner Cloud API
+     *              The API token can be created within the Hetzner Cloud Console
      */
     public HetznerCloudAPI(String token) {
         this.token = token;
 
-        messageConverters = new ArrayList<>();
-        converter = new MappingJackson2HttpMessageConverter();
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
         messageConverters.add(converter);
 
@@ -61,7 +55,7 @@ public class HetznerCloudAPI {
     /**
      * Get all of your servers in a list
      *
-     * @return An object which contains all servers.
+     * @return All servers
      */
     public Servers getServers() {
         return restTemplate.exchange(
@@ -86,11 +80,13 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get the server by the server-id
+     * Get a server by id
      *
-     * @param id The id of the server
+     * @deprecated This method is deprecated and will be removed with a further release. Please use {@link #getServer(long id)}
+     * @param id id of the server
      * @return The server with the specific ID
      */
+    @Deprecated
     public GetServerResponse getServerById(long id) {
         return restTemplate.exchange(
                 API_URL + "/servers/" + id,
@@ -100,18 +96,28 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Creates a Cloud-server
+     * Get a server by id
      *
-     * @param serverRequest The new server to create.
-     * @return response of the API
+     * @param id id of the server
+     * @return GetServerResponse
+     */
+    public GetServerResponse getServer(long id) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/servers")
+                        .queryParam("id", id)
+                        .toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                GetServerResponse.class).getBody();
+    }
+
+    /**
+     * Create a server.
+     *
+     * @param serverRequest Parameters for server creation.
+     * @return ServerResponse including Action status, Server object and (if no ssh key defined) root password.
      */
     public ServerResponse createServer(ServerRequest serverRequest) {
-        if (serverRequest.getSshKeys() != null) {
-            serverRequest.getSshKeys().forEach(object -> {
-                if (!(object instanceof Long || object instanceof String))
-                    throw new InvalidParametersException("Object not Long or String");
-            });
-        }
         serverRequest.setServerType(serverRequest.getServerType().toLowerCase());   // Case-sensitive fix
         return restTemplate.postForEntity(
                 API_URL + "/servers",
@@ -120,9 +126,9 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Delete a server instantly.
+     * Delete a server
      *
-     * @param id Server ID of the server.
+     * @param id id of the server.
      * @return ActionResponse object
      */
     public ActionResponse deleteServer(long id) {
@@ -134,11 +140,11 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Change the name of the server, in the Hetzner-Cloud Console
+     * Change the name of the server.
      *
-     * @param id            of the server
+     * @param id id of the server.
      * @param newServerName request
-     * @return respond
+     * @return ServernameChangeResponse object
      */
     public ServernameChangeResponse changeServerName(long id, ServernameChangeRequest newServerName) {
         return restTemplate.exchange(
@@ -149,9 +155,9 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Request a VNC over Websocket-console
+     * Request a WebSocket URL for a server.
      *
-     * @param id ID of the server
+     * @param id id of the server
      * @return ConsoleResponse object
      */
     public ConsoleResponse requestConsole(long id) {
@@ -162,9 +168,9 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Change the protection configuration from a server
+     * Change the protection configuration of a server.
      *
-     * @param id               ID of the server
+     * @param id id of the server
      * @param changeProtection Request Object (both optional)
      * @return ActionResponse object
      */
@@ -177,10 +183,9 @@ public class HetznerCloudAPI {
 
     /**
      * Add a server to a placement group.
-     *
      * Server has to be stopped.
      *
-     * @param serverId server id
+     * @param serverId         server id
      * @param placementGroupId placement group id
      * @return ActionResponse
      */
@@ -205,9 +210,9 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all performed Actions for a Server
+     * Get all performed Actions of a server.
      *
-     * @param id ID of the Server
+     * @param id id of the server
      * @return ActionsResponse object
      */
     public ActionsResponse getAllActionsOfServer(long id) {
@@ -407,7 +412,7 @@ public class HetznerCloudAPI {
 
     /**
      * Disables the rescue mode from the server.
-     *
+     * <p>
      * Only needed, if the server doesn't booted into the rescue mode.
      *
      * @param id ID of the server
@@ -423,7 +428,7 @@ public class HetznerCloudAPI {
 
     /**
      * Rebuild a server, with the specific image.
-     *
+     * <p>
      * example: ubuntu-16.04
      *
      * @param id                   ID of the server
@@ -439,9 +444,9 @@ public class HetznerCloudAPI {
 
     /**
      * Change the type from the server
-     *
+     * <p>
      * example: cx11 to cx21
-     *
+     * <p>
      * Attention: It will stops the server, but it starts automatically after the upgrade
      *
      * @param id                ID of the server
@@ -510,9 +515,9 @@ public class HetznerCloudAPI {
      * @param enableBackupRequest Request object
      * @return respone
      * @deprecated due Hetzner changed Request header
-     *
+     * <p>
      * Enable the backups from a server
-     *
+     * <p>
      * Please reminder, that will increase the price of the server by 20%
      */
     @Deprecated
@@ -526,7 +531,7 @@ public class HetznerCloudAPI {
 
     /**
      * Enable the backups from a server
-     *
+     * <p>
      * Please reminder, that will increase the price of the server by 20%
      *
      * @param id ID of the server
@@ -541,7 +546,7 @@ public class HetznerCloudAPI {
 
     /**
      * Disable the backups from a server
-     *
+     * <p>
      * Caution!: This will delete all existing backups immediately
      *
      * @param id ID of the server
@@ -584,7 +589,7 @@ public class HetznerCloudAPI {
 
     /**
      * Attach an ISO to a server.
-     *
+     * <p>
      * To get all ISO's {@link #getISOS}
      *
      * @param id               of the server
@@ -602,7 +607,6 @@ public class HetznerCloudAPI {
     /**
      * Detach an ISO from a server.
      *
-     *
      * @param id of the server
      * @return respond
      */
@@ -616,7 +620,7 @@ public class HetznerCloudAPI {
 
     /**
      * Changes the reverse DNS entry from a server.
-     *
+     * <p>
      * Floating IPs assigned to the server are not affected!
      *
      * @param id                      ID of the server
@@ -633,7 +637,6 @@ public class HetznerCloudAPI {
     /**
      * Get a Datacenter by ID
      *
-     *
      * @param id of the Datacenter
      * @return respond
      */
@@ -648,7 +651,6 @@ public class HetznerCloudAPI {
     /**
      * Get all available datacenters and the recommendation
      *
-     *
      * @return respond
      */
     public DatacentersResponse getDatacenters() {
@@ -661,7 +663,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get a datacenter by name
-     *
      *
      * @param name of the datacenter
      * @return respond
@@ -677,7 +678,6 @@ public class HetznerCloudAPI {
     /**
      * Get all prices from the products
      *
-     *
      * @return respond
      */
     public PricingResponse getPricing() {
@@ -690,7 +690,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get all Floating IP's in a object
-     *
      *
      * @return FloatingIPsResponse object
      */
@@ -705,7 +704,6 @@ public class HetznerCloudAPI {
     /**
      * Get a specific Floating IP.
      *
-     *
      * @param id ID of the Floating IP
      * @return GetFloatingIPResponse object
      */
@@ -719,7 +717,6 @@ public class HetznerCloudAPI {
 
     /**
      * Create a Floating IP for the project or for a Server.
-     *
      *
      * @param floatingIPRequest Request object
      * @return FloatingIPResponse object
@@ -748,7 +745,6 @@ public class HetznerCloudAPI {
     /**
      * Change the description of a Floating IP.
      *
-     *
      * @param id                           ID of the Floating IP
      * @param descriptionFloatingIPRequest Request object
      * @return GetFloatingIPResponse object
@@ -764,7 +760,6 @@ public class HetznerCloudAPI {
     /**
      * Assign a Floating IP to a server
      *
-     *
      * @param id                      ID of the Floating IP
      * @param assignFloatingIPRequest Request object
      * @return ActionResponse object
@@ -779,7 +774,6 @@ public class HetznerCloudAPI {
     /**
      * Unassign a Floating IP from a server
      *
-     *
      * @param id ID of the Floating IP
      * @return ActionResponse object
      */
@@ -792,7 +786,6 @@ public class HetznerCloudAPI {
 
     /**
      * Change the reverse DNS entry for a Floating IP
-     *
      *
      * @param id                      ID of the Floating IP
      * @param changeReverseDNSRequest Request object
@@ -807,9 +800,8 @@ public class HetznerCloudAPI {
 
     /**
      * Delete a Floating IP.
-     *
+     * <p>
      * This object does not have a respond!
-     *
      *
      * @param id ID of the Floating ID
      * @return String
@@ -840,7 +832,6 @@ public class HetznerCloudAPI {
     /**
      * Get all SSH keys.
      *
-     *
      * @return SSHKeysResponse object
      */
     public SSHKeysResponse getSSHKeys() {
@@ -853,7 +844,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get a SSH key by ID.
-     *
      *
      * @param id ID of the SSH key
      * @return SSHKeyResponse object
@@ -868,7 +858,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get a SSH key by name.
-     *
      *
      * @param name name of the SSH key
      * @return SSHKeysResponse object
@@ -898,7 +887,6 @@ public class HetznerCloudAPI {
     /**
      * Create a SSH key.
      *
-     *
      * @param SSHKeyRequest Request object
      * @return SSHKeyResponse object
      */
@@ -911,7 +899,6 @@ public class HetznerCloudAPI {
 
     /**
      * Change the name of a SSH key
-     *
      *
      * @param id                      ID of the SSH key
      * @param changeSSHKeyNameRequest Request object
@@ -930,7 +917,6 @@ public class HetznerCloudAPI {
     /**
      * Update parameters of a SSH key
      *
-     *
      * @param id                  ID of the SSH key
      * @param updateSSHKeyRequest Request Object
      * @return SSHKeyResponse object
@@ -945,9 +931,8 @@ public class HetznerCloudAPI {
 
     /**
      * Delete a SSH key.
-     *
+     * <p>
      * This object does not have a respond!
-     *
      *
      * @param id ID of the SSH key
      * @return String
@@ -963,7 +948,6 @@ public class HetznerCloudAPI {
     /**
      * Get all Server types.
      *
-     *
      * @return ServerTypesResponse object
      */
     public ServerTypesResponse getServerTypes() {
@@ -978,9 +962,10 @@ public class HetznerCloudAPI {
     /**
      * Get all Load Balancer types.
      *
-     *
-     * @return ServerTypesResponse object
+     * @deprecated Will be removed with a further release. Please use {@link #getLoadBalancerTypes()}
+     * @return LoadBalancerTypeResponse object
      */
+    @Deprecated
     public LoadBalancerTypeResponse getAllLoadBalancerTypes() {
         return restTemplate.exchange(
                 API_URL + "/load_balancer_types",
@@ -992,20 +977,51 @@ public class HetznerCloudAPI {
     /**
      * Get all Load Balancer types.
      *
-     *
-     * @return ServerTypesResponse object
+     * @return LoadBalancerTypesResponse object
      */
-    public LoadBalancerTypeResponse getAllLoadBalancerTypesByName(String name) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(API_URL + "/load_balancer_types")
-                .queryParam("name", name);
-
+    public LoadBalancerTypesResponse getLoadBalancerTypes() {
         return restTemplate.exchange(
-                builder.toUriString() ,
+                API_URL + "/load_balancer_types",
+                HttpMethod.GET,
+                httpEntity,
+                LoadBalancerTypesResponse.class).getBody();
+    }
+
+    /**
+     * Get all Load Balancer types by name.
+     *
+     * @deprecated Will be removed with a further release. Please use {@link #getLoadBalancerTypeByName(String name)}
+     * @param name Name of the Load Balancer type.
+     * @return LoadBalancerTypeResponse object
+     */
+    @Deprecated
+    public LoadBalancerTypeResponse getAllLoadBalancerTypesByName(String name) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/load_balancer_types")
+                        .queryParam("name", name)
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 LoadBalancerTypeResponse.class).getBody();
     }
 
+    /**
+     * Get Load Balancer type by name.
+     *
+     * @param name Name of the Load Balancer type
+     * @return LoadBalancerTypesResponse object
+     */
+    public LoadBalancerTypesResponse getLoadBalancerTypeByName(String name) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/load_balancer_types")
+                        .queryParam("name", name)
+                        .toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                LoadBalancerTypesResponse.class).getBody();
+    }
+
+    //TODO: Add #getLoadBalancerType method. For that, #getAllLoadBalancerTypes has to be removed.
 
     /**
      * Get a Server type by name.
@@ -1016,17 +1032,18 @@ public class HetznerCloudAPI {
      */
     public ServerTypesResponse getServerTypeByName(String name) {
         return restTemplate.exchange(
-                API_URL + "/server_types?name=" + name,
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/server_types")
+                        .queryParam("name", name)
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 ServerTypesResponse.class).getBody();
     }
 
     /**
-     * Create a SSH key.
+     * Get a Server type by id.
      *
-     *
-     * @param id ID of the Server type
+     * @param id id of the Server type
      * @return ServerTypeResponse object
      */
     public ServerTypeResponse getServerType(long id) {
@@ -1039,7 +1056,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get all available Locations.
-     *
      *
      * @return LocationsResponse object
      */
@@ -1054,24 +1070,24 @@ public class HetznerCloudAPI {
     /**
      * Get a Location by name.
      *
-     *
      * @param name Name of the location
      * @return LocationsResponse object
      */
     public LocationsResponse getLocationByName(String name) {
         return restTemplate.exchange(
-                API_URL + "/locations?name=" + name,
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/locations")
+                        .queryParam("name", name)
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 LocationsResponse.class).getBody();
     }
 
     /**
-     * Get a location;
+     * Get a location by id.
      *
-     *
-     * @param id ID of the location
-     * @return ServerTypeResponse object
+     * @param id id of the location
+     * @return LocationResponse object
      */
     public LocationResponse getLocation(long id) {
         return restTemplate.exchange(
@@ -1082,10 +1098,9 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all available ImagesResponse
+     * Get all available images.
      *
-     *
-     * @return respond
+     * @return ImagesResponse object
      */
     public ImagesResponse getImages() {
         return restTemplate.exchange(
@@ -1097,7 +1112,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get all images by type.
-     *
      *
      * @param type Type of the images
      * @return ImagesResponse object
@@ -1113,7 +1127,6 @@ public class HetznerCloudAPI {
     /**
      * Get an image by name.
      *
-     *
      * @param name Name of the image
      * @return ImagesResponse object
      */
@@ -1127,7 +1140,6 @@ public class HetznerCloudAPI {
 
     /**
      * Get image by ID.
-     *
      *
      * @param id ID of the image
      * @return ImageResponse object
@@ -1143,7 +1155,6 @@ public class HetznerCloudAPI {
     /**
      * Update the description or the type of a image.
      *
-     *
      * @param id                 ID of the image
      * @param updateImageRequest Request object
      * @return ImageResponse object
@@ -1158,9 +1169,8 @@ public class HetznerCloudAPI {
 
     /**
      * Delete an image,
-     *
+     * <p>
      * This object does not have a respond!
-     *
      *
      * @param id ID of the image
      * @return String
@@ -1174,7 +1184,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all available volumes from your project.
+     * Get all volumes in a project.
      *
      * @return Volume Array
      */
@@ -1187,7 +1197,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get a specific volume from your project by id.
+     * Get a specific volume by id.
      *
      * @param id ID of the volume
      * @return Volume object
@@ -1324,7 +1334,7 @@ public class HetznerCloudAPI {
 
     /**
      * Change the protection mode of the volume.
-     * You can only use delete, no rebuild!
+     * Only deletion protection is available!
      *
      * @param id                      ID of the volume
      * @param changeProtectionRequest Request object
@@ -1411,7 +1421,7 @@ public class HetznerCloudAPI {
 
 
     /**
-     * Create a new network in your project.
+     * Create a new private network.
      *
      * @param networkRequest Request object
      * @return Response from API
@@ -1650,7 +1660,7 @@ public class HetznerCloudAPI {
 
     /**
      * Update a certificate.
-     *
+     * <p>
      * Available options to update:
      * - Name
      * - Labels
@@ -1669,19 +1679,19 @@ public class HetznerCloudAPI {
 
     /**
      * Retry an issuance or renewal for a managed certificate.
-     * 
+     * <p>
      * This method is only applicable to managed certificate where either the issuance
      * or renewal status is failed.
-     * 
+     *
      * @param id ID of the certificate
      * @return ActionResponse
      */
     public ActionResponse retryCertificate(long id) {
         return restTemplate.exchange(
-            API_URL + "/certificates/" + id + "/actions/retry",
-            HttpMethod.POST,
-            httpEntity,
-            ActionResponse.class).getBody();
+                API_URL + "/certificates/" + id + "/actions/retry",
+                HttpMethod.POST,
+                httpEntity,
+                ActionResponse.class).getBody();
     }
 
     /**
@@ -1714,8 +1724,8 @@ public class HetznerCloudAPI {
     /**
      * Get a specific Load Balancer.
      *
-     * @param id    ID of the Load Balancer
-     * @return      returns LoadBalancerResponse
+     * @param id ID of the Load Balancer
+     * @return returns LoadBalancerResponse
      */
     public LoadBalancerResponse getLoadBalancer(long id) {
         return restTemplate.exchange(
@@ -1728,8 +1738,8 @@ public class HetznerCloudAPI {
     /**
      * Create a new Load Balancer.
      *
-     * @param loadBalancerRequest   Load Balancer Request object
-     * @return                      returns LoadBalancerResponse
+     * @param loadBalancerRequest Load Balancer Request object
+     * @return returns LoadBalancerResponse
      */
     public LoadBalancerResponse createLoadBalancer(LoadBalancerRequest loadBalancerRequest) {
         return restTemplate.postForEntity(
@@ -1741,9 +1751,9 @@ public class HetznerCloudAPI {
     /**
      * Update an existing Load Balancer.
      *
-     * @param id                            ID of the Load Balancer
-     * @param updateLoadBalancerRequest     Load Balancer Update Request Object
-     * @return                              returns LoadBalancerResponse
+     * @param id                        ID of the Load Balancer
+     * @param updateLoadBalancerRequest Load Balancer Update Request Object
+     * @return returns LoadBalancerResponse
      */
     public LoadBalancerResponse updateLoadBalancer(long id, UpdateLoadBalancerRequest updateLoadBalancerRequest) {
         return restTemplate.exchange(
@@ -1756,8 +1766,8 @@ public class HetznerCloudAPI {
     /**
      * Delete a Load Balancer.
      *
-     * @param id    ID of the Load Balancer
-     * @return      returns nothing
+     * @param id ID of the Load Balancer
+     * @return returns nothing
      */
     public String deleteLoadBalancer(long id) {
         return restTemplate.exchange(
@@ -1770,8 +1780,8 @@ public class HetznerCloudAPI {
     /**
      * Get all actions of a Load Balancer.
      *
-     * @param id    ID of the Load Balancer
-     * @return      returns ActionsResponse
+     * @param id ID of the Load Balancer
+     * @return returns ActionsResponse
      */
     public ActionsResponse getAllActionsOfLoadBalancer(long id) {
         return restTemplate.exchange(
@@ -1784,9 +1794,9 @@ public class HetznerCloudAPI {
     /**
      * Get an action of a Load Balancer.
      *
-     * @param id            ID of the Load Balancer
-     * @param actionId      Action ID
-     * @return              returns ActionResponse
+     * @param id       ID of the Load Balancer
+     * @param actionId Action ID
+     * @return returns ActionResponse
      */
     public ActionResponse getActionOfLoadBalancer(long id, long actionId) {
         return restTemplate.exchange(
@@ -1799,9 +1809,9 @@ public class HetznerCloudAPI {
     /**
      * Add a service to a Load Balancer.
      *
-     * @param id                    ID of the Load Balancer
-     * @param lbServiceRequest      Load Balancer Service Request
-     * @return                      returns LoadBalancerResponse
+     * @param id               ID of the Load Balancer
+     * @param lbServiceRequest Load Balancer Service Request
+     * @return returns LoadBalancerResponse
      */
     public LoadBalancerResponse addServiceToLoadBalancer(long id, LBServiceRequest lbServiceRequest) {
         return restTemplate.postForEntity(
@@ -1813,9 +1823,9 @@ public class HetznerCloudAPI {
     /**
      * Update a service of a Load Balancer.
      *
-     * @param id                    ID of the Load Balancer
-     * @param lbServiceRequest      Load Balancer Service Request
-     * @return                      returns LoadBalancerResponse
+     * @param id               ID of the Load Balancer
+     * @param lbServiceRequest Load Balancer Service Request
+     * @return returns LoadBalancerResponse
      */
     public LoadBalancerResponse updateServiceOfLoadBalancer(long id, LBServiceRequest lbServiceRequest) {
         return restTemplate.postForEntity(
@@ -1827,37 +1837,37 @@ public class HetznerCloudAPI {
     /**
      * Delete a service of a Load Balancer.
      *
-     * @param id            ID of the Load Balancer
-     * @param listenPort    The desired "listen port" of the service
-     * @return              returns ActionResponse
+     * @param id         ID of the Load Balancer
+     * @param listenPort The desired "listen port" of the service
+     * @return returns ActionResponse
      */
-   public ActionResponse deleteServiceOfLoadBalancer(long id, long listenPort) {
+    public ActionResponse deleteServiceOfLoadBalancer(long id, long listenPort) {
         return restTemplate.postForEntity(
                 API_URL + "/load_balancers/" + id + "/actions/delete_service",
                 new HttpEntity<>("{ \"listen_port\": " + listenPort + "}", httpHeaders),
                 ActionResponse.class).getBody();
-   }
+    }
 
     /**
-     * Add an target to a Load Balancer.
+     * Add a target to a Load Balancer.
      *
-     * @param id                ID of the Load Balancer
-     * @param lbTargetRequest   Load Balancer Target Request
-     * @return                  returns ActionResponse
+     * @param id ID of the Load Balancer
+     * @param lbTargetRequest Load Balancer Target Request
+     * @return returns ActionResponse
      */
-   public ActionResponse addTargetToLoadBalancer(long id, LBTargetRequest lbTargetRequest) {
-       return restTemplate.postForEntity(
-               API_URL + "/load_balancers/" + id + "/actions/add_target",
-               new HttpEntity<>(lbTargetRequest, httpHeaders),
-               ActionResponse.class).getBody();
-   }
+    public ActionResponse addTargetToLoadBalancer(long id, LBTargetRequest lbTargetRequest) {
+        return restTemplate.postForEntity(
+                API_URL + "/load_balancers/" + id + "/actions/add_target",
+                new HttpEntity<>(lbTargetRequest, httpHeaders),
+                ActionResponse.class).getBody();
+    }
 
     /**
-     * Removes an target from a load balancer.
+     * Removes a target from a load balancer.
      *
-     * @param id                ID of the Load Balancer
-     * @param lbTargetRequest   Load Balancer Target Request
-     * @return                  returns ActionResponse
+     * @param id ID of the Load Balancer
+     * @param lbTargetRequest Load Balancer Target Request
+     * @return returns ActionResponse
      */
     public ActionResponse removeTargetFromLoadBalancer(long id, LBTargetRequest lbTargetRequest) {
         return restTemplate.postForEntity(
@@ -1871,7 +1881,7 @@ public class HetznerCloudAPI {
      *
      * @param id            ID of the Load Balancer
      * @param algorithmType Algorithm Type
-     * @return              returns ActionResponse
+     * @return returns ActionResponse
      */
     public ActionResponse changeAlgorithmOfLoadBalancer(long id, String algorithmType) {
         return restTemplate.postForEntity(
@@ -1884,9 +1894,9 @@ public class HetznerCloudAPI {
     /**
      * Changes the type of a Load Balancer.
      *
-     * @param id                ID of the Load Balancer
-     * @param loadBalancerType  New type of the Load Balancer
-     * @return                  returns ActionResponse
+     * @param id               ID of the Load Balancer
+     * @param loadBalancerType New type of the Load Balancer
+     * @return returns ActionResponse
      */
     public ActionResponse changeTypeOfLoadBalancer(long id, String loadBalancerType) {
         return restTemplate.postForEntity(
@@ -1901,12 +1911,12 @@ public class HetznerCloudAPI {
      * @param id        ID of the Load Balancer
      * @param networkID ID of the Network
      * @param ip        IP for the Load Balancer in this private network
-     * @return          returns ActionResponse
+     * @return returns ActionResponse
      */
     public ActionResponse attachNetworkToLoadBalancer(long id, long networkID, String ip) {
         return restTemplate.postForEntity(
                 API_URL + "/load_balancers/" + id + "/actions/attach_to_network",
-                new HttpEntity<>("{\"network\": \"" + networkID + "\", \"ip\": \""+ ip +"\"}", httpHeaders),
+                new HttpEntity<>("{\"network\": \"" + networkID + "\", \"ip\": \"" + ip + "\"}", httpHeaders),
                 ActionResponse.class).getBody();
     }
 
@@ -1915,7 +1925,7 @@ public class HetznerCloudAPI {
      *
      * @param id        ID of the Load Balancer
      * @param networkID ID of the Network
-     * @return          returns ActionResponse
+     * @return returns ActionResponse
      */
     public ActionResponse attachNetworkToLoadBalancer(long id, long networkID) {
         return restTemplate.postForEntity(
@@ -1929,7 +1939,7 @@ public class HetznerCloudAPI {
      *
      * @param id        ID of the Load Balancer
      * @param networkID ID of the Network
-     * @return          returns ActionResponse
+     * @return returns ActionResponse
      */
     public ActionResponse detachNetworkFromLoadBalancer(long id, long networkID) {
         return restTemplate.postForEntity(
@@ -1941,8 +1951,8 @@ public class HetznerCloudAPI {
     /**
      * Enable the public interface of a Load Balancer.
      *
-     * @param id    ID of the Load Balancer
-     * @return      returns ActionResponse
+     * @param id ID of the Load Balancer
+     * @return returns ActionResponse
      */
     public ActionResponse enablePublicInterfaceOfLoadBalancer(long id) {
         return restTemplate.postForEntity(
@@ -1954,8 +1964,8 @@ public class HetznerCloudAPI {
     /**
      * Disable the public interface of a Load Balancer.
      *
-     * @param id    ID of the Load Balancer
-     * @return      returns ActionResponse
+     * @param id ID of the Load Balancer
+     * @return returns ActionResponse
      */
     public ActionResponse disablePublicInterfaceOfLoadBalancer(long id) {
         return restTemplate.postForEntity(
@@ -1967,9 +1977,9 @@ public class HetznerCloudAPI {
     /**
      * Change the protection configuration of a Load Balancer.
      *
-     * @param id        ID of the Load Balancer
-     * @param delete    Delete protection
-     * @return          returns ActionResponse
+     * @param id     ID of the Load Balancer
+     * @param delete Delete protection
+     * @return returns ActionResponse
      */
     public ActionResponse changeProtectionOfLoadBalancer(long id, boolean delete) {
         return restTemplate.postForEntity(
@@ -2086,13 +2096,12 @@ public class HetznerCloudAPI {
     /**
      * Converts a Date to the ISO-8601 format
      *
-     * @param date your Date
+     * @param date Date to be converted
      * @return Date in ISO-8601 format
      */
     public String convertToISO8601(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String formatted = dateFormat.format(date);
-        return formatted;
+        return dateFormat.format(date);
     }
 }

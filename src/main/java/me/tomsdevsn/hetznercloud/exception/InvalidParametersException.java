@@ -1,7 +1,7 @@
 package me.tomsdevsn.hetznercloud.exception;
 
 /**
- * The Exception will be called, if you use invalid parameters.
+ * The Exception will be called, if an invalid parameters has been used.
  */
 public class InvalidParametersException extends RuntimeException {
 
