@@ -1,4 +1,4 @@
-package me.tomsdevsn.hetznercloud.objects.response;
+package me.tomsdevsn.hetznercloud.objects.general;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,14 +25,18 @@ public class Error {
         RESOURCE_LIMIT_EXCEEDED("Error when exceeding the maximum quantity of a resource for an account"),
         RESOURCE_UNAVAILABLE("The requested resource is currently unavailable"),
         SERVICE_ERROR("Error within a service"),
-        UNIQUENESS_ERROR("One or more of the objects fields must be unique");
+        UNIQUENESS_ERROR("One or more of the objects fields must be unique"),
+        PROTECTED("The Action you are trying to start is protected for this resource"),
+        MAINTENANCE("Cannot perform operation due to maintenance"),
+        CONFLICT("The resource has changed during the request, please retry"),
+        UNSUPPORTED_ERROR("The corresponding resource does not support the Action"),
+        TOKEN_READONLY("The token is only allowed to perform GET requests");
 
         private String description;
     }
 
     @Data
     public static class Details {
-
         private static List<Field> fields;
 
         @Data

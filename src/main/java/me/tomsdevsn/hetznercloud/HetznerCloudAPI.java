@@ -2,6 +2,7 @@ package me.tomsdevsn.hetznercloud;
 
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
+import me.tomsdevsn.hetznercloud.objects.pagination.PaginationParameters;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.springframework.http.HttpEntity;
@@ -58,22 +59,50 @@ public class HetznerCloudAPI {
      * @return All servers
      */
     public Servers getServers() {
+        return getServers(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all servers in a project.
+     *
+     * @param paginationParameters Pagination parameters
+     * @return All servers as Servers object
+     */
+    public Servers getServers(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/servers",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/servers")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 Servers.class).getBody();
     }
 
     /**
-     * Get the server by the name
+     * Get servers by name.
      *
-     * @param name Servername of the server
-     * @return An object which contains the server in a list
+     * @param name Name of the server
+     * @return Matching servers as Servers object without pagination
      */
     public Servers getServerByName(String name) {
+        return getServerByName(name, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get servers by name.
+     *
+     * @param name Name of the server
+     * @param paginationParameters Pagination parameters
+     * @return Matching servers as Servers object
+     */
+    public Servers getServerByName(String name, PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/servers?name=" + name,
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/servers")
+                        .queryParam("name", name)
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 Servers.class).getBody();
@@ -561,13 +590,26 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all available ISO's.
+     * Get all available ISOs.
      *
-     * @return respond
+     * @return ISOSResponse
      */
     public ISOSResponse getISOS() {
+        return getISOS(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all available ISO's.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return ISOSResponse
+     */
+    public ISOSResponse getISOS(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/isos",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/isos")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 ISOSResponse.class).getBody();
@@ -665,7 +707,7 @@ public class HetznerCloudAPI {
      * Get a datacenter by name
      *
      * @param name of the datacenter
-     * @return respond
+     * @return DatacentersResponse
      */
     public DatacentersResponse getDatacenter(String name) {
         return restTemplate.exchange(
@@ -678,7 +720,7 @@ public class HetznerCloudAPI {
     /**
      * Get all prices from the products
      *
-     * @return respond
+     * @return PricingResponse
      */
     public PricingResponse getPricing() {
         return restTemplate.exchange(
@@ -689,13 +731,57 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all Floating IP's in a object
+     * Get all Floating IPs in a project.
      *
-     * @return FloatingIPsResponse object
+     * @return FloatingIPsResponse
      */
     public FloatingIPsResponse getFloatingIPs() {
+        return getFloatingIPs(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all Floating IPs in a project.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return FloatingIPsResponse
+     */
+    public FloatingIPsResponse getFloatingIPs(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/floating_ips",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/floating_ips")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                FloatingIPsResponse.class).getBody();
+    }
+
+    /**
+     * Get all Floating IPs in a project by label selector.
+     * A label selector can be e.g. env=prod
+     *
+     * @param labelSelector Label selector
+     * @return FloatingIPsResponse
+     */
+    public FloatingIPsResponse getFloatingIPs(String labelSelector) {
+        return getFloatingIPs(labelSelector, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all Floating IPs in a project.
+     * A label selector can be e.g. env=prod
+     *
+     * @param labelSelector Label selector
+     * @param paginationParameters Pagination parametres
+     * @return FloatingIPsResponse
+     */
+    public FloatingIPsResponse getFloatingIPs(String labelSelector, PaginationParameters paginationParameters) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/floating_ips")
+                        .queryParam("label_selector", labelSelector)
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 FloatingIPsResponse.class).getBody();
@@ -705,7 +791,7 @@ public class HetznerCloudAPI {
      * Get a specific Floating IP.
      *
      * @param id ID of the Floating IP
-     * @return GetFloatingIPResponse object
+     * @return GetFloatingIPResponse
      */
     public GetFloatingIPResponse getFloatingIP(long id) {
         return restTemplate.exchange(
@@ -832,21 +918,34 @@ public class HetznerCloudAPI {
     /**
      * Get all SSH keys.
      *
-     * @return SSHKeysResponse object
+     * @return SSHKeysResponse
      */
     public SSHKeysResponse getSSHKeys() {
+        return getSSHKeys(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all SSH keys.
+     *
+     * @param paginationParameters Pagination parametres.
+     * @return SSHKeysResponse
+     */
+    public SSHKeysResponse getSSHKeys(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/ssh_keys",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/ssh_keys")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 SSHKeysResponse.class).getBody();
     }
 
     /**
-     * Get a SSH key by ID.
+     * Get an SSH key by ID.
      *
      * @param id ID of the SSH key
-     * @return SSHKeyResponse object
+     * @return SSHKeyResponse
      */
     public SSHKeyResponse getSSHKey(long id) {
         return restTemplate.exchange(
@@ -903,7 +1002,7 @@ public class HetznerCloudAPI {
      * @param id                      ID of the SSH key
      * @param changeSSHKeyNameRequest Request object
      * @return SSHKeyResponse object
-     * @deprecated use {@link HetznerCloudAPI#updateSSHKey(long, UpdateSSHKeyRequest)} instead
+     * @deprecated use {@link #updateSSHKey(long, UpdateSSHKeyRequest)} instead
      */
     @Deprecated
     public SSHKeyResponse changeSSHKeyName(long id, ChangeSSHKeyNameRequest changeSSHKeyNameRequest) {
@@ -1026,7 +1125,6 @@ public class HetznerCloudAPI {
     /**
      * Get a Server type by name.
      *
-     *
      * @param name name of the Server type
      * @return ServerTypesResponse object
      */
@@ -1103,8 +1201,21 @@ public class HetznerCloudAPI {
      * @return ImagesResponse object
      */
     public ImagesResponse getImages() {
+        return getImages(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all available images.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return ImagesResponse object
+     */
+    public ImagesResponse getImages(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/images",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/images")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 ImagesResponse.class).getBody();
@@ -1113,12 +1224,27 @@ public class HetznerCloudAPI {
     /**
      * Get all images by type.
      *
-     * @param type Type of the images
+     * @param type Type of image
      * @return ImagesResponse object
      */
     public ImagesResponse getImages(ImageType type) {
+        return getImages(type, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all images by type.
+     *
+     * @param type Type of image
+     * @param paginationParameters Pagination parametres
+     * @return ImagesResponse object
+     */
+    public ImagesResponse getImages(ImageType type, PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/images?type=" + type.toString(),
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/images")
+                        .queryParam("type", type.toString())
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 ImagesResponse.class).getBody();
@@ -1186,11 +1312,24 @@ public class HetznerCloudAPI {
     /**
      * Get all volumes in a project.
      *
-     * @return Volume Array
+     * @return GetVolumesResponse
      */
     public GetVolumesResponse getVolumes() {
+        return getVolumes(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all volumes in a project.
+     *
+     * @param paginationParameters Pagination parametres.
+     * @return GetVolumesResponse
+     */
+    public GetVolumesResponse getVolumes(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/volumes",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/volumes")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 GetVolumesResponse.class).getBody();
@@ -1352,11 +1491,39 @@ public class HetznerCloudAPI {
     /**
      * Get all networks which are in project.
      *
+     * @deprecated This method is deprecated and will be removed with a future release. Please use {@link #getNetworks()} instead
      * @return Response from API
      */
+    @Deprecated
     public NetworksResponse getAllNetworks() {
         return restTemplate.exchange(
                 API_URL + "/networks",
+                HttpMethod.GET,
+                httpEntity,
+                NetworksResponse.class).getBody();
+    }
+
+    /**
+     * Get all Private networks in a project.
+     *
+     * @return NetworksResponse
+     */
+    public NetworksResponse getNetworks() {
+        return getNetworks(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all Private networks in a project.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return NetworksResponse
+     */
+    public NetworksResponse getNetworks(PaginationParameters paginationParameters) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/networks")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 NetworksResponse.class).getBody();
@@ -1626,8 +1793,66 @@ public class HetznerCloudAPI {
      * @return CertificatesResponse
      */
     public CertificatesResponse getCertificates() {
+        return getCertificates(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all certificates from the project.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return CertificatesResponse
+     */
+    public CertificatesResponse getCertificates(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/certificates",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/certificates")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
+                HttpMethod.GET, httpEntity,
+                CertificatesResponse.class).getBody();
+    }
+
+    /**
+     * Get all certificates by label selector.
+     * A label selector can be e.g. env=prod
+     *
+     * @param labelSelector Label selector used for filtering
+     * @return CertificatesResponse
+     */
+    public CertificatesResponse getCertificates(String labelSelector) {
+        return getCertificates(labelSelector, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all certificates by label selector.
+     * A label selector can be e.g. env=prod
+     *
+     * @param labelSelector Label selector used for filtering
+     * @param paginationParameters Pagination parametres
+     * @return CertificatesResponse
+     */
+    public CertificatesResponse getCertificates(String labelSelector, PaginationParameters paginationParameters) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/certificates")
+                        .queryParam("label_selector", labelSelector)
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
+                HttpMethod.GET, httpEntity,
+                CertificatesResponse.class).getBody();
+    }
+
+    /**
+     * Get a specific certificate by its name.
+     *
+     * @param name Name of the certificate
+     * @return CertificatesResponse
+     */
+    public CertificatesResponse getCertificate(String name) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/certificates")
+                        .queryParam("name", name)
+                        .toUriString(),
                 HttpMethod.GET, httpEntity,
                 CertificatesResponse.class).getBody();
     }
@@ -1698,7 +1923,7 @@ public class HetznerCloudAPI {
      * Delete a certificate.
      *
      * @param id ID of the certificate
-     * @return returns nothing...
+     * @return nothing...
      */
     public String deleteCertificate(long id) {
         return restTemplate.exchange(
@@ -1711,11 +1936,24 @@ public class HetznerCloudAPI {
     /**
      * Get all Load Balancers.
      *
-     * @return returns LoadBalancersResponse
+     * @return LoadBalancersResponse
      */
     public LoadBalancersResponse getLoadBalancers() {
+        return getLoadBalancers(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all Load Balancers.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return LoadBalancersResponse
+     */
+    public LoadBalancersResponse getLoadBalancers(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/load_balancers",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/load_balancers")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 LoadBalancersResponse.class).getBody();
@@ -1725,7 +1963,7 @@ public class HetznerCloudAPI {
      * Get a specific Load Balancer.
      *
      * @param id ID of the Load Balancer
-     * @return returns LoadBalancerResponse
+     * @return LoadBalancerResponse
      */
     public LoadBalancerResponse getLoadBalancer(long id) {
         return restTemplate.exchange(
@@ -1739,7 +1977,7 @@ public class HetznerCloudAPI {
      * Create a new Load Balancer.
      *
      * @param loadBalancerRequest Load Balancer Request object
-     * @return returns LoadBalancerResponse
+     * @return LoadBalancerResponse
      */
     public LoadBalancerResponse createLoadBalancer(LoadBalancerRequest loadBalancerRequest) {
         return restTemplate.postForEntity(
@@ -1753,7 +1991,7 @@ public class HetznerCloudAPI {
      *
      * @param id                        ID of the Load Balancer
      * @param updateLoadBalancerRequest Load Balancer Update Request Object
-     * @return returns LoadBalancerResponse
+     * @return LoadBalancerResponse
      */
     public LoadBalancerResponse updateLoadBalancer(long id, UpdateLoadBalancerRequest updateLoadBalancerRequest) {
         return restTemplate.exchange(
@@ -1767,7 +2005,7 @@ public class HetznerCloudAPI {
      * Delete a Load Balancer.
      *
      * @param id ID of the Load Balancer
-     * @return returns nothing
+     * @return nothing
      */
     public String deleteLoadBalancer(long id) {
         return restTemplate.exchange(
@@ -1781,7 +2019,7 @@ public class HetznerCloudAPI {
      * Get all actions of a Load Balancer.
      *
      * @param id ID of the Load Balancer
-     * @return returns ActionsResponse
+     * @return ActionsResponse
      */
     public ActionsResponse getAllActionsOfLoadBalancer(long id) {
         return restTemplate.exchange(
@@ -1796,7 +2034,7 @@ public class HetznerCloudAPI {
      *
      * @param id       ID of the Load Balancer
      * @param actionId Action ID
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse getActionOfLoadBalancer(long id, long actionId) {
         return restTemplate.exchange(
@@ -1811,7 +2049,7 @@ public class HetznerCloudAPI {
      *
      * @param id               ID of the Load Balancer
      * @param lbServiceRequest Load Balancer Service Request
-     * @return returns LoadBalancerResponse
+     * @return LoadBalancerResponse
      */
     public LoadBalancerResponse addServiceToLoadBalancer(long id, LBServiceRequest lbServiceRequest) {
         return restTemplate.postForEntity(
@@ -1825,7 +2063,7 @@ public class HetznerCloudAPI {
      *
      * @param id               ID of the Load Balancer
      * @param lbServiceRequest Load Balancer Service Request
-     * @return returns LoadBalancerResponse
+     * @return LoadBalancerResponse
      */
     public LoadBalancerResponse updateServiceOfLoadBalancer(long id, LBServiceRequest lbServiceRequest) {
         return restTemplate.postForEntity(
@@ -1839,7 +2077,7 @@ public class HetznerCloudAPI {
      *
      * @param id         ID of the Load Balancer
      * @param listenPort The desired "listen port" of the service
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse deleteServiceOfLoadBalancer(long id, long listenPort) {
         return restTemplate.postForEntity(
@@ -1853,7 +2091,7 @@ public class HetznerCloudAPI {
      *
      * @param id ID of the Load Balancer
      * @param lbTargetRequest Load Balancer Target Request
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse addTargetToLoadBalancer(long id, LBTargetRequest lbTargetRequest) {
         return restTemplate.postForEntity(
@@ -1867,7 +2105,7 @@ public class HetznerCloudAPI {
      *
      * @param id ID of the Load Balancer
      * @param lbTargetRequest Load Balancer Target Request
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse removeTargetFromLoadBalancer(long id, LBTargetRequest lbTargetRequest) {
         return restTemplate.postForEntity(
@@ -1881,7 +2119,7 @@ public class HetznerCloudAPI {
      *
      * @param id            ID of the Load Balancer
      * @param algorithmType Algorithm Type
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse changeAlgorithmOfLoadBalancer(long id, String algorithmType) {
         return restTemplate.postForEntity(
@@ -1896,7 +2134,7 @@ public class HetznerCloudAPI {
      *
      * @param id               ID of the Load Balancer
      * @param loadBalancerType New type of the Load Balancer
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse changeTypeOfLoadBalancer(long id, String loadBalancerType) {
         return restTemplate.postForEntity(
@@ -1911,7 +2149,7 @@ public class HetznerCloudAPI {
      * @param id        ID of the Load Balancer
      * @param networkID ID of the Network
      * @param ip        IP for the Load Balancer in this private network
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse attachNetworkToLoadBalancer(long id, long networkID, String ip) {
         return restTemplate.postForEntity(
@@ -1925,7 +2163,7 @@ public class HetznerCloudAPI {
      *
      * @param id        ID of the Load Balancer
      * @param networkID ID of the Network
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse attachNetworkToLoadBalancer(long id, long networkID) {
         return restTemplate.postForEntity(
@@ -1939,7 +2177,7 @@ public class HetznerCloudAPI {
      *
      * @param id        ID of the Load Balancer
      * @param networkID ID of the Network
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse detachNetworkFromLoadBalancer(long id, long networkID) {
         return restTemplate.postForEntity(
@@ -1952,7 +2190,7 @@ public class HetznerCloudAPI {
      * Enable the public interface of a Load Balancer.
      *
      * @param id ID of the Load Balancer
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse enablePublicInterfaceOfLoadBalancer(long id) {
         return restTemplate.postForEntity(
@@ -1965,7 +2203,7 @@ public class HetznerCloudAPI {
      * Disable the public interface of a Load Balancer.
      *
      * @param id ID of the Load Balancer
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse disablePublicInterfaceOfLoadBalancer(long id) {
         return restTemplate.postForEntity(
@@ -1979,7 +2217,7 @@ public class HetznerCloudAPI {
      *
      * @param id     ID of the Load Balancer
      * @param delete Delete protection
-     * @return returns ActionResponse
+     * @return ActionResponse
      */
     public ActionResponse changeProtectionOfLoadBalancer(long id, boolean delete) {
         return restTemplate.postForEntity(
@@ -2008,8 +2246,21 @@ public class HetznerCloudAPI {
      * @return PlacementGroupsResponse
      */
     public PlacementGroupsResponse getPlacementGroups() {
+        return getPlacementGroups(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all placement groups.
+     *
+     * @param paginationParameters Pagination parametres
+     * @return PlacementGroupsResponse
+     */
+    public PlacementGroupsResponse getPlacementGroups(PaginationParameters paginationParameters) {
         return restTemplate.exchange(
-                API_URL + "/placement_groups",
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/placement_groups")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 PlacementGroupsResponse.class).getBody();
