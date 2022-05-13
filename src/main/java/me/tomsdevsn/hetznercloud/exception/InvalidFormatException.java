@@ -1,7 +1,7 @@
 package me.tomsdevsn.hetznercloud.exception;
 
 /**
- * The Exception will be called, if you use an invalid format for the volume.
+ * The Exception will be called, if an invalid format has been used for the volume.
  */
 public class InvalidFormatException extends RuntimeException {
 
