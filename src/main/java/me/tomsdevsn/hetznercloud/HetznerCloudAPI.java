@@ -54,9 +54,49 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all of your servers in a list
+     * Get all actions in a project.
      *
-     * @return All servers
+     * @return All Actions without pagination
+     */
+    public ActionsResponse getActions() {
+        return getActions(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all actions in a project.
+     *
+     * @param paginationParameters Pagination parameters
+     * @return ActionsResponse
+     */
+    public ActionsResponse getActions(PaginationParameters paginationParameters) {
+        return restTemplate.exchange(
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/actions")
+                    .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                    .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                    .toUriString(),
+                HttpMethod.GET,
+                httpEntity,
+                ActionsResponse.class).getBody();
+    }
+
+    /**
+     * Get details about an action by id.
+     *
+     * @param id ID of the action
+     * @return ActionResponse
+     */
+    public ActionResponse getAction(long id) {
+        return restTemplate.exchange(
+                API_URL + "/actions/" + id,
+                HttpMethod.GET,
+                httpEntity,
+                ActionResponse.class).getBody();
+    }
+
+    /**
+     * Get all servers in a project.
+     *
+     * @return All servers as Servers object without pagination
      */
     public Servers getServers() {
         return getServers(new PaginationParameters(null, null));
