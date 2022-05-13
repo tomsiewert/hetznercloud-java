@@ -18,18 +18,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = App.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HetznerCloudAPITest {
 
-    private static final Logger logger = LoggerFactory.getLogger(HetznerCloudAPITest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HetznerCloudAPITest.class);
     private final List<CleanupObject> cleanupObjects = new ArrayList<>();
+
+    private final String testIdentifier = new Random().ints(48, 122)
+            .filter(i -> (i < 57 || i > 65) && (i < 90 || i > 97))
+            .mapToObj(i -> (char) i)
+            .limit(8)
+            .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+            .toString();
+
     @Autowired
     private HetznerCloudAPI hetznerCloudAPI;
 
@@ -37,7 +42,7 @@ public class HetznerCloudAPITest {
     public void cleanUp() {
         cleanupObjects.forEach(cleanupObject -> {
             Object response = cleanup(cleanupObject);
-            logger.info("Cleanup " + cleanupObject + " response: " + response);
+            LOGGER.info("Cleanup " + cleanupObject + " response: " + response);
         });
     }
 
@@ -64,7 +69,6 @@ public class HetznerCloudAPITest {
 
     @Test
     void getServers() {
-        hetznerCloudAPI.getServers();
     }
 
     @Test
@@ -196,9 +200,9 @@ public class HetznerCloudAPITest {
 
     @Test
     void getISOById() {
-        ISOSResponse isos = hetznerCloudAPI.getISOS();
-        Long firstIso = isos.getIsos().stream().findFirst().get().getId();
-        ISOResponse iso = hetznerCloudAPI.getISOById(firstIso);
+        ISOResponse iso = hetznerCloudAPI.getISOById(
+                hetznerCloudAPI.getISOS().getIsos().stream().findFirst().get().getId()
+        );
 
         Assertions.assertNotNull(iso);
         Assertions.assertNotNull(iso.getIso());
@@ -505,7 +509,7 @@ public class HetznerCloudAPITest {
         LoadBalancerResponse loadBalancer = null;
         NetworkResponse networkResponse = null;
         try {
-            String networkName = "testNetwork" + System.currentTimeMillis();
+            String networkName = testIdentifier + "-createLoadBalancer";
             NetworkRequest.NetworkRequestBuilder networkRequest = NetworkRequest.builder()
                     .ipRange("10.0.0.0/16")
                     .subnets(Collections.singletonList(getDefaultSubnet()))
@@ -516,15 +520,15 @@ public class HetznerCloudAPITest {
 
             LoadBalancerType loadBalancerType = hetznerCloudAPI.getAllLoadBalancerTypes().getLoadBalancerTypes().get(0);
             Assertions.assertNotNull(loadBalancerType);
-            String name = "test" + System.currentTimeMillis();
+            String loadBalancerName = testIdentifier + "-createLoadBalancer";
             LoadBalancerRequest loadBalancerRequest = LoadBalancerRequest.builder()
                     .networkZone("eu-central")
                     .network(networkResponse.getNetwork().getId())
-                    .loadBalancerType(loadBalancerType.getId() + "")
+                    .loadBalancerType(loadBalancerType.getId().toString())
                     .publicInterface(true)
                     .services(Collections.singletonList(getHttpService()))
-                    .targets(Collections.singletonList(getLabelSelector(name)))
-                    .name(name)
+                    .targets(Collections.singletonList(getLabelSelector(loadBalancerName)))
+                    .name(loadBalancerName)
                     .build();
 
             loadBalancer = hetznerCloudAPI.createLoadBalancer(loadBalancerRequest);
@@ -655,7 +659,7 @@ public class HetznerCloudAPITest {
     void createPlacementGroup() {
         PlacementGroupResponse placementGroup = null;
         try {
-            String name = "test-" + System.currentTimeMillis();
+            String name = testIdentifier + "-createPlacementGroup";
             PlacementGroupRequest placementGroupRequest = PlacementGroupRequest.builder()
                     .name(name)
                     .type(PlacementGroupType.spread)
