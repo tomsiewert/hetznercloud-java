@@ -2,6 +2,7 @@ me.tomsdevsn.hetznercloud
 me.tomsdevsn.hetznercloud.deserialize
 me.tomsdevsn.hetznercloud.exception
 me.tomsdevsn.hetznercloud.objects.general
+me.tomsdevsn.hetznercloud.objects.pagination
 me.tomsdevsn.hetznercloud.objects.pricing
 me.tomsdevsn.hetznercloud.objects.request
 me.tomsdevsn.hetznercloud.objects.response
