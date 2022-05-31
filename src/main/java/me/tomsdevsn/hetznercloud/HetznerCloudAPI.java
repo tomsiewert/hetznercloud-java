@@ -1003,7 +1003,9 @@ public class HetznerCloudAPI {
      */
     public SSHKeysResponse getSSHKeyByName(String name) {
         return restTemplate.exchange(
-                API_URL + "/ssh_keys?" + name,
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/ssh_keys")
+                            .queryParam("name", name)
+                            .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 SSHKeysResponse.class).getBody();
@@ -1017,7 +1019,9 @@ public class HetznerCloudAPI {
      */
     public SSHKeysResponse getSSHKeyByFingerprint(String fingerprint) {
         return restTemplate.exchange(
-                API_URL + "/ssh_keys?" + fingerprint,
+                UriComponentsBuilder.fromHttpUrl(API_URL + "/ssh_keys")
+                            .queryParam("fingerprint", fingerprint)
+                            .toUriString(),
                 HttpMethod.GET,
                 httpEntity,
                 SSHKeysResponse.class).getBody();
