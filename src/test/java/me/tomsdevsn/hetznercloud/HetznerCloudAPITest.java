@@ -5,6 +5,7 @@ import me.tomsdevsn.hetznercloud.objects.general.*;
 import me.tomsdevsn.hetznercloud.objects.request.LoadBalancerRequest;
 import me.tomsdevsn.hetznercloud.objects.request.NetworkRequest;
 import me.tomsdevsn.hetznercloud.objects.request.PlacementGroupRequest;
+import me.tomsdevsn.hetznercloud.objects.request.SSHKeyRequest;
 import me.tomsdevsn.hetznercloud.objects.response.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = App.class)
@@ -194,8 +198,8 @@ public class HetznerCloudAPITest {
     @Test
     void getISOs() {
         ISOSResponse isos = hetznerCloudAPI.getISOS();
-        Assertions.assertNotNull(isos);
-        Assertions.assertNotNull(isos.getIsos());
+        assertNotNull(isos);
+        assertNotNull(isos.getIsos());
     }
 
     @Test
@@ -204,8 +208,8 @@ public class HetznerCloudAPITest {
                 hetznerCloudAPI.getISOS().getIsos().stream().findFirst().get().getId()
         );
 
-        Assertions.assertNotNull(iso);
-        Assertions.assertNotNull(iso.getIso());
+        assertNotNull(iso);
+        assertNotNull(iso.getIso());
     }
 
     @Test
@@ -290,6 +294,22 @@ public class HetznerCloudAPITest {
 
     @Test
     void createSSHKey() {
+
+        var publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDS4NLE+d5jLs32yDDE4/JrCv8t0zk7tK3Z2nSQxPaj pelle@zoidberg";
+        var name = "sshkey-" + UUID.randomUUID();
+
+        var request = SSHKeyRequest.builder().name(name).publicKey(publicKey).label("label1", "value1").build();
+        var response = hetznerCloudAPI.createSSHKey(request);
+        cleanupObjects.add(new CleanupObject(response.getSshKey().getId(), CleanupType.SSH_KEY));
+
+        assertNotNull(response);
+        assertNotNull(response.getSshKey());
+
+        var sshKeys = hetznerCloudAPI.getSSHKeyByName(name);
+
+        assertThat(sshKeys.getSshKeys()).hasSize(1);
+        assertThat(sshKeys.getSshKeys().get(0).getLabels()).hasSize(1);
+        assertThat(sshKeys.getSshKeys().get(0).getLabels().get("label1")).isEqualTo("value1");
     }
 
     @Test
@@ -515,11 +535,11 @@ public class HetznerCloudAPITest {
                     .subnets(Collections.singletonList(getDefaultSubnet()))
                     .name(networkName);
             networkResponse = hetznerCloudAPI.createNetwork(networkRequest.build());
-            Assertions.assertNotNull(networkResponse);
-            Assertions.assertNotNull(networkResponse.getNetwork());
+            assertNotNull(networkResponse);
+            assertNotNull(networkResponse.getNetwork());
 
             LoadBalancerType loadBalancerType = hetznerCloudAPI.getAllLoadBalancerTypes().getLoadBalancerTypes().get(0);
-            Assertions.assertNotNull(loadBalancerType);
+            assertNotNull(loadBalancerType);
             String loadBalancerName = testIdentifier + "-createLoadBalancer";
             LoadBalancerRequest loadBalancerRequest = LoadBalancerRequest.builder()
                     .networkZone("eu-central")
@@ -532,8 +552,8 @@ public class HetznerCloudAPITest {
                     .build();
 
             loadBalancer = hetznerCloudAPI.createLoadBalancer(loadBalancerRequest);
-            Assertions.assertNotNull(loadBalancer);
-            Assertions.assertNotNull(loadBalancer.getLoadBalancer());
+            assertNotNull(loadBalancer);
+            assertNotNull(loadBalancer.getLoadBalancer());
         } catch (HttpClientErrorException e) {
             Assertions.fail(e.getResponseBodyAsString());
         } finally {
@@ -666,8 +686,8 @@ public class HetznerCloudAPITest {
                     .build();
 
             placementGroup = hetznerCloudAPI.createPlacementGroup(placementGroupRequest);
-            Assertions.assertNotNull(placementGroup);
-            Assertions.assertNotNull(placementGroup.getPlacementGroup());
+            assertNotNull(placementGroup);
+            assertNotNull(placementGroup.getPlacementGroup());
         } catch (HttpClientErrorException ex) {
             Assertions.fail(ex.getResponseBodyAsString());
         } finally {
