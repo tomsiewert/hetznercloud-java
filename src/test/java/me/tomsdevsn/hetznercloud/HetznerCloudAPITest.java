@@ -1,35 +1,21 @@
 package me.tomsdevsn.hetznercloud;
 
-import me.tomsdevsn.hetznercloud.init.App;
+import lombok.extern.slf4j.Slf4j;
 import me.tomsdevsn.hetznercloud.objects.general.*;
-import me.tomsdevsn.hetznercloud.objects.request.LoadBalancerRequest;
-import me.tomsdevsn.hetznercloud.objects.request.NetworkRequest;
-import me.tomsdevsn.hetznercloud.objects.request.PlacementGroupRequest;
-import me.tomsdevsn.hetznercloud.objects.request.SSHKeyRequest;
+import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import org.junit.jupiter.api.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = App.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Slf4j
 public class HetznerCloudAPITest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HetznerCloudAPITest.class);
     private final List<CleanupObject> cleanupObjects = new ArrayList<>();
 
     private final String testIdentifier = new Random().ints(48, 122)
@@ -39,15 +25,33 @@ public class HetznerCloudAPITest {
             .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
             .toString();
 
-    @Autowired
-    private HetznerCloudAPI hetznerCloudAPI;
+    private final HetznerCloudAPI hetznerCloudAPI = new HetznerCloudAPI(System.getenv("HCLOUD_TOKEN"));
 
     @AfterAll
-    public void cleanUp() {
+    public void cleanUpAfter() {
+        cleanup();
         cleanupObjects.forEach(cleanupObject -> {
             Object response = cleanup(cleanupObject);
-            LOGGER.info("Cleanup " + cleanupObject + " response: " + response);
+            log.info("Cleanup " + cleanupObject + " response: " + response);
         });
+    }
+
+    @BeforeAll
+    public void cleanUpBefore() {
+        cleanup();
+        cleanupObjects.forEach(cleanupObject -> {
+            Object response = cleanup(cleanupObject);
+            log.info("Cleanup " + cleanupObject + " response: " + response);
+        });
+    }
+
+    private void cleanup() {
+        log.info("cleaning testbed");
+
+        hetznerCloudAPI.getCertificates().getCertificates().forEach((certificate -> {
+            log.info("removing certificate '{}'", certificate.getName());
+            hetznerCloudAPI.deleteCertificate(certificate.getId());
+        }));
     }
 
     private Object cleanup(CleanupObject cleanupObject) {
@@ -293,6 +297,7 @@ public class HetznerCloudAPITest {
     }
 
     @Test
+    @Disabled
     void createSSHKey() {
 
         var publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDS4NLE+d5jLs32yDDE4/JrCv8t0zk7tK3Z2nSQxPaj pelle@zoidberg";
@@ -497,23 +502,31 @@ public class HetznerCloudAPITest {
     }
 
     @Test
-    void getCertificates() {
-    }
+    void testManageCertificates() throws IOException {
+        var key = new String(HetznerCloudAPITest.class.getResourceAsStream("/certificates/key.pem").readAllBytes());
+        var cert = new String(HetznerCloudAPITest.class.getResourceAsStream("/certificates/cert.pem").readAllBytes());
 
-    @Test
-    void getCertificate() {
-    }
+        assertThat(hetznerCloudAPI.getCertificates().getCertificates()).hasSize(0);
 
-    @Test
-    void createCertificate() {
-    }
+        var createdCertificate = hetznerCloudAPI.createCertificate(CreateCertificateRequest.builder().name("certificate1").privateKey(key).certificate(cert).build());
 
-    @Test
-    void updateCertificate() {
-    }
+        assertThat(createdCertificate).isNotNull();
+        assertThat(createdCertificate.getCertificate().getId()).isGreaterThan(0);
+        assertThat(hetznerCloudAPI.getCertificates().getCertificates()).hasSize(1);
 
-    @Test
-    void deleteCertificate() {
+        var certificate1 = hetznerCloudAPI.getCertificate(createdCertificate.getCertificate().getId());
+        assertThat(certificate1.getCertificate().getId()).isEqualTo(createdCertificate.getCertificate().getId());
+        assertThat(certificate1.getCertificate().getName()).isEqualTo("certificate1");
+
+        hetznerCloudAPI.updateCertificate(certificate1.getCertificate().getId(), UpdateCertificateRequest.builder().name("new-certificate1").build());
+
+        certificate1 = hetznerCloudAPI.getCertificate(createdCertificate.getCertificate().getId());
+        assertThat(certificate1.getCertificate().getName()).isEqualTo("new-certificate1");
+
+        hetznerCloudAPI.deleteCertificate(certificate1.getCertificate().getId());
+
+        assertThat(hetznerCloudAPI.getCertificates().getCertificates()).hasSize(0);
+
     }
 
     @Test
@@ -526,11 +539,12 @@ public class HetznerCloudAPITest {
 
     @Test
     void createLoadBalancer() {
+
         LoadBalancerResponse loadBalancer = null;
         NetworkResponse networkResponse = null;
         try {
-            String networkName = testIdentifier + "-createLoadBalancer";
-            NetworkRequest.NetworkRequestBuilder networkRequest = NetworkRequest.builder()
+            var networkName = testIdentifier + "-createLoadBalancer";
+            var networkRequest = NetworkRequest.builder()
                     .ipRange("10.0.0.0/16")
                     .subnets(Collections.singletonList(getDefaultSubnet()))
                     .name(networkName);
@@ -538,10 +552,10 @@ public class HetznerCloudAPITest {
             assertNotNull(networkResponse);
             assertNotNull(networkResponse.getNetwork());
 
-            LoadBalancerType loadBalancerType = hetznerCloudAPI.getAllLoadBalancerTypes().getLoadBalancerTypes().get(0);
+            var loadBalancerType = hetznerCloudAPI.getAllLoadBalancerTypes().getLoadBalancerTypes().get(0);
             assertNotNull(loadBalancerType);
-            String loadBalancerName = testIdentifier + "-createLoadBalancer";
-            LoadBalancerRequest loadBalancerRequest = LoadBalancerRequest.builder()
+            var loadBalancerName = testIdentifier + "-createLoadBalancer";
+            var loadBalancerRequest = LoadBalancerRequest.builder()
                     .networkZone("eu-central")
                     .network(networkResponse.getNetwork().getId())
                     .loadBalancerType(loadBalancerType.getId().toString())
@@ -554,8 +568,8 @@ public class HetznerCloudAPITest {
             loadBalancer = hetznerCloudAPI.createLoadBalancer(loadBalancerRequest);
             assertNotNull(loadBalancer);
             assertNotNull(loadBalancer.getLoadBalancer());
-        } catch (HttpClientErrorException e) {
-            Assertions.fail(e.getResponseBodyAsString());
+        } catch (Exception e) {
+            Assertions.fail(e);
         } finally {
             if (loadBalancer != null) {
                 cleanupObjects.add(new CleanupObject(loadBalancer.getLoadBalancer().getId(), CleanupType.LOAD_BALANCER));
@@ -567,7 +581,7 @@ public class HetznerCloudAPITest {
     }
 
     private Subnet getDefaultSubnet() {
-        Subnet subnet = new Subnet();
+        var subnet = new Subnet();
         subnet.setType(SubnetType.cloud);
         subnet.setIpRange("10.0.0.0/24");
         subnet.setGateway("10.0.0.1");
@@ -688,8 +702,8 @@ public class HetznerCloudAPITest {
             placementGroup = hetznerCloudAPI.createPlacementGroup(placementGroupRequest);
             assertNotNull(placementGroup);
             assertNotNull(placementGroup.getPlacementGroup());
-        } catch (HttpClientErrorException ex) {
-            Assertions.fail(ex.getResponseBodyAsString());
+        } catch (Exception e) {
+            Assertions.fail(e);
         } finally {
             if (placementGroup != null)
                 cleanupObjects.add(new CleanupObject(
@@ -698,7 +712,4 @@ public class HetznerCloudAPITest {
         }
     }
 
-    @Test
-    void convertToISO8601() {
-    }
 }
