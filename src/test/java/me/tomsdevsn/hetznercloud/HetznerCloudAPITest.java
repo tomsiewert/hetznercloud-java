@@ -52,6 +52,11 @@ public class HetznerCloudAPITest {
             log.info("removing certificate '{}'", certificate.getName());
             hetznerCloudAPI.deleteCertificate(certificate.getId());
         }));
+
+        hetznerCloudAPI.getSSHKeys().getSshKeys().forEach((sshKey -> {
+            log.info("removing ssh key '{}'", sshKey.getName());
+            hetznerCloudAPI.deleteSSHKey(sshKey.getId());
+        }));
     }
 
     private Object cleanup(CleanupObject cleanupObject) {
@@ -64,8 +69,6 @@ public class HetznerCloudAPITest {
                 return hetznerCloudAPI.deleteNetwork(cleanupObject.getId());
             case IMAGE:
                 return hetznerCloudAPI.deleteImage(cleanupObject.getId());
-            case SSH_KEY:
-                return hetznerCloudAPI.deleteSSHKey(cleanupObject.getId());
             case FLOATING_IP:
                 return hetznerCloudAPI.deleteFloatingIP(cleanupObject.getId());
             case PLACEMENT_GROUP:
@@ -76,7 +79,9 @@ public class HetznerCloudAPITest {
     }
 
     @Test
-    void getServers() {
+    void testManageServers() {
+
+
     }
 
     @Test
@@ -297,36 +302,31 @@ public class HetznerCloudAPITest {
     }
 
     @Test
-    @Disabled
-    void createSSHKey() {
+    void manageSSHKeys() {
 
         var publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDS4NLE+d5jLs32yDDE4/JrCv8t0zk7tK3Z2nSQxPaj pelle@zoidberg";
-        var name = "sshkey-" + UUID.randomUUID();
 
-        var request = SSHKeyRequest.builder().name(name).publicKey(publicKey).label("label1", "value1").build();
-        var response = hetznerCloudAPI.createSSHKey(request);
-        cleanupObjects.add(new CleanupObject(response.getSshKey().getId(), CleanupType.SSH_KEY));
 
-        assertNotNull(response);
-        assertNotNull(response.getSshKey());
+        assertThat(hetznerCloudAPI.getSSHKeys().getSshKeys()).hasSize(0);
 
-        var sshKeys = hetznerCloudAPI.getSSHKeyByName(name);
+        var createdKey = hetznerCloudAPI.createSSHKey(SSHKeyRequest.builder().name("sshkey1").publicKey(publicKey).label("label1", "value1").build());
+
+        assertThat(createdKey).isNotNull();
+        assertThat(createdKey.getSshKey()).isNotNull();
+
+        var sshKeys = hetznerCloudAPI.getSSHKeyByName("sshkey1");
 
         assertThat(sshKeys.getSshKeys()).hasSize(1);
         assertThat(sshKeys.getSshKeys().get(0).getLabels()).hasSize(1);
         assertThat(sshKeys.getSshKeys().get(0).getLabels().get("label1")).isEqualTo("value1");
-    }
 
-    @Test
-    void changeSSHKeyName() {
-    }
+        hetznerCloudAPI.updateSSHKey(createdKey.getSshKey().getId(), UpdateSSHKeyRequest.builder().name("new-sshkey1").build());
 
-    @Test
-    void updateSSHKey() {
-    }
+        var sshKey1 = hetznerCloudAPI.getSSHKey(createdKey.getSshKey().getId());
+        assertThat(sshKey1.getSshKey().getName()).isEqualTo("new-sshkey1");
 
-    @Test
-    void deleteSSHKey() {
+        hetznerCloudAPI.deleteSSHKey(createdKey.getSshKey().getId());
+        assertThat(hetznerCloudAPI.getSSHKeys().getSshKeys()).hasSize(0);
     }
 
     @Test

@@ -32,6 +32,11 @@ public class HetznerCloudAPI {
      *              The API token can be created within the Hetzner Cloud Console
      */
     public HetznerCloudAPI(String hcloudToken) {
+
+        if (hcloudToken == null || hcloudToken.isBlank()) {
+            throw new RuntimeException("no Hetzner cloud token provided");
+        }
+
         this.hcloudToken = hcloudToken;
 
         client = new OkHttpClient();
