@@ -2244,7 +2244,7 @@ public class HetznerCloudAPI {
         return exchange(url, HttpMethod.POST, null, clazz);
     }
 
-    public enum HttpMethod {
+    private enum HttpMethod {
         GET, PUT, POST, DELETE
     }
 
