@@ -28,7 +28,7 @@ public class HetznerCloudAPI {
     /**
      * Initial method to use the API
      *
-     * @param token API-Token for Hetzner Cloud API
+     * @param hcloudToken API-Token for Hetzner Cloud API
      *              The API token can be created within the Hetzner Cloud Console
      */
     public HetznerCloudAPI(String hcloudToken) {
@@ -937,13 +937,13 @@ public class HetznerCloudAPI {
     /**
      * Create a SSH key.
      *
-     * @param SSHKeyRequest Request object
+     * @param sshKeyRequest Request object
      * @return SSHKeyResponse object
      */
-    public SSHKeyResponse createSSHKey(SSHKeyRequest sshHKeyRequest) {
+    public SSHKeyResponse createSSHKey(SSHKeyRequest sshKeyRequest) {
         return post(
                 API_URL + "/ssh_keys",
-                sshHKeyRequest,
+                sshKeyRequest,
                 SSHKeyResponse.class);
     }
 
