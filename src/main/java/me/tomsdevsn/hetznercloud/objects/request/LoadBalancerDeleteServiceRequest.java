@@ -11,5 +11,5 @@ import lombok.RequiredArgsConstructor;
 public class LoadBalancerDeleteServiceRequest {
 
     @JsonProperty("listen_port")
-    private final long listenPort;
+    private final Long listenPort;
   }
