@@ -13,7 +13,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class HetznerCloudAPI {
@@ -2193,6 +2197,18 @@ public class HetznerCloudAPI {
         return delete(
                 API_URL + "/placement_groups/" + id,
                 String.class);
+    }
+
+    /**
+     * Converts a Date to the ISO-8601 format
+     *
+     * @param date Date to be converted
+     * @return Date in ISO-8601 format
+     */
+    public String convertToISO8601(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 
     private <T> T exchange(String url, HttpMethod method, Object body, Class<T> clazz) {
