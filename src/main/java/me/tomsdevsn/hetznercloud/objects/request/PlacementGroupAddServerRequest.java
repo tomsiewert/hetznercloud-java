@@ -10,5 +10,5 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlacementGroupAddServerRequest {
     @JsonProperty("placement_group")
-    private long placementGroup;
+    private Long placementGroup;
 }
