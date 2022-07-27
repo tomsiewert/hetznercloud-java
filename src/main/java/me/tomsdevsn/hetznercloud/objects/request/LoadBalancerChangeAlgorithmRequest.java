@@ -1,17 +1,15 @@
 package me.tomsdevsn.hetznercloud.objects.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Map;
-
 @Data
 @Builder
 @AllArgsConstructor
-public class UpdatePlacementGroupRequest {
+public class LoadBalancerChangeAlgorithmRequest {
 
-    private String name;
-    private Map<String, String> labels;
-
+    @JsonProperty("type")
+    private String type;
 }

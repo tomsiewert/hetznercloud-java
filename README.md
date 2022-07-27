@@ -49,8 +49,10 @@ The tests need an API Token for the Hetzner Cloud. The API token has to be set a
 To obtain an API key, please see [the official API documentation](https://docs.hetzner.cloud/#getting-started).
 
 ```
-HCLOUD_TOKEN="" mvn test
+HCLOUD_TOKEN="${api_key}" mvn test
 ```
+
+**!! All resources in the project associated to the API token will be deleted !!**
 
 ## JavaDocs
 
@@ -60,5 +62,4 @@ The JavaDocs are available [here](https://docs.hcloud.siewert.io)
 
 The following dependencies were used in this project:
  * [jackson-databind](https://github.com/FasterXML/jackson-databind) under Apache2.0 License
- * [spring-web](https://github.com/spring-projects/spring-framework/tree/master/spring-web) under Apache 2.0 License
  * [Lombok](https://projectlombok.org) under MIT License
