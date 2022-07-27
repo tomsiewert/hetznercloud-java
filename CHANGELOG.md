@@ -1,9 +1,10 @@
 # For next release
+  * **Christian Pelster**
+    * API: Migrate from Spring RestTemplate to OkHttp
   * **Tom Siewert**
     * pom: Upgrade nexus staging plugin to 1.6.13
     * ci: Enable tests on push
-  * **Christian Pelster**
-    * API: Migrate from Spring RestTemplate to OkHttp
+    * ci: Do not run e2e tests parallel
 
 *Not released yet*
 
