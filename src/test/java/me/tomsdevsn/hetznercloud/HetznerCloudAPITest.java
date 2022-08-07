@@ -90,6 +90,12 @@ public class HetznerCloudAPITest {
             log.info("removing network '{}'", network.getName());
             hetznerCloudAPI.deleteNetwork(network.getId());
         }));
+
+        log.info("removing primary ips");
+        hetznerCloudAPI.getPrimaryIPs().getPrimaryIPs().forEach(ip -> {
+            log.info("removing primary ip '{}'", ip.getId());
+            hetznerCloudAPI.deletePrimaryIP(ip.getId());
+        });
     }
 
     private Object cleanup(CleanupObject cleanupObject) {
@@ -102,9 +108,38 @@ public class HetznerCloudAPITest {
                 return hetznerCloudAPI.deleteFloatingIP(cleanupObject.getId());
             case PLACEMENT_GROUP:
                 return hetznerCloudAPI.deletePlacementGroup(cleanupObject.getId());
+            case PRIMARY_IP:
+                return hetznerCloudAPI.deletePrimaryIP(cleanupObject.getId());
             default:
                 return null;
         }
+    }
+
+    @Test
+    void testPrimaryIPCreation() {
+        assertThat(hetznerCloudAPI.getPrimaryIPs().getPrimaryIPs()).hasSize(0);
+
+        var name = UUID.randomUUID().toString();
+
+        CreatePrimaryIPResponse primaryIP = hetznerCloudAPI.createPrimaryIP(
+                CreatePrimaryIPRequest.builder()
+                        .name(name)
+                        .datacenter("fsn1-dc14")
+                        .type(IPType.ipv6)
+                        .assigneeType(IPAssigneeType.server)
+                        .label("ilike", "cheesecake")
+                .build());
+
+        assertThat(primaryIP).isNotNull();
+        assertThat(primaryIP.getPrimaryIP()).isNotNull();
+
+        assertThat(primaryIP.getPrimaryIP().getName()).isEqualTo(name);
+        assertThat(primaryIP.getPrimaryIP().getType()).isEqualTo(IPType.ipv6);
+        assertThat(primaryIP.getPrimaryIP().getLabels().get("ilike")).isEqualTo("cheesecake");
+
+        hetznerCloudAPI.deletePrimaryIP(primaryIP.getPrimaryIP().getId());
+
+        assertThat(hetznerCloudAPI.getPrimaryIPs().getPrimaryIPs()).hasSize(0);
     }
 
     @Test

@@ -28,13 +28,6 @@ public class PublicNet {
         private String ip;
         private boolean blocked;
         @JsonProperty("dns_ptr")
-        private List<DNSPTR> dnsPTR;
-
-        @Data
-        public static class DNSPTR {
-            private String ip;
-            @JsonProperty("dns_ptr")
-            private String dnsPTR;
-        }
+        private List<DnsPTR> dnsPTR;
     }
 }

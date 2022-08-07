@@ -10,21 +10,23 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class FloatingIP {
+public class PrimaryIP {
 
     private Long id;
-    private String name;
-    private String description;
     private String ip;
+    private String name;
+    @JsonProperty("assignee_id")
+    private Long assigneeId;
+    @JsonProperty("assignee_type")
+    private IPAssigneeType assigneeType;
     private IPType type;
-    private Long server;
-    @JsonProperty("dns_ptr")
-    private List<DnsPTR> dnsPTR;
-    @JsonProperty("home_location")
-    private Location homeLocation;
+    @JsonProperty("auto_delete")
+    private Boolean autoDelete;
     private Boolean blocked;
-    private Protection protection;
-    private Map<String, String> labels;
     @JsonDeserialize(using = DateDeserializer.class)
     private Date created;
+    private Datacenter datacenter;
+    @JsonProperty("dns_ptr")
+    private List<DnsPTR> dnsPtr;
+    private Map<String, String> labels;
 }

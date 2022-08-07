@@ -5,13 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
+
+import java.util.Map;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class ChangeReverseDNSRequest {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UpdatePrimaryIPRequest {
 
-    private String ip;
-    @JsonProperty("dns_ptr")
-    private String dnsPTR;
+    @JsonProperty("auto_delete")
+    private Boolean autoDelete;
+    @Singular
+    private Map<String, String> labels;
+    private String name;
 }

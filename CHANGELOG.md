@@ -7,6 +7,7 @@
     * ci: Do not run e2e tests parallel
     * FloatingIP: Drop obsolete HomeLocation class
     * FloatingIP: Use generic IP type enum
+    * API: Add Primary IP support
 
 *Not released yet*
 

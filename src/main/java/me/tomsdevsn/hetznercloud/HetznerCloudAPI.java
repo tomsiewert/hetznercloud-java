@@ -701,6 +701,172 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Get all Primary IPs in a project
+     *
+     * @return PrimaryIPsResponse
+     */
+    public PrimaryIPsResponse getPrimaryIPs() {
+        return getPrimaryIPs(null, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all Primary IPs in a project by label selector
+     *
+     * @param labelSelector Label selector
+     * @return PrimaryIPsResponse
+     */
+    public PrimaryIPsResponse getPrimaryIPs(String labelSelector) {
+        return getPrimaryIPs(labelSelector, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all Primary IPs in a project
+     *
+     * @param labelSelector Label selector
+     * @param paginationParameters Pagination parametres
+     * @return PrimaryIPsResponse
+     */
+    public PrimaryIPsResponse getPrimaryIPs(String labelSelector, PaginationParameters paginationParameters) {
+        return get(
+                UrlBuilder.from(API_URL + "/primary_ips")
+                        .queryParamIfPresent("label_selector", Optional.ofNullable(labelSelector))
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUri(),
+                PrimaryIPsResponse.class);
+    }
+
+    /**
+     * Get a Primary IP by its name in a project
+     *
+     * @param name Name of the Primary IP
+     * @return PrimaryIPsResponse
+     */
+    public PrimaryIPsResponse getPrimaryIPByName(String name) {
+        return get(
+                UrlBuilder.from(API_URL + "/primary_ips")
+                        .queryParam("name", name)
+                        .toUri(),
+                PrimaryIPsResponse.class);
+    }
+
+    /**
+     * Get a Primary IP by the IP address itself
+     *
+     * @param ip IP address
+     * @return PrimaryIPsResponse
+     */
+    public PrimaryIPsResponse getPrimaryIP(String ip) {
+        return get(
+                UrlBuilder.from(API_URL + "/primary_ips")
+                        .queryParam("ip", ip)
+                        .toUri(),
+                PrimaryIPsResponse.class);
+    }
+
+    /**
+     * Get a Primary IP by its id
+     *
+     * @param id id of the Primary IP
+     * @return PrimaryIPResponse
+     */
+    public PrimaryIPResponse getPrimaryIP(long id) {
+        return get(
+                API_URL + "/primary_ips/" + id,
+                PrimaryIPResponse.class);
+    }
+
+    /**
+     * Create a Primary IP
+     *
+     * @param createPrimaryIPRequest Primary IP request
+     * @return CreatePrimaryIPResponse
+     */
+    public CreatePrimaryIPResponse createPrimaryIP(CreatePrimaryIPRequest createPrimaryIPRequest) {
+        if (createPrimaryIPRequest.getAssigneeId() != null && createPrimaryIPRequest.getDatacenter() != null)
+            throw new InvalidParametersException("Assignee id and datacenter can not be set at the same time");
+
+        return post(
+                API_URL + "/primary_ips",
+                createPrimaryIPRequest,
+                CreatePrimaryIPResponse.class);
+    }
+
+    /**
+     * Update a Primary IP
+     * @param updatePrimaryIPRequest Primary IP Update request
+     * @return PrimaryIPResponse
+     */
+    public PrimaryIPResponse updatePrimaryIP(long id, UpdatePrimaryIPRequest updatePrimaryIPRequest) {
+        return post(
+                API_URL + "/primary_ips/" + id,
+                updatePrimaryIPRequest,
+                PrimaryIPResponse.class);
+    }
+
+    /**
+     * Assign a Primary IP to a resource.
+     *
+     * @param id id of the Primary IP
+     * @param assignPrimaryIPRequest Primary IP Resource Assignment request
+     * @return ActionResponse
+     */
+    public ActionResponse assignPrimaryIP(long id, AssignPrimaryIPRequest assignPrimaryIPRequest) {
+        return post(
+                API_URL + "/primary_ips/" + id + "/actions/assign",
+                assignPrimaryIPRequest,
+                ActionResponse.class);
+    }
+
+    /**
+     * Unassign a Primary IP from a resource.
+     *
+     * @param id id of the Primary IP
+     * @return ActionResponse
+     */
+    public ActionResponse unassignPrimaryIP(long id) {
+        return post(
+                API_URL + "/primary_ips/" + id + "/actions/unassign",
+                ActionResponse.class);
+    }
+
+    /**
+     * Update a reverse DNS entry for a Primary IP
+     *
+     * @param id id of the Primary IP
+     * @param changeReverseDNSRequest Reverse DNS update change
+     * @return ActionResponse
+     */
+    public ActionResponse changePrimaryIPReverseDNS(long id, ChangeReverseDNSRequest changeReverseDNSRequest) {
+        return post(
+                API_URL + "/primary_ips/" + id + "/actions/change_dns_ptr",
+                changeReverseDNSRequest,
+                ActionResponse.class);
+    }
+
+    public ActionResponse changePrimaryIPProtection(long id, ChangeProtectionRequest changeProtectionRequest) {
+        if (changeProtectionRequest.isRebuild())
+            throw new InvalidParametersException("Only delete is valid for Primary IPs");
+
+        return post(
+                API_URL + "/primary_ips/" + id + "/actions/change_protection",
+                changeProtectionRequest,
+                ActionResponse.class);
+    }
+
+    /**
+     * Delete a Primary IP
+     *
+     * @param id id of the Primary IP
+     * @return nothing
+     */
+    public String deletePrimaryIP(Long id) {
+        return delete(
+                API_URL + "/primary_ips/" + id,
+                String.class);
+    }
+
+    /**
      * Get all Floating IPs in a project.
      *
      * @return FloatingIPsResponse
