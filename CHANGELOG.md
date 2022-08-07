@@ -5,6 +5,7 @@
     * pom: Upgrade nexus staging plugin to 1.6.13
     * ci: Enable tests on push
     * ci: Do not run e2e tests parallel
+    * FloatingIP: Drop obsolete HomeLocation class
 
 *Not released yet*
 

@@ -22,7 +22,7 @@ public class FloatingIP {
     private List<DnsPTR> dnsPTR;
     @JsonProperty("home_location")
     private Location homeLocation;
-    private boolean blocked;
+    private Boolean blocked;
     private Protection protection;
     private Map<String, String> labels;
     @JsonDeserialize(using = DateDeserializer.class)
@@ -33,19 +33,5 @@ public class FloatingIP {
         private String ip;
         @JsonProperty("dns_ptr")
         private String dnsPTR;
-    }
-
-    @Deprecated
-    @Data
-    public static class HomeLocation {
-        private Long id;
-        private String name;
-        private String description;
-        private String country;
-        private String city;
-        private Double latitude;
-        private Double longitude;
-        @JsonProperty("network_zone")
-        private String networkZone;
     }
 }
