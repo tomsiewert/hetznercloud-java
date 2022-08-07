@@ -16,7 +16,7 @@ public class FloatingIP {
     private String name;
     private String description;
     private String ip;
-    private String type;
+    private IPType type;
     private Long server;
     @JsonProperty("dns_ptr")
     private List<DnsPTR> dnsPTR;

@@ -6,6 +6,7 @@
     * ci: Enable tests on push
     * ci: Do not run e2e tests parallel
     * FloatingIP: Drop obsolete HomeLocation class
+    * FloatingIP: Use generic IP type enum
 
 *Not released yet*
 

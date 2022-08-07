@@ -886,7 +886,7 @@ public class HetznerCloudAPI {
     /**
      * Get all SSH keys.
      *
-     * @param paginationParameters Pagination parametres.
+     * @param paginationParameters Pagination parameters
      * @return SSHKeysResponse
      */
     public SSHKeysResponse getSSHKeys(PaginationParameters paginationParameters) {
