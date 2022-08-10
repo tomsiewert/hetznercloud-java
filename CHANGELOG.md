@@ -8,6 +8,7 @@
     * FloatingIP: Drop obsolete HomeLocation class
     * FloatingIP: Use generic IP type enum
     * API: Add Primary IP support
+    * Pricing: Make Pricing class more generic
 
 *Not released yet*
 

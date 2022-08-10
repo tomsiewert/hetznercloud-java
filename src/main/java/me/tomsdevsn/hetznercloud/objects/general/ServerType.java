@@ -2,6 +2,7 @@ package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.objects.pricing.LocationPrice;
 
 import java.util.List;
 
@@ -15,30 +16,9 @@ public class ServerType {
     private Long memory;
     private Long disk;
     private boolean deprecated;
-    private List<Prices> prices;
+    private List<LocationPrice> prices;
     @JsonProperty("storage_type")
     private String storageType;
     @JsonProperty("cpu_type")
     private String cpuType;
-
-    @Data
-    public static class Prices {
-        private String location;
-        @JsonProperty("price_hourly")
-        private PriceHourly priceHourly;
-        @JsonProperty("price_monthly")
-        private PriceMonthly priceMonthly;
-
-        @Data
-        public static class PriceHourly {
-            private String net;
-            private String gross;
-        }
-
-        @Data
-        public static class PriceMonthly {
-            private String net;
-            private String gross;
-        }
-    }
 }
