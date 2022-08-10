@@ -39,7 +39,7 @@ class UrlBuilder {
      * @param value optional query parameter value
      * @return the current {@link UrlBuilder} instance
      */
-    public UrlBuilder queryParamIfPresent(String name, Optional<Integer> value) {
+    public UrlBuilder queryParamIfPresent(String name, Optional<Object> value) {
         value.ifPresent((it) -> queryParams.put(name, it.toString()));
         return this;
     }

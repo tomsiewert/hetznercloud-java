@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+import me.tomsdevsn.hetznercloud.objects.pricing.LocationPrice;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,5 @@ public class LoadBalancerType {
     private Long maxAssignedCertificates;
     @JsonDeserialize(using = DateDeserializer.class)
     private Date deprecated;
-    private List<ServerType.Prices> prices;
-
+    private List<LocationPrice> prices;
 }
