@@ -3,6 +3,9 @@ package me.tomsdevsn.hetznercloud;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
+import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
+import me.tomsdevsn.hetznercloud.objects.general.Firewall;
+import me.tomsdevsn.hetznercloud.objects.general.FirewallRule;
 import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
 import me.tomsdevsn.hetznercloud.objects.pagination.PaginationParameters;
 import me.tomsdevsn.hetznercloud.objects.request.*;
@@ -15,9 +18,7 @@ import okhttp3.RequestBody;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class HetznerCloudAPI {
@@ -687,6 +688,195 @@ public class HetznerCloudAPI {
         return get(
                 API_URL + "/datacenters?" + name,
                 DatacentersResponse.class);
+    }
+
+    /**
+     * Returns 25 Firewall objects.
+     *
+     * @return a FirewallsResponse containing all Firewalls of the requested page and paging metadata
+     * @see #getFirewalls(PaginationParameters)
+     */
+    public FirewallsResponse getFirewalls() {
+        return getFirewalls(new PaginationParameters(null, null));
+    }
+
+    /**
+     * Returns all Firewall objects.
+     *
+     * @param paginationParameters
+     * @return a FirewallsResponse containing all Firewalls of the requested page and paging metadata
+     */
+    public FirewallsResponse getFirewalls(PaginationParameters paginationParameters) {
+        return get(
+                UrlBuilder.from(API_URL + "/firewalls")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUri(),
+                FirewallsResponse.class);
+    }
+
+    /**
+     * Creates a new Firewall.
+     *
+     * @param createFirewallRequest the config of the Firewall you want to create
+     * @return a FirewallResponse containing the created Firewall and taken Actions
+     */
+    public FirewallResponse createFirewall(CreateFirewallRequest createFirewallRequest) {
+        return post(
+                API_URL + "/firewalls",
+                createFirewallRequest,
+                FirewallResponse.class);
+    }
+
+    /**
+     * Deletes a Firewall.
+     *
+     * @param id
+     * @throws IllegalStateException if the Firewall is still attached to resources
+     */
+    public void deleteFirewall(long id) throws IllegalStateException {
+        final Firewall firewall = getFirewallResponse(id).getFirewall();
+        if (firewall.getAppliedTo().size() != 0)
+            throw new IllegalStateException("FW is attached to resources, this prevents deletion");
+
+        delete(
+                API_URL + "/firewalls/" + id,
+                String.class);
+    }
+
+    /**
+     * Gets a specific Firewall.
+     *
+     * @param id
+     * @return the searched Firewall
+     */
+    public Firewall getFirewall(long id) {
+        return getFirewallResponse(id)
+                .getFirewall();
+    }
+
+    /**
+     * Gets a specific Firewall.
+     *
+     * @param id
+     * @return the FirewallResponse containing the searched Firewall
+     */
+    private FirewallResponse getFirewallResponse(long id) {
+        return get(
+                API_URL + "/firewalls/" + id,
+                FirewallResponse.class);
+    }
+
+    /**
+     * Updates the Firewall. This replaces the current labels with the given
+     *
+     * @param id
+     * @param labels new labels of the firewall
+     * @param name new name of the firewall
+     * @return the FirewallResponse of the request, containing the new Firewall and Metadata
+     */
+    public FirewallResponse updateFirewall(long id, Map<String, String> labels, String name) {
+        return put(
+                API_URL + "/firewalls/" + id,
+                UpdateFirewallRequest.builder()
+                        .labels(labels)
+                        .name(name)
+                        .build(),
+                FirewallResponse.class);
+    }
+
+    /**
+     * Returns all Action objects for a Firewall.
+     *
+     * @param id
+     * @return an ActionsResponse with the executed actions
+     */
+    public ActionsResponse getActionsOfFirewall(long id) {
+        return get(
+                String.format("%s/firewalls/%s/actions", API_URL, id),
+                ActionsResponse.class);
+    }
+
+    /**
+     * Returns a specific Action for a Firewall.
+     *
+     * @param firewallId
+     * @param actionId
+     * @return an ActionsResponse with the executed actions
+     */
+    public ActionResponse getActionOfFirewall(long firewallId, long actionId) {
+        return get(
+                String.format("%s/firewalls/%s/actions/%s", API_URL, firewallId, actionId),
+                ActionResponse.class);
+    }
+
+    /**
+     * Applies one Firewall to multiple resources.
+     *
+     * @param id of the firewall you want to add to resources
+     * @param applicationTargets you want to add
+     * @return an ActionsResponse with the executed actions
+     * @throws RuntimeException if the removalTargets don't pass {@link FWApplicationTarget#isValidOrThrow()}
+     */
+    public ActionsResponse applyFirewallToResources(long id, List<FWApplicationTarget> applicationTargets)
+            throws RuntimeException {
+        for (var target: applicationTargets)
+            target.isValidOrThrow();
+
+        return post(
+                API_URL + "/firewalls/" + id + "/actions/apply_to_resources",
+                Map.of("apply_to", applicationTargets),
+                ActionsResponse.class);
+    }
+
+    /**
+     * Removes one Firewall from multiple resources.
+     *
+     * @param id of the firewall you want to remove resources from
+     * @param removalTargets you want to remove
+     * @return an ActionsResponse with the executed actions
+     * @throws RuntimeException if the removalTargets don't pass {@link FWApplicationTarget#isValidOrThrow()}
+     */
+    public ActionsResponse removeFirewallFromResources(long id, List<FWApplicationTarget> removalTargets)
+            throws RuntimeException {
+        for (var target: removalTargets)
+            target.isValidOrThrow();
+
+        return post(
+                API_URL + "/firewalls/" + id + "/actions/remove_from_resources",
+                Map.of("remove_from", removalTargets),
+                ActionsResponse.class);
+    }
+
+    /**
+     * Removes all rules of a Firewall.
+     *
+     * @param id the firewall you want to remove the rules from
+     * @return an ActionsResponse with the executed actions
+     * @see #setFirewallRules(long, List)
+     */
+    public ActionsResponse removeAllRulesFromFirewall(long id) {
+        return setFirewallRules(id, Collections.EMPTY_LIST);
+    }
+
+    /**
+     * Sets the rules of a Firewall. All existing rules will be overwritten.
+     * If the firewallRules are empty, all rules are deleted.
+     *
+     * @param id of the Firewall you want to set the Rules on.
+     * @param firewallRules you want to set.
+     * @return an ActionsResponse with the executed actions
+     * @throws IllegalArgumentException if the size of firewallRules is greater than 50 (size > 50)
+     */
+    public ActionsResponse setFirewallRules(long id, List<FirewallRule> firewallRules)
+            throws IllegalArgumentException {
+        if (firewallRules.size() > 50)
+            throw new IllegalArgumentException("You can't add more than 50 rules");
+
+        return post(
+                API_URL + "/firewalls/" + id + "/actions/set_rules",
+                Map.of("rules", firewallRules),
+                ActionsResponse.class);
     }
 
     /**
