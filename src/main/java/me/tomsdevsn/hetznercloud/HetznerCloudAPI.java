@@ -1219,6 +1219,33 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Get all SSH keys by label.
+     *
+     * @param labelSelector Label selector
+     * @return SSHKeysResponse
+     */
+    public SSHKeysResponse getSSHKeys(String labelSelector) {
+        return getSSHKeys(labelSelector, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all SSH keys by label.
+     *
+     * @param labelSelector Label selector
+     * @param paginationParameters Pagination parameters
+     * @return SSHKeysResponse
+     */
+    public SSHKeysResponse getSSHKeys(String labelSelector, PaginationParameters paginationParameters) {
+        return get(
+                UrlBuilder.from(API_URL + "/ssh_keys")
+                        .queryParam("label_selector", labelSelector)
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUri(),
+                SSHKeysResponse.class);
+    }
+
+    /**
      * Get an SSH key by ID.
      *
      * @param id ID of the SSH key
@@ -1231,12 +1258,12 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get a SSH key by name.
+     * Get an SSH key by name.
      *
      * @param name name of the SSH key
      * @return SSHKeysResponse object
      */
-    public SSHKeysResponse getSSHKeyByName(String name) {
+    public SSHKeysResponse getSSHKey(String name) {
         return get(
                 UrlBuilder.from(API_URL + "/ssh_keys")
                         .queryParam("name", name)
@@ -1259,7 +1286,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Create a SSH key.
+     * Create an SSH key.
      *
      * @param sshKeyRequest Request object
      * @return SSHKeyResponse object
@@ -1272,7 +1299,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Change the name of a SSH key
+     * Change the name of an SSH key
      *
      * @param id                      ID of the SSH key
      * @param changeSSHKeyNameRequest Request object
@@ -1288,7 +1315,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Update parameters of a SSH key
+     * Update parameters of an SSH key
      *
      * @param id                  ID of the SSH key
      * @param updateSSHKeyRequest Request Object
@@ -1302,9 +1329,9 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Delete a SSH key.
+     * Delete an SSH key.
      * <p>
-     * This object does not have a respond!
+     * This object does not have a response!
      *
      * @param id ID of the SSH key
      * @return String
@@ -1324,20 +1351,6 @@ public class HetznerCloudAPI {
         return get(
                 API_URL + "/server_types",
                 ServerTypesResponse.class);
-    }
-
-
-    /**
-     * Get all Load Balancer types.
-     *
-     * @return LoadBalancerTypeResponse object
-     * @deprecated Will be removed with a further release. Please use {@link #getLoadBalancerTypes()}
-     */
-    @Deprecated
-    public LoadBalancerTypeResponse getAllLoadBalancerTypes() {
-        return get(
-                API_URL + "/load_balancer_types",
-                LoadBalancerTypeResponse.class);
     }
 
     /**
