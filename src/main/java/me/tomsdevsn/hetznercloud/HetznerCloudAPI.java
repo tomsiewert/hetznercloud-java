@@ -732,13 +732,8 @@ public class HetznerCloudAPI {
      * Deletes a Firewall.
      *
      * @param id
-     * @throws IllegalStateException if the Firewall is still attached to resources
      */
-    public void deleteFirewall(long id) throws IllegalStateException {
-        final Firewall firewall = getFirewallResponse(id).getFirewall();
-        if (firewall.getAppliedTo().size() != 0)
-            throw new IllegalStateException("FW is attached to resources, this prevents deletion");
-
+    public void deleteFirewall(long id) {
         delete(
                 API_URL + "/firewalls/" + id,
                 String.class);
