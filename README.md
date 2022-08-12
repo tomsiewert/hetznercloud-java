@@ -52,8 +52,6 @@ To obtain an API key, please see [the official API documentation](https://docs.h
 HCLOUD_TOKEN="${api_key}" mvn test
 ```
 
-**!! All resources in the project associated to the API token will be deleted !!**
-
 ## JavaDocs
 
 The JavaDocs are available [here](https://docs.hcloud.siewert.io)
