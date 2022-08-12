@@ -2,6 +2,7 @@ package me.tomsdevsn.hetznercloud;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.tomsdevsn.hetznercloud.exception.APIRequestException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
 import me.tomsdevsn.hetznercloud.objects.general.FirewallRule;
@@ -2546,7 +2547,7 @@ public class HetznerCloudAPI {
                     .method(method.toString(), requestBody).build()).execute();
 
             if (!response.isSuccessful()) {
-                throw new RuntimeException(response.body().string());
+                throw new APIRequestException(objectMapper.readValue(response.body().string(), APIErrorResponse.class));
             }
 
             if (String.class.equals(clazz)) {
