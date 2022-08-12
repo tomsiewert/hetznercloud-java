@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
-import me.tomsdevsn.hetznercloud.objects.general.Firewall;
 import me.tomsdevsn.hetznercloud.objects.general.FirewallRule;
 import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
 import me.tomsdevsn.hetznercloud.objects.pagination.PaginationParameters;
@@ -755,17 +754,13 @@ public class HetznerCloudAPI {
      * Updates the Firewall. This replaces the current labels with the given
      *
      * @param id
-     * @param labels new labels of the firewall
-     * @param name new name of the firewall
+     * @param updateFirewallRequest the changes you want to perform
      * @return the FirewallResponse of the request, containing the new Firewall and Metadata
      */
-    public FirewallResponse updateFirewall(long id, Map<String, String> labels, String name) {
+    public FirewallResponse updateFirewall(long id, UpdateFirewallRequest updateFirewallRequest) {
         return put(
                 API_URL + "/firewalls/" + id,
-                UpdateFirewallRequest.builder()
-                        .labels(labels)
-                        .name(name)
-                        .build(),
+                updateFirewallRequest,
                 FirewallResponse.class);
     }
 
