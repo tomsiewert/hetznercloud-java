@@ -468,17 +468,12 @@ public class HetznerCloudAPI {
      * Change the type from the server
      * <p>
      * example: cx11 to cx21
-     * <p>
-     * Attention: It will stops the server, but it starts automatically after the upgrade
      *
      * @param id                ID of the server
      * @param changeTypeRequest Request object
      * @return respond
-     * @throws java.lang.InterruptedException because there is a timeout
      */
-    public ActionResponse changeServerType(long id, ChangeTypeRequest changeTypeRequest) throws InterruptedException {
-        this.powerOffServer(id);
-        TimeUnit.SECONDS.sleep(7);
+    public ActionResponse changeServerType(long id, ChangeTypeRequest changeTypeRequest) {
         return post(
                 API_URL + "/servers/" + id + "/actions/change_type",
                 changeTypeRequest,
