@@ -1,6 +1,7 @@
 package me.tomsdevsn.hetznercloud.objects.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class CreateFirewallRequest {
 
     @Singular("applicationTarget")
@@ -23,18 +25,5 @@ public class CreateFirewallRequest {
     @Singular("firewallRule")
     @JsonProperty("rules")
     private List<FirewallRule> firewallRules;
-
-    public CreateFirewallRequest(List<FWApplicationTarget> applyTo,
-                                 Map<String, String> labels,
-                                 String name,
-                                 List<FirewallRule> firewallRules) {
-        for (var target: applyTo)
-            target.isValidOrThrow();
-
-        this.applyTo = applyTo;
-        this.labels = labels;
-        this.name = name;
-        this.firewallRules = firewallRules;
-    }
 
 }
