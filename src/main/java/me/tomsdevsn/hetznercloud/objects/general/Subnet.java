@@ -2,6 +2,7 @@ package me.tomsdevsn.hetznercloud.objects.general;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.objects.enums.SubnetType;
 
 @Data
 public class Subnet {

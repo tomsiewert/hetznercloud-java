@@ -2,8 +2,7 @@ package me.tomsdevsn.hetznercloud.objects.pricing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import me.tomsdevsn.hetznercloud.objects.general.IPType;
-import me.tomsdevsn.hetznercloud.objects.general.ServerType;
+import me.tomsdevsn.hetznercloud.objects.enums.IPType;
 
 import java.util.List;
 

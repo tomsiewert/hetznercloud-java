@@ -1,6 +1,7 @@
 package me.tomsdevsn.hetznercloud;
 
 import lombok.extern.slf4j.Slf4j;
+import me.tomsdevsn.hetznercloud.objects.enums.*;
 import me.tomsdevsn.hetznercloud.objects.general.*;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;

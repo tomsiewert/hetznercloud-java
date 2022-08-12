@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
-import me.tomsdevsn.hetznercloud.objects.general.IPAssigneeType;
-import me.tomsdevsn.hetznercloud.objects.general.IPType;
+import me.tomsdevsn.hetznercloud.objects.enums.IPAssigneeType;
+import me.tomsdevsn.hetznercloud.objects.enums.IPType;
 
 import java.util.Map;
 

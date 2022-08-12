@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.APIRequestException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
+import me.tomsdevsn.hetznercloud.objects.enums.ImageType;
 import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
 import me.tomsdevsn.hetznercloud.objects.general.FirewallRule;
-import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
+import me.tomsdevsn.hetznercloud.objects.enums.PlacementGroupType;
 import me.tomsdevsn.hetznercloud.objects.pagination.PaginationParameters;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
@@ -500,7 +501,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Create a image from a server
+     * Create an image from a server
      *
      * @param id                 ID of the server
      * @param createImageRequest Request object

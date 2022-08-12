@@ -9,6 +9,7 @@
     * FloatingIP: Use generic IP type enum
     * API: Add Primary IP support
     * Pricing: Make Pricing class more generic
+    * Move enums to enums package
 
 *Not released yet*
 

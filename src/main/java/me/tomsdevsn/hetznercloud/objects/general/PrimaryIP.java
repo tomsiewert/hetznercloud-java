@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+import me.tomsdevsn.hetznercloud.objects.enums.IPAssigneeType;
+import me.tomsdevsn.hetznercloud.objects.enums.IPType;
 
 import java.util.Date;
 import java.util.List;

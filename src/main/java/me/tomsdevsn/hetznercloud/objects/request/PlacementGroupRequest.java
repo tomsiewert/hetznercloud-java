@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
+import me.tomsdevsn.hetznercloud.objects.enums.PlacementGroupType;
 
 import java.util.Map;
 
