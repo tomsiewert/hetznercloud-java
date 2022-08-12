@@ -1,6 +1,9 @@
 # For next release
   * **Christian Pelster**
     * API: Migrate from Spring RestTemplate to OkHttp
+  * **Felix Krasemann**
+    * API: Add firewall support
+    * Datacenter: Fix name filter and remove incorrect field
   * **Tom Siewert**
     * pom: Upgrade nexus staging plugin to 1.6.13
     * ci: Enable tests on push
