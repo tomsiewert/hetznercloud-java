@@ -10,7 +10,7 @@
 
     <name>HetznerCloud-API</name>
     <description>Java-client for the Hetzner Cloud</description>
-    <url>https://github.com/TomSDEVSN/hetznercloud-api</url>
+    <url>https://github.com/tomsiewert/hetznercloud-api</url>
 
     <inceptionYear>2018</inceptionYear>
 
@@ -35,7 +35,7 @@
 
     <developers>
         <developer>
-            <id>TomSDEVSN</id>
+            <id>tomsiewert</id>
             <name>Tom Siewert</name>
             <email>tom@siewert.io</email>
             <url>https://siewert.io</url>
@@ -43,15 +43,15 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:TomSDEVSN/hetznercloud-java.git</connection>
-        <developerConnection>scm:git:git@github.com:TomSDEVSN/hetznercloud-java.git</developerConnection>
-        <url>https://github.com/TomSDEVSN/hetznercloud-java/tree/master</url>
+        <connection>scm:git:git@github.com:tomsiewert/hetznercloud-java.git</connection>
+        <developerConnection>scm:git:git@github.com:tomsiewert/hetznercloud-java.git</developerConnection>
+        <url>https://github.com/tomsiewert/hetznercloud-java/tree/main</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/TomSDEVSN/hetznercloud-java/issues</url>
+        <url>https://github.com/tomsiewert/hetznercloud-java/issues</url>
     </issueManagement>
 
     <properties>
