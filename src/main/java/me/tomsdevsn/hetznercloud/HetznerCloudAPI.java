@@ -685,7 +685,7 @@ public class HetznerCloudAPI {
      */
     public DatacentersResponse getDatacenter(String name) {
         return get(
-                API_URL + "/datacenters?" + name,
+                API_URL + "/datacenters?name=" + name,
                 DatacentersResponse.class);
     }
 
