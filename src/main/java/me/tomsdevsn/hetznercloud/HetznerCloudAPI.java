@@ -835,7 +835,6 @@ public class HetznerCloudAPI {
      * @param id of the Firewall you want to set the Rules on.
      * @param firewallRules you want to set.
      * @return an ActionsResponse with the executed actions
-     * @throws IllegalArgumentException if the size of firewallRules is greater than 50 (size > 50)
      */
     public ActionsResponse setFirewallRules(long id, List<FirewallRule> firewallRules) {
         return post(
