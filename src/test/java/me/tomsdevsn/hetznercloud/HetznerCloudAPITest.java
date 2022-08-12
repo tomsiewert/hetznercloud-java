@@ -28,6 +28,8 @@ public class HetznerCloudAPITest {
 
     private final HetznerCloudAPI hetznerCloudAPI = new HetznerCloudAPI(System.getenv("HCLOUD_TOKEN"));
 
+    private Long CREATED_FW_ID;
+
     @AfterAll
     public void cleanUpAfter() {
         cleanup();
@@ -303,6 +305,99 @@ public class HetznerCloudAPITest {
 
     @Test
     void getDatacenters() {
+    }
+
+    @Test
+    void getFirewalls() {
+        final var firewalls = hetznerCloudAPI.getFirewalls();
+    }
+
+    @Test
+    void createFirewall() {
+        final var firewallRequest = CreateFirewallRequest.builder()
+                .applicationTarget(FWApplicationTarget.builder()
+                        .labelSelector(new FWLabelSelector("env==dev"))
+                        .type(TargetType.label_selector)
+                        .build())
+                //.applicationTarget(FWApplicationTarget.builder()
+                //        .server(new FWServerRef(12345678L))
+                //        .type(TargetType.server)
+                //        .build())
+                .label("test", "firewall")
+                .name("test-firewall")
+                .firewallRule(FirewallRule.builder()
+                        .description("test-fw-rule-http")
+                        .desinationIP("0.0.0.0/0")
+                        .port("80")
+                        .direction(FirewallRule.Direction.out)
+                        .protocol(FirewallRule.Protocol.tcp)
+                        .build())
+                .firewallRule(FirewallRule.builder()
+                        .description("test-fw-rule-https")
+                        .desinationIP("0.0.0.0/0")
+                        .port("443")
+                        .direction(FirewallRule.Direction.out)
+                        .protocol(FirewallRule.Protocol.tcp)
+                        .build())
+                .firewallRule(FirewallRule.builder()
+                        .description("test-fw-rule-icmp")
+                        .desinationIP("0.0.0.0/0")
+                        .direction(FirewallRule.Direction.out)
+                        .protocol(FirewallRule.Protocol.icmp)
+                        .build())
+                .build();
+        final var response = hetznerCloudAPI.createFirewall(firewallRequest);
+        CREATED_FW_ID = response.getFirewall().getId();
+    }
+
+    @Test
+    void deleteFirewall() {
+        final List<Firewall> firewalls = hetznerCloudAPI.getFirewalls().getFirewalls();
+        assertThat(firewalls).hasSizeGreaterThanOrEqualTo(1);
+
+        hetznerCloudAPI.deleteFirewall(CREATED_FW_ID);
+        assertThat(hetznerCloudAPI.getFirewalls().getFirewalls())
+                .hasSize(firewalls.size() - 1);
+    }
+
+    @Test
+    void getFirewall() {
+
+    }
+
+    @Test
+    void updateFirewall() {
+
+    }
+
+    @Test
+    void getActionsOfFirewall() {
+
+    }
+
+    @Test
+    void getActionOfFirewall() {
+
+    }
+
+    @Test
+    void applyFirewallToResources() {
+
+    }
+
+    @Test
+    void removeFirewallFromResources() {
+
+    }
+
+    @Test
+    void removeAllRulesFromFirewall() {
+
+    }
+
+    @Test
+    void setFirewallRules() {
+
     }
 
     @Test
