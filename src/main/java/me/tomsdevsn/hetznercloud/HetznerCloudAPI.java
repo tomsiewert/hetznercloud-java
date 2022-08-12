@@ -795,13 +795,8 @@ public class HetznerCloudAPI {
      * @param id of the firewall you want to add to resources
      * @param applicationTargets you want to add
      * @return an ActionsResponse with the executed actions
-     * @throws RuntimeException if the removalTargets don't pass {@link FWApplicationTarget#isValidOrThrow()}
      */
-    public ActionsResponse applyFirewallToResources(long id, List<FWApplicationTarget> applicationTargets)
-            throws RuntimeException {
-        for (var target: applicationTargets)
-            target.isValidOrThrow();
-
+    public ActionsResponse applyFirewallToResources(long id, List<FWApplicationTarget> applicationTargets) {
         return post(
                 API_URL + "/firewalls/" + id + "/actions/apply_to_resources",
                 Map.of("apply_to", applicationTargets),
@@ -814,13 +809,8 @@ public class HetznerCloudAPI {
      * @param id of the firewall you want to remove resources from
      * @param removalTargets you want to remove
      * @return an ActionsResponse with the executed actions
-     * @throws RuntimeException if the removalTargets don't pass {@link FWApplicationTarget#isValidOrThrow()}
      */
-    public ActionsResponse removeFirewallFromResources(long id, List<FWApplicationTarget> removalTargets)
-            throws RuntimeException {
-        for (var target: removalTargets)
-            target.isValidOrThrow();
-
+    public ActionsResponse removeFirewallFromResources(long id, List<FWApplicationTarget> removalTargets) {
         return post(
                 API_URL + "/firewalls/" + id + "/actions/remove_from_resources",
                 Map.of("remove_from", removalTargets),
@@ -847,11 +837,7 @@ public class HetznerCloudAPI {
      * @return an ActionsResponse with the executed actions
      * @throws IllegalArgumentException if the size of firewallRules is greater than 50 (size > 50)
      */
-    public ActionsResponse setFirewallRules(long id, List<FirewallRule> firewallRules)
-            throws IllegalArgumentException {
-        if (firewallRules.size() > 50)
-            throw new IllegalArgumentException("You can't add more than 50 rules");
-
+    public ActionsResponse setFirewallRules(long id, List<FirewallRule> firewallRules) {
         return post(
                 API_URL + "/firewalls/" + id + "/actions/set_rules",
                 Map.of("rules", firewallRules),
