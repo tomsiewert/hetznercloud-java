@@ -743,20 +743,9 @@ public class HetznerCloudAPI {
      * Gets a specific Firewall.
      *
      * @param id
-     * @return the searched Firewall
-     */
-    public Firewall getFirewall(long id) {
-        return getFirewallResponse(id)
-                .getFirewall();
-    }
-
-    /**
-     * Gets a specific Firewall.
-     *
-     * @param id
      * @return the FirewallResponse containing the searched Firewall
      */
-    private FirewallResponse getFirewallResponse(long id) {
+    private FirewallResponse getFirewall(long id) {
         return get(
                 API_URL + "/firewalls/" + id,
                 FirewallResponse.class);
