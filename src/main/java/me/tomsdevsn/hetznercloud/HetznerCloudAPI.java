@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.APIRequestException;
-import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.enums.ImageType;
 import me.tomsdevsn.hetznercloud.objects.enums.ActionStatus;
 import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
@@ -900,9 +899,6 @@ public class HetznerCloudAPI {
      * @return CreatePrimaryIPResponse
      */
     public CreatePrimaryIPResponse createPrimaryIP(CreatePrimaryIPRequest createPrimaryIPRequest) {
-        if (createPrimaryIPRequest.getAssigneeId() != null && createPrimaryIPRequest.getDatacenter() != null)
-            throw new InvalidParametersException("Assignee id and datacenter can not be set at the same time");
-
         return post(
                 API_URL + "/primary_ips",
                 createPrimaryIPRequest,
@@ -962,9 +958,6 @@ public class HetznerCloudAPI {
     }
 
     public ActionResponse changePrimaryIPProtection(long id, ChangeProtectionRequest changeProtectionRequest) {
-        if (changeProtectionRequest.isRebuild())
-            throw new InvalidParametersException("Only delete is valid for Primary IPs");
-
         return post(
                 API_URL + "/primary_ips/" + id + "/actions/change_protection",
                 changeProtectionRequest,
@@ -1584,7 +1577,6 @@ public class HetznerCloudAPI {
      * @return GetVolume object
      */
     public GetVolumeResponse updateVolume(long id, UpdateVolumeRequest updateVolumeRequest) {
-        if (updateVolumeRequest.getName() == null) throw new InvalidParametersException("Name must be specified");
         return put(
                 API_URL + "/volumes/" + id,
                 updateVolumeRequest,
@@ -1636,8 +1628,6 @@ public class HetznerCloudAPI {
      * @return Action object
      */
     public ActionResponse attachVolumeToServer(long id, AttachVolumeRequest attachVolumeRequest) {
-        if (attachVolumeRequest.getServerID() == null)
-            throw new InvalidParametersException("Server id must be specified");
         return post(
                 API_URL + "/volumes/" + id + "/actions/attach",
                 attachVolumeRequest,
@@ -1665,10 +1655,6 @@ public class HetznerCloudAPI {
      * @return Action object
      */
     public ActionResponse resizeVolume(long id, ResizeVolumeRequest resizeVolumeRequest) {
-        if (resizeVolumeRequest.getSize() < 10 || resizeVolumeRequest.getSize() > 10240)
-            throw new InvalidParametersException("Size have to be between 10 and 10240");
-        if (getVolume(id).getVolume().getSize() <= resizeVolumeRequest.getSize())
-            throw new InvalidParametersException("Size must be greater than " + resizeVolumeRequest.getSize());
         return post(
                 API_URL + "/volumes/" + id + "/actions/resize",
                 resizeVolumeRequest,
@@ -1684,8 +1670,6 @@ public class HetznerCloudAPI {
      * @return Action object
      */
     public ActionResponse changeVolumeProtection(long id, ChangeProtectionRequest changeProtectionRequest) {
-        if (changeProtectionRequest.isRebuild())
-            throw new InvalidParametersException("Rebuild can't be used on volumes.");
         return post(
                 API_URL + "/volumes/" + id + "/actions/change_protection",
                 changeProtectionRequest,
@@ -1787,8 +1771,6 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public NetworkResponse createNetwork(NetworkRequest networkRequest) {
-        if (networkRequest.getIpRange() == null) throw new InvalidParametersException("IP-Range missing!");
-        if (networkRequest.getName() == null) throw new InvalidParametersException("Name missing!");
         return post(
                 API_URL + "/networks",
                 networkRequest,
@@ -1858,8 +1840,6 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public ActionResponse changeNetworkProtection(long id, ChangeProtectionRequest changeProtection) {
-        if (changeProtection.isRebuild())
-            throw new InvalidParametersException("Rebuild not allowed in Network protection!");
         return post(
                 API_URL + "/networks/" + id + "/actions/change_protection",
                 changeProtection,
@@ -1899,9 +1879,6 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public ActionResponse addSubnetToNetwork(long id, AddSubnetToNetworkRequest addSubnetToNetworkRequest) {
-        if (addSubnetToNetworkRequest.getNetworkZone() == null)
-            throw new InvalidParametersException("Network zone required!");
-        if (addSubnetToNetworkRequest.getType() == null) throw new InvalidParametersException("Type required!");
         return post(
                 API_URL + "/networks/" + id + "/actions/add_subnet",
                 addSubnetToNetworkRequest,
@@ -1916,7 +1893,6 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public ActionResponse deleteSubnetFromNetwork(long id, DeleteSubnetFromNetwork deleteSubnetFromNetwork) {
-        if (deleteSubnetFromNetwork.getIpRange() == null) throw new InvalidParametersException("Subnet missing");
         return post(
                 API_URL + "/networks/" + id + "/actions/delete_subnet",
                 deleteSubnetFromNetwork,
@@ -1931,10 +1907,6 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public ActionResponse addRouteToNetwork(long id, RouteToNetwork routeToNetwork) {
-        if (routeToNetwork.getDestination() == null) throw new InvalidParametersException("Destination missing!");
-        if (routeToNetwork.getGateway() == null) throw new InvalidParametersException("Gateway missing!");
-        if (routeToNetwork.getGateway().equals("172.31.1.1"))
-            throw new InvalidParametersException("Gateway cannot be 172.31.1.1!");
         return post(
                 API_URL + "/networks/" + id + "/actions/add_route",
                 routeToNetwork,
@@ -1949,10 +1921,6 @@ public class HetznerCloudAPI {
      * @return Response from API
      */
     public ActionResponse deleteRouteFromNetwork(long id, RouteToNetwork routeToNetwork) {
-        if (routeToNetwork.getDestination() == null) throw new InvalidParametersException("Destination missing!");
-        if (routeToNetwork.getGateway() == null) throw new InvalidParametersException("Gateway missing!");
-        if (routeToNetwork.getGateway().equals("172.31.1.1"))
-            throw new InvalidParametersException("Gateway cannot be 172.31.1.1!");
         return post(
                 API_URL + "/networks/" + id + "/actions/delete_route",
                 routeToNetwork,
