@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class HetznerCloudAPI {
 
@@ -126,25 +125,12 @@ public class HetznerCloudAPI {
      * Get servers by name.
      *
      * @param name Name of the server
-     * @return Matching servers as Servers object without pagination
-     */
-    public Servers getServerByName(String name) {
-        return getServerByName(name, new PaginationParameters(null, null));
-    }
-
-    /**
-     * Get servers by name.
-     *
-     * @param name                 Name of the server
-     * @param paginationParameters Pagination parameters
      * @return Matching servers as Servers object
      */
-    public Servers getServerByName(String name, PaginationParameters paginationParameters) {
+    public Servers getServerByName(String name) {
         return get(
                 UrlBuilder.from(API_URL + "/servers")
                         .queryParam("name", name)
-                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
-                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
                         .toUri(),
                 Servers.class);
     }
@@ -538,24 +524,6 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * @param id                  ID of the server
-     * @param enableBackupRequest Request object
-     * @return respone
-     * @deprecated due Hetzner changed Request header
-     * <p>
-     * Enable the backups from a server
-     * <p>
-     * Please reminder, that will increase the price of the server by 20%
-     */
-    @Deprecated
-    public EnableBackupResponse enableBackup(long id, EnableBackupRequest enableBackupRequest) {
-        return post(
-                API_URL + "/servers/" + id + "/actions/enable_backup",
-                enableBackupRequest,
-                EnableBackupResponse.class);
-    }
-
-    /**
      * Enable the backups from a server
      * <p>
      * Please reminder, that will increase the price of the server by 20%
@@ -567,20 +535,6 @@ public class HetznerCloudAPI {
         return post(
                 API_URL + "/servers/" + id + "/actions/enable_backup",
                 ActionResponse.class);
-    }
-
-    /**
-     * Disable the backups from a server
-     * <p>
-     * Caution!: This will delete all existing backups immediately
-     *
-     * @param id ID of the server
-     * @return respond
-     */
-    public DisableBackupResponse disableBackup(long id) {
-        return post(
-                API_URL + "/servers/" + id + "/actions/disable_backup",
-                DisableBackupResponse.class);
     }
 
     /**
