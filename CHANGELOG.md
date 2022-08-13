@@ -13,6 +13,7 @@
     * API: Add Primary IP support
     * Pricing: Make Pricing class more generic
     * Move enums to enums package
+    * Actions: Add action status filter
 
 *Not released yet*
 

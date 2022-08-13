@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.APIRequestException;
 import me.tomsdevsn.hetznercloud.exception.InvalidParametersException;
 import me.tomsdevsn.hetznercloud.objects.enums.ImageType;
+import me.tomsdevsn.hetznercloud.objects.enums.ActionStatus;
 import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
 import me.tomsdevsn.hetznercloud.objects.general.FirewallRule;
 import me.tomsdevsn.hetznercloud.objects.enums.PlacementGroupType;
@@ -55,18 +56,30 @@ public class HetznerCloudAPI {
      * @return All Actions without pagination
      */
     public ActionsResponse getActions() {
-        return getActions(new PaginationParameters(null, null));
+        return getActions(null, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all action in a project filtered by its status.
+     *
+     * @param actionStatus Action status type
+     * @return ActionsResponse containing all actions without pagination filtered by its status
+     */
+    public ActionsResponse getActions(ActionStatus actionStatus) {
+        return getActions(actionStatus, new PaginationParameters(null, null));
     }
 
     /**
      * Get all actions in a project.
      *
+     * @param actionStatus Query only actions with the specified status
      * @param paginationParameters Pagination parameters
      * @return ActionsResponse
      */
-    public ActionsResponse getActions(PaginationParameters paginationParameters) {
+    public ActionsResponse getActions(ActionStatus actionStatus, PaginationParameters paginationParameters) {
         return get(
                 UrlBuilder.from(API_URL + "/actions")
+                        .queryParamIfPresent("status", Optional.ofNullable(actionStatus))
                         .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
                         .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
                         .toUri(),
@@ -74,7 +87,7 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get details about an action by id.
+     * Get an action by id.
      *
      * @param id ID of the action
      * @return ActionResponse
