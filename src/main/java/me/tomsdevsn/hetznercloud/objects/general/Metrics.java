@@ -1,9 +1,12 @@
-package me.tomsdevsn.hetznercloud.objects.response;
+package me.tomsdevsn.hetznercloud.objects.general;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+import me.tomsdevsn.hetznercloud.serialize.MetricsSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -17,17 +20,6 @@ public class Metrics {
     private Date end;
     private Long step;
     @JsonProperty("time_series")
-    private TimeSeries timeSeries;
-
-    @Data
-    public static class TimeSeries {
-
-        @JsonProperty("name_of_timeseries")
-        private NameOfTimeSeries nameOfTimeseries;
-
-        @Data
-        public static class NameOfTimeSeries {
-            private List<List<String>> values;
-        }
-    }
+    @JsonSerialize(using = MetricsSerializer.class)
+    private Object timeSeries;
 }

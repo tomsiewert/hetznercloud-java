@@ -11,7 +11,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FloatingIPRequest {
+public class CreateFloatingIPRequest {
 
     private IPType type;
     @JsonProperty("home_location")

@@ -11,6 +11,6 @@ import java.util.List;
 public class FloatingIPsResponse {
 
     @JsonProperty("floating_ips")
-    private List<FloatingIP> floatingIPs;
+    private List<FloatingIP> floatingIps;
     private Meta meta;
 }

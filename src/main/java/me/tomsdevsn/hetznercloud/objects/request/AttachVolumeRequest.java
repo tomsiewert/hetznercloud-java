@@ -13,6 +13,6 @@ import lombok.Data;
 public class AttachVolumeRequest {
 
     @JsonProperty("server")
-    private Long serverID;
+    private Long serverId;
     private boolean automount;
 }

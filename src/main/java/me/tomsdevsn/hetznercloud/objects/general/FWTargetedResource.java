@@ -2,6 +2,7 @@ package me.tomsdevsn.hetznercloud.objects.general;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.tomsdevsn.hetznercloud.objects.enums.TargetType;
 
 @Data
 @NoArgsConstructor

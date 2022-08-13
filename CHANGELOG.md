@@ -14,6 +14,8 @@
     * Pricing: Make Pricing class more generic
     * Move enums to enums package
     * Actions: Add action status filter
+    * API: Remove deprecated methods
+    * API: Rename Request classes to make them more consistent
 
 *Not released yet*
 

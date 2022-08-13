@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 
 import java.util.List;
 import java.util.Map;
@@ -21,5 +22,6 @@ public class CreateCertificateRequest {
     private List<String> domainNames;
     @JsonProperty("private_key")
     private String privateKey;
+    @Singular
     private Map<String, String> labels;
 }

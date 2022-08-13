@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 import me.tomsdevsn.hetznercloud.objects.general.LBService;
 import me.tomsdevsn.hetznercloud.objects.general.LBTarget;
 
@@ -15,16 +16,18 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LoadBalancerRequest {
+public class CreateLoadBalancerRequest {
 
     private String name;
     @JsonProperty("load_balancer_type")
     private String loadBalancerType;
     @JsonProperty("network_zone")
     private String networkZone;
-    private String algorithmType;
+    private String location;
+    private String algorithm;
     private List<LBService> services;
     private List<LBTarget> targets;
+    @Singular
     private Map<String, String> labels;
     @JsonProperty("public_interface")
     private Boolean publicInterface;

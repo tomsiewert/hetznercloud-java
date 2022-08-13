@@ -7,7 +7,7 @@ import me.tomsdevsn.hetznercloud.objects.general.Firewall;
 import java.util.List;
 
 @Data
-public class FirewallResponse {
+public class CreateFirewallResponse {
 
     private List<Action> actions;
     private Firewall firewall;

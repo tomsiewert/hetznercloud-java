@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Singular;
 import me.tomsdevsn.hetznercloud.objects.enums.PlacementGroupType;
 
 import java.util.Map;
@@ -12,10 +13,10 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PlacementGroupRequest {
+public class CreatePlacementGroupRequest {
 
     private String name;
     private PlacementGroupType type;
+    @Singular
     private Map<String, String> labels;
-
 }
