@@ -1,5 +1,6 @@
 package me.tomsdevsn.hetznercloud;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.APIRequestException;
@@ -10,10 +11,8 @@ import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
 import me.tomsdevsn.hetznercloud.objects.pagination.PaginationParameters;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.*;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -2533,32 +2532,37 @@ public class HetznerCloudAPI {
     }
 
     private <T> T exchange(String url, HttpMethod method, Object body, Class<T> clazz) {
-        try {
-            RequestBody requestBody = null;
-
-            if (body != null) {
-                requestBody = RequestBody.create(objectMapper.writeValueAsBytes(body), MediaType.get("application/json"));
-            }
-
-            var response = client.newCall(new Request.Builder()
-                    .addHeader("Authorization", "Bearer " + hcloudToken)
-                    .addHeader("Accept", "application/json")
-                    .url(url)
-                    .method(method.toString(), requestBody).build()).execute();
+        try(Response response = buildCall(url, method, body).execute()) {
+            final String responseBody = response.body().string();
 
             if (!response.isSuccessful()) {
-                throw new APIRequestException(objectMapper.readValue(response.body().string(), APIErrorResponse.class));
+                throw new APIRequestException(objectMapper.readValue(responseBody, APIErrorResponse.class));
             }
 
             if (String.class.equals(clazz)) {
-                return (T) response.body().string();
+                return (T) responseBody;
             } else {
-                return objectMapper.readValue(response.body().bytes(), clazz);
+                return objectMapper.readValue(responseBody, clazz);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @NotNull
+    private Call buildCall(String url, HttpMethod method, Object body) throws JsonProcessingException {
+        RequestBody requestBody = null;
+
+        if (body != null) {
+            requestBody = RequestBody.create(objectMapper.writeValueAsBytes(body), MediaType.get("application/json"));
+        }
+
+        return client.newCall(new Request.Builder()
+                .addHeader("Authorization", "Bearer " + hcloudToken)
+                .addHeader("Accept", "application/json")
+                .url(url)
+                .method(method.toString(), requestBody).build());
     }
 
     private <T> T get(String url, Class<T> clazz) {
