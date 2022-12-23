@@ -1,3 +1,9 @@
+# For next release
+  * **Tom Siewert**
+    * API: Add method to define OkHttpClient instance
+
+*Not released yet*
+
 # Major Release v3.0.0 (2022-12-23)
   * **Christian Pelster**
     * API: Migrate from Spring RestTemplate to OkHttp
