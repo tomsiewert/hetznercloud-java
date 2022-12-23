@@ -1,6 +1,5 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -9,7 +8,6 @@ import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
 import me.tomsdevsn.hetznercloud.serialize.MetricsSerializer;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 public class Metrics {

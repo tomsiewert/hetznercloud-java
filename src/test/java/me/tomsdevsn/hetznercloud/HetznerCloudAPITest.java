@@ -60,6 +60,12 @@ public class HetznerCloudAPITest {
             hetznerCloudAPI.deleteCertificate(certificate.getId());
         }));
 
+        log.info("removing floating ips");
+        hetznerCloudAPI.getFloatingIPs(testUUIDLabelSelector).getFloatingIps().forEach((floatingIP -> {
+            log.info("removing floating ip '{}", floatingIP.getName());
+            hetznerCloudAPI.deleteFloatingIP(floatingIP.getId());
+        }));
+
         log.info("removing ssh keys");
         hetznerCloudAPI.getSSHKeys(testUUIDLabelSelector).getSshKeys().forEach((sshKey -> {
             log.info("removing ssh key '{}'", sshKey.getName());
