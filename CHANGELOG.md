@@ -1,4 +1,4 @@
-# For next release
+# Major Release v3.0.0 (2022-12-23)
   * **Christian Pelster**
     * API: Migrate from Spring RestTemplate to OkHttp
   * **Felix Krasemann**
@@ -17,7 +17,7 @@
     * API: Remove deprecated methods
     * API: Rename Request classes to make them more consistent
 
-*Not released yet*
+*Released by Tom Siewert <tom@siewert.io>*
 
 # Minor Release v2.16.0 (2022-05-31)
   * **Christian Pelster**
