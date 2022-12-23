@@ -13,5 +13,5 @@ import lombok.Data;
 public class AssignFloatingIPRequest {
 
     @JsonProperty("server")
-    private Long serverID;
+    private Long serverId;
 }

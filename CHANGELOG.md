@@ -1,6 +1,9 @@
 # For next release
   * **Christian Pelster**
     * API: Migrate from Spring RestTemplate to OkHttp
+  * **Felix Krasemann**
+    * API: Add firewall support
+    * Datacenter: Fix name filter and remove incorrect field
   * **Tom Siewert**
     * pom: Upgrade nexus staging plugin to 1.6.13
     * ci: Enable tests on push
@@ -9,6 +12,10 @@
     * FloatingIP: Use generic IP type enum
     * API: Add Primary IP support
     * Pricing: Make Pricing class more generic
+    * Move enums to enums package
+    * Actions: Add action status filter
+    * API: Remove deprecated methods
+    * API: Rename Request classes to make them more consistent
 
 *Not released yet*
 

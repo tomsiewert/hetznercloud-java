@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import me.tomsdevsn.hetznercloud.objects.general.PlacementGroupType;
+import lombok.Singular;
 
 import java.util.Map;
 
@@ -12,10 +12,14 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PlacementGroupRequest {
+public class CreateVolumeRequest {
 
+    private Long size;
     private String name;
-    private PlacementGroupType type;
+    private String location;
+    private boolean automount;
+    private String format;
+    private Long server;
+    @Singular
     private Map<String, String> labels;
-
 }

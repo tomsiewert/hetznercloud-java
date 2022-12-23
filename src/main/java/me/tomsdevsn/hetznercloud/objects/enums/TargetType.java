@@ -1,4 +1,4 @@
-package me.tomsdevsn.hetznercloud.objects.general;
+package me.tomsdevsn.hetznercloud.objects.enums;
 
 public enum TargetType {
     label_selector,server

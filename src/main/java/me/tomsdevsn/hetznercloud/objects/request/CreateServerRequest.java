@@ -3,7 +3,6 @@ package me.tomsdevsn.hetznercloud.objects.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import me.tomsdevsn.hetznercloud.objects.general.PublicNet;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ServerRequest {
+public class CreateServerRequest {
 
     private String name;
 
@@ -28,9 +27,6 @@ public class ServerRequest {
     @Singular
     private Map<String, String> labels;
 
-    /**
-     * The objects in the list have to be a Long or a String, or it will throw an {@link me.tomsdevsn.hetznercloud.exception.InvalidParametersException}
-     */
     @JsonProperty("ssh_keys")
     @Singular
     private List<Object> sshKeys;

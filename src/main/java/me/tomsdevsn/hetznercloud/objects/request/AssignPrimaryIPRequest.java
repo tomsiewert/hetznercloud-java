@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import me.tomsdevsn.hetznercloud.objects.general.IPAssigneeType;
+import me.tomsdevsn.hetznercloud.objects.enums.IPAssigneeType;
 
 @Data
 @Builder

@@ -11,7 +11,7 @@ import java.util.Map;
 @Data
 @Builder
 @AllArgsConstructor
-public class SSHKeyRequest {
+public class CreateSSHKeyRequest {
 
     private String name;
 

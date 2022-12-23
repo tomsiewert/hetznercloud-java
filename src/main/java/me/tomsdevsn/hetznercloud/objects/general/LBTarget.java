@@ -3,6 +3,7 @@ package me.tomsdevsn.hetznercloud.objects.general;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import me.tomsdevsn.hetznercloud.objects.enums.TargetType;
 
 import java.util.List;
 

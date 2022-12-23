@@ -7,7 +7,6 @@ on:
 jobs:
   test:
     strategy:
-      max-parallel: 1
       matrix:
         version: [11, 17]
     runs-on: ubuntu-latest

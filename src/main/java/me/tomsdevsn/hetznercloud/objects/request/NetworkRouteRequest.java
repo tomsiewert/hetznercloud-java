@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class RouteToNetwork {
+public class NetworkRouteRequest {
 
     private String destination;
     private String gateway;

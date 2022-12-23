@@ -19,7 +19,7 @@ public class CreateFirewallRequest {
     @Singular("applicationTarget")
     @JsonProperty("apply_to")
     private List<FWApplicationTarget> applyTo;
-    @Singular("label")
+    @Singular
     private Map<String, String> labels;
     private String name;
     @Singular("firewallRule")

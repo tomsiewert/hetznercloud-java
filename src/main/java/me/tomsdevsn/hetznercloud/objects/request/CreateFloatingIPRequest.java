@@ -3,7 +3,7 @@ package me.tomsdevsn.hetznercloud.objects.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import me.tomsdevsn.hetznercloud.objects.general.IPType;
+import me.tomsdevsn.hetznercloud.objects.enums.IPType;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FloatingIPRequest {
+public class CreateFloatingIPRequest {
 
     private IPType type;
     @JsonProperty("home_location")
