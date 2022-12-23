@@ -33,17 +33,27 @@ public class HetznerCloudAPI {
      * Initial method to use the API
      *
      * @param hcloudToken API-Token for Hetzner Cloud API
-     *              The API token can be created within the Hetzner Cloud Console
+     * @see HetznerCloudAPI(String, OkHttpClient)
      */
     public HetznerCloudAPI(String hcloudToken) {
+        this(hcloudToken, new OkHttpClient());
+    }
 
+    /**
+     * Initial method to use the API
+     *
+     * @param hcloudToken API-Token for Hetzner Cloud API
+     *              The API token can be created within the Hetzner Cloud Console
+     * @param client OkHttpClient instance to be used
+     */
+    public HetznerCloudAPI(String hcloudToken, OkHttpClient client) {
         if (hcloudToken == null || hcloudToken.isBlank()) {
             throw new RuntimeException("no Hetzner cloud token provided");
         }
 
         this.hcloudToken = hcloudToken;
 
-        client = new OkHttpClient();
+        this.client = client;
         objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
