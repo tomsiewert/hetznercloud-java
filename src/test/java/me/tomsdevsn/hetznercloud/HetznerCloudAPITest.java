@@ -199,7 +199,7 @@ public class HetznerCloudAPITest {
         assertThat(firewalls).hasSizeGreaterThanOrEqualTo(1);
 
         hetznerCloudAPI.deleteFirewall(firewalls.get(0).getId());
-        assertThat(hetznerCloudAPI.getFirewalls().getFirewalls())
+        assertThat(hetznerCloudAPI.getFirewalls(testUUIDLabelSelector).getFirewalls())
                 .hasSize(firewalls.size() - 1);
     }
 
