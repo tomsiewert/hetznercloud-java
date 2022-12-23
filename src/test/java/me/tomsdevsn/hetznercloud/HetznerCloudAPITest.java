@@ -9,16 +9,33 @@ import me.tomsdevsn.hetznercloud.objects.response.ISOResponse;
 import me.tomsdevsn.hetznercloud.objects.response.ISOSResponse;
 import me.tomsdevsn.hetznercloud.objects.response.PlacementGroupResponse;
 import org.awaitility.Awaitility;
-import org.jclouds.ssh.*;
+import org.bouncycastle.asn1.oiw.OIWObjectIdentifiers;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.*;
+import org.bouncycastle.cert.X509ExtensionUtils;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.DigestCalculator;
+import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.jclouds.ssh.SshKeys;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -252,17 +269,26 @@ public class HetznerCloudAPITest {
     }
 
     @Test
-    void testManageCertificates() throws IOException {
-        var key = new String(HetznerCloudAPITest.class.getResourceAsStream("/certificates/key.pem").readAllBytes());
-        var cert = new String(HetznerCloudAPITest.class.getResourceAsStream("/certificates/cert.pem").readAllBytes());
-
+    void testManageCertificates() throws Exception {
         String keyId = UUID.randomUUID().toString();
+
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(4096);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        X509Certificate certificate;
+        certificate = generateCertificate(keyPair, "SHA256withRSA", "test.example.com");
+
+        var privateKey = String.format(
+                "-----BEGIN PRIVATE KEY-----\n%s\n-----END PRIVATE KEY-----",
+                Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes())
+                        .encodeToString(keyPair.getPrivate().getEncoded()));
+        var publicKey = convertCertificateToPem(certificate);
 
         var createdCertificate = hetznerCloudAPI.createCertificate(
                 CreateCertificateRequest.builder()
                         .name(keyId)
-                        .privateKey(key)
-                        .certificate(cert)
+                        .privateKey(privateKey)
+                        .certificate(publicKey)
                         .label(testUUIDLabelKey, testUUID)
                         .build());
 
@@ -306,6 +332,20 @@ public class HetznerCloudAPITest {
         assertThat(loadblancer.getLoadBalancer().getName()).isEqualTo(keyId);
     }
 
+    @Test
+    void testPlacementGroup() {
+        String keyId = UUID.randomUUID().toString();
+        CreatePlacementGroupRequest placementGroupRequest = CreatePlacementGroupRequest.builder()
+                .name(keyId)
+                .type(PlacementGroupType.spread)
+                .label(testUUIDLabelKey, testUUID)
+                .build();
+
+        PlacementGroupResponse placementGroup = hetznerCloudAPI.createPlacementGroup(placementGroupRequest);
+        assertNotNull(placementGroup);
+        assertNotNull(placementGroup.getPlacementGroup());
+    }
+
     private Subnet getDefaultSubnet() {
         var subnet = new Subnet();
         subnet.setType(SubnetType.cloud);
@@ -347,17 +387,46 @@ public class HetznerCloudAPITest {
         return lbTarget;
     }
 
-    @Test
-    void testPlacementGroup() {
-        String keyId = UUID.randomUUID().toString();
-        CreatePlacementGroupRequest placementGroupRequest = CreatePlacementGroupRequest.builder()
-                .name(keyId)
-                .type(PlacementGroupType.spread)
-                .label(testUUIDLabelKey, testUUID)
-                .build();
+    private X509Certificate generateCertificate(KeyPair keyPair, String hashAlgorithm, String cn)
+            throws Exception {
+        Date notBefore = java.sql.Timestamp.valueOf(LocalDateTime.now());
+        Date notAfter = java.sql.Timestamp.valueOf(LocalDateTime.now().plusYears(2));
+        ContentSigner contentSigner = new JcaContentSignerBuilder(hashAlgorithm).build(keyPair.getPrivate());
+        X500Name x500CN = new X500Name("CN=" + cn);
+        X509v3CertificateBuilder certificateBuilder =
+                new JcaX509v3CertificateBuilder(x500CN,
+                        BigInteger.valueOf(System.currentTimeMillis()),
+                        notBefore,
+                        notAfter,
+                        x500CN,
+                        keyPair.getPublic())
+                        .addExtension(Extension.subjectKeyIdentifier, false, createSubjectKeyId(keyPair.getPublic()))
+                        .addExtension(Extension.authorityKeyIdentifier, false, createAuthorityKeyId(keyPair.getPublic()))
+                        .addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+        return new JcaX509CertificateConverter()
+                .setProvider(new BouncyCastleProvider()).getCertificate(certificateBuilder.build(contentSigner));
+    }
 
-        PlacementGroupResponse placementGroup = hetznerCloudAPI.createPlacementGroup(placementGroupRequest);
-        assertNotNull(placementGroup);
-        assertNotNull(placementGroup.getPlacementGroup());
+    private SubjectKeyIdentifier createSubjectKeyId(final PublicKey publicKey) throws Exception {
+        SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
+        DigestCalculator digCalc = new BcDigestCalculatorProvider().get(new AlgorithmIdentifier(OIWObjectIdentifiers.idSHA1));
+
+        return new X509ExtensionUtils(digCalc).createSubjectKeyIdentifier(publicKeyInfo);
+    }
+
+    private AuthorityKeyIdentifier createAuthorityKeyId(final PublicKey publicKey) throws Exception {
+        SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
+        DigestCalculator digCalc = new BcDigestCalculatorProvider().get(new AlgorithmIdentifier(OIWObjectIdentifiers.idSHA1));
+
+        return new X509ExtensionUtils(digCalc).createAuthorityKeyIdentifier(publicKeyInfo);
+    }
+
+    private String convertCertificateToPem(final X509Certificate cert) throws IOException {
+        final StringWriter writer = new StringWriter();
+        final JcaPEMWriter pemWriter = new JcaPEMWriter(writer);
+        pemWriter.writeObject(cert);
+        pemWriter.flush();
+        pemWriter.close();
+        return writer.toString();
     }
 }
