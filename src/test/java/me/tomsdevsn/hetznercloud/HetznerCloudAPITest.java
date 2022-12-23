@@ -4,15 +4,23 @@ import lombok.extern.slf4j.Slf4j;
 import me.tomsdevsn.hetznercloud.objects.enums.*;
 import me.tomsdevsn.hetznercloud.objects.general.*;
 import me.tomsdevsn.hetznercloud.objects.request.*;
-import me.tomsdevsn.hetznercloud.objects.response.*;
+import me.tomsdevsn.hetznercloud.objects.response.CreatePrimaryIPResponse;
+import me.tomsdevsn.hetznercloud.objects.response.ISOResponse;
+import me.tomsdevsn.hetznercloud.objects.response.ISOSResponse;
+import me.tomsdevsn.hetznercloud.objects.response.PlacementGroupResponse;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.*;
+import org.jclouds.ssh.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -184,16 +192,15 @@ public class HetznerCloudAPITest {
 
     @Test
     void testManageSSHKeys() {
-        var publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIACU6zdGDUKbslVDsNML7/+qOks5shkRQaHImBg20v53 testkey";
+        Map<String, String> keyPair = SshKeys.generate();
 
         String keyId = UUID.randomUUID().toString();
 
         // create key
         var createdKey = hetznerCloudAPI.createSSHKey(
-                CreateSSHKeyRequest
-                        .builder()
+                CreateSSHKeyRequest.builder()
                         .name(keyId)
-                        .publicKey(publicKey)
+                        .publicKey(keyPair.get("public"))
                         .label("label1", "value1")
                         .label(testUUIDLabelKey, testUUID)
                         .build());
@@ -208,8 +215,7 @@ public class HetznerCloudAPITest {
         // update key
         hetznerCloudAPI.updateSSHKey(
                 createdKey.getSshKey().getId(),
-                UpdateSSHKeyRequest
-                        .builder()
+                UpdateSSHKeyRequest.builder()
                         .label(testUUIDLabelKey, testUUID)
                         .label("label2", "value2")
                         .build());
