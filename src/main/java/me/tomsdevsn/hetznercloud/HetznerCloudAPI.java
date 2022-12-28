@@ -2447,7 +2447,7 @@ public class HetznerCloudAPI {
     }
 
     private <T> T post(String url, Class<T> clazz) {
-        return exchange(url, HttpMethod.POST, null, clazz);
+        return exchange(url, HttpMethod.POST, objectMapper.createObjectNode(), clazz);
     }
 
     private enum HttpMethod {
