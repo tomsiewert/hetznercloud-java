@@ -1,6 +1,7 @@
 # For next release
   * **Tom Siewert**
     * API: Add method to define OkHttpClient instance
+    * PrimaryIP: Do not include null values for PublicNetRequest
 
 *Not released yet*
 
