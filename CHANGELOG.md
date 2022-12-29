@@ -1,4 +1,8 @@
 # For next release
+  * **Arzhang Mosaffa**
+    * API: Prevent OkHttp POST with null body
+
+      OkHttp doesn't let to send post requests with null body, and also the body (with empty json object) is required by hetzner cloud api.
   * **Tom Siewert**
     * API: Add method to define OkHttpClient instance
     * PrimaryIP: Do not include null values for PublicNetRequest
