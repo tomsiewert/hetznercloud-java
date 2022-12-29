@@ -1,14 +1,14 @@
-# For next release
+# Patch Release v3.0.1 (2022-12-29)
   * **Arzhang Mosaffa**
     * API: Prevent OkHttp POST with null body
-
+    
       OkHttp doesn't let to send post requests with null body, and also the body (with empty json object) is required by hetzner cloud api.
   * **Tom Siewert**
     * API: Add method to define OkHttpClient instance
     * PrimaryIP: Do not include null values for PublicNetRequest
     * test: Add server reset test
 
-*Not released yet*
+*Released by Tom Siewert <tom@siewert.io>*
 
 # Major Release v3.0.0 (2022-12-23)
   * **Christian Pelster**
