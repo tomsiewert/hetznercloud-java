@@ -2,6 +2,7 @@ package me.tomsdevsn.hetznercloud;
 
 import lombok.extern.slf4j.Slf4j;
 import me.tomsdevsn.hetznercloud.objects.enums.*;
+import me.tomsdevsn.hetznercloud.objects.enums.ServerType;
 import me.tomsdevsn.hetznercloud.objects.general.*;
 import me.tomsdevsn.hetznercloud.objects.request.*;
 import me.tomsdevsn.hetznercloud.objects.response.CreatePrimaryIPResponse;
@@ -86,12 +87,10 @@ public class HetznerCloudAPITest {
 
         log.info("removing loadbalancers");
         hetznerCloudAPI.getLoadBalancers(testUUIDLabelSelector).getLoadBalancers().forEach((loadBalancer -> {
-
             hetznerCloudAPI.getLoadBalancerActions(loadBalancer.getId()).getActions().forEach((action -> {
-                log.info("waiting for action '{}' fo finish for loadbalancer '{}'", action.getCommand(), loadBalancer.getName());
+                log.info("waiting for action '{}' to finish for loadbalancer '{}'", action.getCommand(), loadBalancer.getName());
                 Awaitility.await().until(() -> hetznerCloudAPI.getAction(action.getId()).getAction().getFinished() != null);
             }));
-
             log.info("removing loadbalancer '{}'", loadBalancer.getName());
             hetznerCloudAPI.deleteLoadBalancer(loadBalancer.getId());
         }));
@@ -107,6 +106,16 @@ public class HetznerCloudAPITest {
             log.info("removing primary ip '{}'", ip.getId());
             hetznerCloudAPI.deletePrimaryIP(ip.getId());
         });
+
+        log.info("removing servers");
+        hetznerCloudAPI.getServers(testUUIDLabelSelector).getServers().forEach((server -> {
+            hetznerCloudAPI.getServerActions(server.getId()).getActions().forEach((action -> {
+                log.info("waiting for action '{}' to finish for server '{}'", action.getCommand(), server.getName());
+                Awaitility.await().until(() -> hetznerCloudAPI.getAction(action.getId()).getAction().getFinished() != null);
+            }));
+            log.info("removing server '{}'", server.getName());
+            hetznerCloudAPI.deleteServer(server.getId());
+        }));
     }
 
     @Test
@@ -350,6 +359,42 @@ public class HetznerCloudAPITest {
         PlacementGroupResponse placementGroup = hetznerCloudAPI.createPlacementGroup(placementGroupRequest);
         assertNotNull(placementGroup);
         assertNotNull(placementGroup.getPlacementGroup());
+    }
+
+    @Test
+    void testServerReset() {
+        Map<String, String> keyPair = SshKeys.generate();
+        String keyId = UUID.randomUUID().toString();
+
+        var createKey = hetznerCloudAPI.createSSHKey(
+                CreateSSHKeyRequest.builder()
+                        .name(keyId)
+                        .publicKey(keyPair.get("public"))
+                        .label("label1", "value1")
+                        .label(testUUIDLabelKey, testUUID)
+                        .build());
+        assertThat(createKey).isNotNull();
+
+        var createServer = hetznerCloudAPI.createServer(
+                CreateServerRequest.builder()
+                        .name(keyId)
+                        .serverType(ServerType.cpx11.name())
+                        .publicNet(ServerPublicNetRequest.builder()
+                                .enableIPv4(false)
+                                .enableIPv6(true)
+                                .build())
+                        .image("ubuntu-22.04")
+                        .label(testUUIDLabelKey, testUUID)
+                        .sshKey(createKey.getSshKey().getId())
+                        .build());
+
+        hetznerCloudAPI.getServerActions(createServer.getServer().getId()).getActions().forEach((action) -> {
+            Awaitility.await().until(() -> hetznerCloudAPI.getAction(action.getId()).getAction().getFinished() != null);
+        });
+
+        var resetAction = hetznerCloudAPI.resetServer(createServer.getServer().getId());
+        assertThat(hetznerCloudAPI.getAction(resetAction.getAction().getId()).getAction().getStatus())
+                .isIn("success", "running");
     }
 
     private Subnet getDefaultSubnet() {
