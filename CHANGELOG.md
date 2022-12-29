@@ -2,6 +2,7 @@
   * **Tom Siewert**
     * API: Add method to define OkHttpClient instance
     * PrimaryIP: Do not include null values for PublicNetRequest
+    * test: Add server reset test
 
 *Not released yet*
 
