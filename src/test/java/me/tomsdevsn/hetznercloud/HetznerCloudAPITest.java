@@ -116,6 +116,12 @@ public class HetznerCloudAPITest {
             log.info("removing server '{}'", server.getName());
             hetznerCloudAPI.deleteServer(server.getId());
         }));
+
+        log.info("removing placement groups");
+        hetznerCloudAPI.getPlacementGroups(testUUIDLabelSelector).getPlacementGroups().forEach(placementGroup -> {
+            log.info("removing placement group '{}'", placementGroup.getId());
+            hetznerCloudAPI.deletePlacementGroup(placementGroup.getId());
+        });
     }
 
     @Test
@@ -214,12 +220,19 @@ public class HetznerCloudAPITest {
 
     @Test
     void testFloatingIPCreation() {
-        FloatingIP floatingIp = hetznerCloudAPI.createFloatingIP(CreateFloatingIPRequest.builder()
-                .name(UUID.randomUUID().toString())
+        String keyId = UUID.randomUUID().toString();
+
+        var floatingIp = hetznerCloudAPI.createFloatingIP(CreateFloatingIPRequest.builder()
+                .name(keyId)
                 .label(testUUIDLabelKey, testUUID)
                 .type(IPType.ipv6)
                 .homeLocation("fsn1")
-                .build()).getFloatingIP();
+                .build());
+
+        assertNotNull(floatingIp.getFloatingIP());
+        assertThat(floatingIp.getFloatingIP().getName()).isEqualTo(keyId);
+        assertThat(floatingIp.getFloatingIP().getType()).isEqualTo(IPType.ipv6);
+        assertThat(floatingIp.getFloatingIP().getHomeLocation().getName()).isEqualTo("fsn1");
     }
 
     @Test
@@ -237,7 +250,8 @@ public class HetznerCloudAPITest {
                         .label(testUUIDLabelKey, testUUID)
                         .build());
         assertThat(createdKey).isNotNull();
-        assertThat(createdKey.getSshKey()).isNotNull();
+        assertThat(createdKey.getSshKey().getPublicKey()).isEqualTo(keyPair.get("public"));
+        assertThat(createdKey.getSshKey().getFingerprint()).isEqualTo(SshKeys.fingerprintPublicKey(keyPair.get("public")));
 
         var sshKeys = hetznerCloudAPI.getSSHKey(keyId);
 
@@ -280,7 +294,6 @@ public class HetznerCloudAPITest {
         // get volume
         var volume = hetznerCloudAPI.getVolume(createdVolume.getVolume().getId());
         assertThat(volume.getVolume().getName()).isEqualTo(keyId);
-
     }
 
     @Test
@@ -342,9 +355,9 @@ public class HetznerCloudAPITest {
         });
 
         // get loadbalancer
-        var loadblancer = hetznerCloudAPI.getLoadBalancer(createdLoadbalancer.getLoadBalancer().getId());
-        assertNotNull(loadblancer.getLoadBalancer());
-        assertThat(loadblancer.getLoadBalancer().getName()).isEqualTo(keyId);
+        var loadBalancer = hetznerCloudAPI.getLoadBalancer(createdLoadbalancer.getLoadBalancer().getId());
+        assertNotNull(loadBalancer.getLoadBalancer());
+        assertThat(loadBalancer.getLoadBalancer().getName()).isEqualTo(keyId);
     }
 
     @Test
@@ -427,7 +440,6 @@ public class HetznerCloudAPITest {
         lbHealthCheck.setRetries(3L);
         lbService.setHealthCheck(lbHealthCheck);
         return lbService;
-
     }
 
     private LBTarget getLabelSelector(String uniqueHostName) {
