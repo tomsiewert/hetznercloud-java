@@ -116,6 +116,12 @@ public class HetznerCloudAPITest {
             log.info("removing server '{}'", server.getName());
             hetznerCloudAPI.deleteServer(server.getId());
         }));
+
+        log.info("removing placement groups");
+        hetznerCloudAPI.getPlacementGroups(testUUIDLabelSelector).getPlacementGroups().forEach(placementGroup -> {
+            log.info("removing placement group '{}'", placementGroup.getId());
+            hetznerCloudAPI.deletePlacementGroup(placementGroup.getId());
+        });
     }
 
     @Test

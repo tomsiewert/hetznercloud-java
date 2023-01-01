@@ -18,7 +18,6 @@ public class UrlBuilderTest {
 
     @Test
     void testEmptyUrl() {
-
         Assertions.assertThrows(RuntimeException.class, () -> {
             UrlBuilder.from("");
         });
