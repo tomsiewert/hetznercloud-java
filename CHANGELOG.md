@@ -1,3 +1,9 @@
+# For next release
+  * **Arzhang Mosaffa**
+    * PrimaryIP: Fix update function
+
+*Not released yet*
+
 # Patch Release v3.0.1 (2022-12-29)
   * **Arzhang Mosaffa**
     * API: Prevent OkHttp POST with null body

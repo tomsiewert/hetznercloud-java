@@ -876,7 +876,7 @@ public class HetznerCloudAPI {
      * @return PrimaryIPResponse
      */
     public PrimaryIPResponse updatePrimaryIP(long id, UpdatePrimaryIPRequest updatePrimaryIPRequest) {
-        return post(
+        return put(
                 API_URL + "/primary_ips/" + id,
                 updatePrimaryIPRequest,
                 PrimaryIPResponse.class);
