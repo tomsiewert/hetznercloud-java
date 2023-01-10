@@ -1,8 +1,8 @@
-# For next release
+# Patch Release v3.0.2 (2023-01-10)
   * **Arzhang Mosaffa**
     * PrimaryIP: Fix update function
 
-*Not released yet*
+*Released by Tom Siewert <tom@siewert.io>*
 
 # Patch Release v3.0.1 (2022-12-29)
   * **Arzhang Mosaffa**
