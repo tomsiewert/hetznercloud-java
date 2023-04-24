@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tomsdevsn.hetznercloud.exception.APIRequestException;
 import me.tomsdevsn.hetznercloud.objects.enums.ImageType;
 import me.tomsdevsn.hetznercloud.objects.enums.ActionStatus;
+import me.tomsdevsn.hetznercloud.objects.enums.Architecture;
 import me.tomsdevsn.hetznercloud.objects.general.FWApplicationTarget;
 import me.tomsdevsn.hetznercloud.objects.general.FirewallRule;
 import me.tomsdevsn.hetznercloud.objects.enums.PlacementGroupType;
@@ -479,7 +480,7 @@ public class HetznerCloudAPI {
 
     /**
      * Enable the backups from a server
-     * <p>
+     *
      * Please note that this action will increase the price of the server by 20%
      *
      * @param id ID of the server
@@ -492,23 +493,45 @@ public class HetznerCloudAPI {
     }
 
     /**
-     * Get all available ISOs.
+     * Get all available ISO's.
      *
      * @return ISOSResponse
      */
     public ISOSResponse getISOS() {
-        return getISOS(new PaginationParameters(null, null));
+        return getISOS(null, new PaginationParameters(null, null));
+    }
+
+
+    /**
+     * Get all available ISO's by architecture.
+     *
+     * @param architecture {@link Architecture}
+     * @return {@link ISOSResponse}
+     */
+    public ISOSResponse getISOS(Architecture architecture) {
+        return getISOS(architecture, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all available ISO's with pagination.
+     * @param paginationParameters Pagination
+     * @return {@link ISOSResponse}
+     */
+    public ISOSResponse getISOS(PaginationParameters paginationParameters) {
+        return getISOS(null, new PaginationParameters(null, null));
     }
 
     /**
      * Get all available ISO's.
      *
+     * @param architecture {@link Architecture}
      * @param paginationParameters Pagination parametres
-     * @return ISOSResponse
+     * @return {@link ISOSResponse}
      */
-    public ISOSResponse getISOS(PaginationParameters paginationParameters) {
+    public ISOSResponse getISOS(Architecture architecture, PaginationParameters paginationParameters) {
         return get(
                 UrlBuilder.from(API_URL + "/isos")
+                        .queryParamIfPresent("architecture", Optional.ofNullable(architecture))
                         .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
                         .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
                         .toUri(),
@@ -1338,30 +1361,75 @@ public class HetznerCloudAPI {
      * @return ImagesResponse object
      */
     public ImagesResponse getImages() {
-        return getImages(null, new PaginationParameters(null, null));
+        return getImages(null, null, new PaginationParameters(null, null));
     }
 
     /**
      * Get all images by label selector.
      *
      * @param labelSelector Label Selector
-     * @return ImagesResponse
+     * @return {@link ImagesResponse}
      */
     public ImagesResponse getImages(String labelSelector) {
-        return getImages(labelSelector, new PaginationParameters(null, null));
+        return getImages(labelSelector, null, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all images by architecture.
+     *
+     * @param architecture Architecture of the Image
+     * @return {@link ImagesResponse}
+     */
+    public ImagesResponse getImages(Architecture architecture) {
+        return getImages(null, architecture, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all images by label selector and architecture.
+     *
+     * @param labelSelector Label Selector
+     * @param architecture Architecture of the Image
+     * @return {@link ImagesResponse}
+     */
+    public ImagesResponse getImages(String labelSelector, Architecture architecture) {
+        return getImages(labelSelector, architecture, new PaginationParameters(null, null));
+    }
+
+    /**
+     * Get all images by label selector with pagination.
+     *
+     * @param labelSelector Label Selector
+     * @param paginationParameters Pagination parametres
+     * @return {@link ImagesResponse}
+     */
+    public ImagesResponse getImages(String labelSelector, PaginationParameters paginationParameters) {
+        return getImages(labelSelector, null, paginationParameters);
+    }
+
+    /**
+     * Get all images by architecture with pagination.
+     *
+     * @param architecture Architecture
+     * @param paginationParameters Pagination parametres
+     * @return {@link ImagesResponse}
+     */
+    public ImagesResponse getImages(Architecture architecture, PaginationParameters paginationParameters) {
+        return getImages(null, architecture, paginationParameters);
     }
 
     /**
      * Get all available images.
      *
      * @param labelSelector Label selector
+     * @param architecture Architecture of the image
      * @param paginationParameters Pagination parametres
-     * @return ImagesResponse object
+     * @return {@link ImagesResponse}
      */
-    public ImagesResponse getImages(String labelSelector, PaginationParameters paginationParameters) {
+    public ImagesResponse getImages(String labelSelector, Architecture architecture, PaginationParameters paginationParameters) {
         return get(
                 UrlBuilder.from(API_URL + "/images")
                         .queryParamIfPresent("label_selector", Optional.ofNullable(labelSelector))
+                        .queryParamIfPresent("architecture", Optional.ofNullable(architecture))
                         .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
                         .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
                         .toUri(),
