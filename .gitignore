@@ -133,4 +133,5 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-
+.classpath
+.project
