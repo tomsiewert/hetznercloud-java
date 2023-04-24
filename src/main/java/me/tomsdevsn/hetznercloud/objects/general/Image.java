@@ -1,13 +1,16 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
+import java.util.Date;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
+
 import lombok.Data;
 import lombok.Singular;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
-
-import java.util.Date;
-import java.util.Map;
+import me.tomsdevsn.hetznercloud.objects.enums.Architecture;
 
 @Data
 public class Image {
@@ -23,6 +26,8 @@ public class Image {
     private Double diskSize;
     @JsonDeserialize(using = DateDeserializer.class)
     private Date created;
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date deleted;
     @JsonProperty("created_from")
     private CreatedFrom createdFrom;
     @JsonProperty("bound_to")
@@ -38,6 +43,7 @@ public class Image {
     private Protection protection;
     @Singular
     private Map<String, String> labels;
+    private Architecture architecture;
 
     @Data
     public static class CreatedFrom {

@@ -1,3 +1,9 @@
+# For next release
+  * **Tom Siewert**
+    * api: add arm support
+
+*Not released yet*
+
 # Patch Release v3.0.2 (2023-01-10)
   * **Arzhang Mosaffa**
     * PrimaryIP: Fix update function

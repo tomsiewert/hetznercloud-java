@@ -1,10 +1,12 @@
 package me.tomsdevsn.hetznercloud.objects.general;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import me.tomsdevsn.hetznercloud.objects.pricing.LocationPrice;
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+import me.tomsdevsn.hetznercloud.objects.enums.Architecture;
+import me.tomsdevsn.hetznercloud.objects.pricing.LocationPrice;
 
 @Data
 public class ServerType {
@@ -15,10 +17,12 @@ public class ServerType {
     private Long cores;
     private Long memory;
     private Long disk;
-    private boolean deprecated;
+    private Boolean deprecated;
     private List<LocationPrice> prices;
     @JsonProperty("storage_type")
     private String storageType;
     @JsonProperty("cpu_type")
     private String cpuType;
+    private Architecture architecture;
+
 }
