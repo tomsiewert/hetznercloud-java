@@ -1,8 +1,8 @@
-# For next release
+# Minor Release v3.1.0 (2023-04-24)
   * **Tom Siewert**
     * api: add arm support
 
-*Not released yet*
+*Released by Tom Siewert <tom@siewert.io>*
 
 # Patch Release v3.0.2 (2023-01-10)
   * **Arzhang Mosaffa**
