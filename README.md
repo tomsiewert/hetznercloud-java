@@ -25,23 +25,34 @@ Dependency:
     <dependency>
         <groupId>me.tomsdevsn</groupId>
         <artifactId>hetznercloud-api</artifactId>
+        <version>3.1.0</version>
     </dependency>
 </dependencies>
 ```
 
-##### Gradle 
+##### Gradle
 
 Put this in the ``build.gradle`` file of the project:
 
-```
-repositories({
+```groovy
+repositories {
     mavenCentral()
-})
+}
 
-dependencies({
-    implementation "me.tomsdevsn:hetznercloud-api"
-})
+dependencies {
+    implementation "me.tomsdevsn:hetznercloud-api:3.1.0"
+}
 ```
+
+<details>
+  <summary>kotlin-dsl</summary>
+
+```kotlin
+dependencies {
+    implementation("me.tomsdevsn:hetznercloud-api:3.1.0")
+}
+```
+</details>
 
 ## How to run tests
 The tests need an API Token for the Hetzner Cloud. The API token has to be set as an environment variable called `HCLOUD_TOKEN`.
@@ -59,5 +70,5 @@ The JavaDocs are available [here](https://docs.hcloud.siewert.io)
 ## Dependencies
 
 The following dependencies were used in this project:
- * [jackson-databind](https://github.com/FasterXML/jackson-databind) under Apache2.0 License
- * [Lombok](https://projectlombok.org) under MIT License
+* [jackson-databind](https://github.com/FasterXML/jackson-databind) under Apache2.0 License
+* [Lombok](https://projectlombok.org) under MIT License
