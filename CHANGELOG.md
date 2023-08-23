@@ -1,3 +1,9 @@
+# For next release
+  * **Tom Siewert**
+    * ServerType: Add CCX*3 types
+
+*Not released yet*
+
 # Minor Release v3.1.0 (2023-04-24)
   * **Tom Siewert**
     * api: add arm support
