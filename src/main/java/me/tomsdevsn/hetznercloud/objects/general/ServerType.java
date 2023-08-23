@@ -26,4 +26,6 @@ public class ServerType {
     @JsonProperty("cpu_type")
     private String cpuType;
     private Architecture architecture;
+    @JsonProperty("included_traffic")
+    private Long includedTraffic;
 }
