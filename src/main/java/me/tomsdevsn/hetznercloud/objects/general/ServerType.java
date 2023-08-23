@@ -17,12 +17,13 @@ public class ServerType {
     private Long cores;
     private Long memory;
     private Long disk;
+    @Deprecated
     private Boolean deprecated;
+    private Deprecation deprecation;
     private List<LocationPrice> prices;
     @JsonProperty("storage_type")
     private String storageType;
     @JsonProperty("cpu_type")
     private String cpuType;
     private Architecture architecture;
-
 }

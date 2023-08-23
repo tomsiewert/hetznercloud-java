@@ -1,6 +1,7 @@
 # For next release
   * **Tom Siewert**
     * ServerType: Add CCX*3 types
+    * ServerType: Add new deprecation flag
 
 *Not released yet*
 
