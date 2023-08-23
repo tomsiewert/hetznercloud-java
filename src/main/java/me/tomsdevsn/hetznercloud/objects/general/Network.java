@@ -27,5 +27,6 @@ public class Network {
     private Map<String, String> labels;
     @JsonSerialize(using = DateSerializer.class)
     private Date created;
-
+    @JsonProperty("expose_routes_to_vswitch")
+    private Boolean exposeRoutesToVswitch;
 }
