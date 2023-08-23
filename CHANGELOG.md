@@ -2,6 +2,7 @@
   * **Tom Siewert**
     * ServerType: Add CCX*3 types
     * ServerType: Add new deprecation flag
+    * API: Deprecate getActions functions
 
 *Not released yet*
 
