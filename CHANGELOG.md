@@ -1,3 +1,13 @@
+# For next release
+  * **Tom Siewert**
+    * ServerType: Add CCX*3 types
+    * ServerType: Add new deprecation flag
+    * API: Deprecate getActions functions
+    * Network: Add `expose_routes_to_vswitch` flag
+    * ServerType: Add `included_traffic` flag
+
+*Not released yet*
+
 # Minor Release v3.1.0 (2023-04-24)
   * **Tom Siewert**
     * api: add arm support

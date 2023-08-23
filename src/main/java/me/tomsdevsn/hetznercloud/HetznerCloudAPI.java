@@ -62,8 +62,10 @@ public class HetznerCloudAPI {
     /**
      * Get all actions in a project.
      *
+     * @deprecated This function has been deprecated by Hetzner
      * @return All Actions without pagination
      */
+    @Deprecated
     public ActionsResponse getActions() {
         return getActions(null, new PaginationParameters(null, null));
     }
@@ -71,9 +73,11 @@ public class HetznerCloudAPI {
     /**
      * Get all action in a project filtered by its status.
      *
+     * @deprecated This function has been deprecated by Hetzner
      * @param actionStatus Action status type
      * @return ActionsResponse containing all actions without pagination filtered by its status
      */
+    @Deprecated
     public ActionsResponse getActions(ActionStatus actionStatus) {
         return getActions(actionStatus, new PaginationParameters(null, null));
     }
@@ -81,10 +85,12 @@ public class HetznerCloudAPI {
     /**
      * Get all actions in a project.
      *
+     * @deprecated This function has been deprecated by Hetzner
      * @param actionStatus Query only actions with the specified status
      * @param paginationParameters Pagination parameters
      * @return ActionsResponse
      */
+    @Deprecated
     public ActionsResponse getActions(ActionStatus actionStatus, PaginationParameters paginationParameters) {
         return get(
                 UrlBuilder.from(API_URL + "/actions")

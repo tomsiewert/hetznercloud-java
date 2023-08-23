@@ -25,4 +25,6 @@ public class CreateNetworkRequest {
     private List<Route> routes;
     @Singular
     private Map<String, String> labels;
+    @JsonProperty("expose_routes_to_vswitch")
+    private Boolean exposeRoutesToVswitch;
 }
