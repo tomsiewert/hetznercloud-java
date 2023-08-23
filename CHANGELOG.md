@@ -1,4 +1,4 @@
-# For next release
+# Minor Release v3.2.0 (2023-08-23)
   * **Tom Siewert**
     * ServerType: Add CCX*3 types
     * ServerType: Add new deprecation flag
@@ -6,7 +6,7 @@
     * Network: Add `expose_routes_to_vswitch` flag
     * ServerType: Add `included_traffic` flag
 
-*Not released yet*
+*Released by Tom Siewert <tom@siewert.io>*
 
 # Minor Release v3.1.0 (2023-04-24)
   * **Tom Siewert**
