@@ -61,7 +61,8 @@ public enum APIErrorCode {
     server_has_ipv6,
     primary_ip_already_assigned,
     server_is_load_balancer_target,
-
+    server_error,
+    
     //Server related
     placement_error,
     primary_ip_assigned,
