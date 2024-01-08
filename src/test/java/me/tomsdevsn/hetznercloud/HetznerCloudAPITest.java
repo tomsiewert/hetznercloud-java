@@ -410,6 +410,27 @@ public class HetznerCloudAPITest {
                 .isIn("success", "running");
     }
 
+    @Test
+    void testDeprecationInfoNotNullInServerType() {
+        // ID 11 = CCX11 which is deprecated
+        var deprecatedServerType = hetznerCloudAPI.getServerType(11);
+        assertThat(deprecatedServerType).isNotNull();
+
+        // Assert that deprecation is not null
+        assertThat(deprecatedServerType.getServerType().getDeprecation()).isNotNull();
+        assertThat(deprecatedServerType.getServerType().getDeprecation().getAnnounced()).isNotNull();
+    }
+
+    @Test
+    void testDeprecationInfoNullInServerType() {
+        // ID 93 = CAX21 which is not deprecated
+        var notDeprecatedServerType = hetznerCloudAPI.getServerType(93);
+        assertThat(notDeprecatedServerType).isNotNull();
+
+        // Assert that deprecation is null
+        assertThat(notDeprecatedServerType.getServerType().getDeprecation()).isNull();
+    }
+
     private Subnet getDefaultSubnet() {
         var subnet = new Subnet();
         subnet.setType(SubnetType.cloud);

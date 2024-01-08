@@ -12,5 +12,6 @@ public class ISO {
     private String type;
     private Meta meta;
     private Architecture architecture;
+    private Deprecation deprecation;
 
 }
