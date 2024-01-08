@@ -44,6 +44,9 @@ public class CreateServerRequest {
     @JsonProperty("placement_group")
     private Long placementGroup;
 
+    @JsonProperty("firewalls")
+    private List<CreateServerRequestFirewall> firewalls;
+
     @JsonProperty("public_net")
     private ServerPublicNetRequest publicNet;
 }
