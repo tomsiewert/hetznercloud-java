@@ -1,3 +1,9 @@
+# For next release
+  * **Tom Siewert**
+    * ISO: Remove "deprecated" field
+
+*Not released yet*
+
 # Minor Release v3.2.0 (2023-08-23)
   * **Tom Siewert**
     * ServerType: Add CCX*3 types
