@@ -1,6 +1,8 @@
 # For next release
   * **Tom Siewert**
     * ISO: Remove "deprecated" field
+  * **easyStartup-pulse**
+    * Adding support for firewall as input parameter for create server
 
 *Not released yet*
 
