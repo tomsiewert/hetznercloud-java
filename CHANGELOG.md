@@ -1,3 +1,9 @@
+# Patch Release v3.2.2 (2024-01-10)
+  * **easyStartup-pulse**
+    * loadbalancer: fix algorithm flag in create request
+
+*Released by Tom Siewert <tom@siewert.io>*
+
 # Patch Release v3.2.1 (2024-01-08)
   * **Tom Siewert**
     * ISO: Remove "deprecated" field
