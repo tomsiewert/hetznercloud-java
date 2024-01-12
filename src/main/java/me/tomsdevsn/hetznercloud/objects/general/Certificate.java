@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import me.tomsdevsn.hetznercloud.deserialize.DateDeserializer;
+import me.tomsdevsn.hetznercloud.objects.enums.CertificateType;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Certificate {
     private String fingerprint;
     @JsonProperty("used_by")
     private List<CertificateUsers> usedBy;
+    private CertificateType type;
 
     @Data
     public static class CertificateUsers {
