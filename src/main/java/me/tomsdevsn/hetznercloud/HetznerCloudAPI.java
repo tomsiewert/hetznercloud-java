@@ -2085,6 +2085,19 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Get Load Balancer by name.
+     *
+     * @return LoadBalancersResponse
+     */
+    public LoadBalancersResponse getLoadBalancerByName(String name) {
+        return get(
+            UrlBuilder.from(API_URL + "/load_balancers")
+                    .queryParam("name", name)
+                    .toUri(),
+            LoadBalancersResponse.class);
+    }
+
+    /**
      * Get all Load Balancers by label selector.
      *
      * @param labelSelector Label Selector
