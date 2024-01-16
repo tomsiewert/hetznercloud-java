@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
+import me.tomsdevsn.hetznercloud.objects.enums.CertificateType;
 
 import java.util.List;
 import java.util.Map;
@@ -24,4 +25,5 @@ public class CreateCertificateRequest {
     private String privateKey;
     @Singular
     private Map<String, String> labels;
+    private CertificateType type;
 }
