@@ -1,3 +1,11 @@
+# Patch Release v3.2.3 (2024-01-16)
+  * **Christian Pelster**
+    * certificate: add missing type field
+  * **easyStartup-pulse**
+    * loadbalancer: add getByName
+
+*Released by Tom Siewert <tom@siewert.io>*
+
 # Patch Release v3.2.2 (2024-01-10)
   * **easyStartup-pulse**
     * loadbalancer: fix algorithm flag in create request
