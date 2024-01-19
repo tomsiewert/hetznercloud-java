@@ -1264,6 +1264,20 @@ public class HetznerCloudAPI {
     }
 
     /**
+     * Get Server types Paginated.
+     *
+     * @return ServerTypesResponse object
+     */
+    public ServerTypesResponse getServerTypes(PaginationParameters paginationParameters) {
+        return get(
+                UrlBuilder.from(API_URL + "/server_types")
+                        .queryParamIfPresent("page", Optional.ofNullable(paginationParameters.page))
+                        .queryParamIfPresent("per_page", Optional.ofNullable(paginationParameters.perPage))
+                        .toUri(),
+                ServerTypesResponse.class);
+    }
+
+    /**
      * Get all Load Balancer types.
      *
      * @return LoadBalancerTypesResponse object
