@@ -1,3 +1,9 @@
+# Patch Release v3.2.4 (2024-02-01)
+  * **easystartup-io**
+    * servertype: add getServerTypes paginated
+
+*Released by Tom Siewert <tom@siewert.io>*
+
 # Patch Release v3.2.3 (2024-01-16)
   * **Christian Pelster**
     * certificate: add missing type field
