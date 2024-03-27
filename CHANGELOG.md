@@ -1,3 +1,11 @@
+# Patch Release v3.2.5 (2024-03-27)
+  * **Tom Siewert**
+    * Update dependencies
+  * **litetex**
+    * firewall: make getFirewall public
+
+*Released by Tom Siewert <tom@siewert.io>*
+
 # Patch Release v3.2.4 (2024-02-01)
   * **easystartup-io**
     * servertype: add getServerTypes paginated
