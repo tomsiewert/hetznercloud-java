@@ -65,7 +65,7 @@ HCLOUD_TOKEN="${api_key}" mvn test
 
 ## JavaDocs
 
-The JavaDocs are available [here](https://docs.hcloud.siewert.io)
+The JavaDocs are available [here](https://tomsiewert.github.io/hetznercloud-java/)
 
 ## Dependencies
 
