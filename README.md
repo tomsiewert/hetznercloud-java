@@ -25,7 +25,7 @@ Dependency:
     <dependency>
         <groupId>me.tomsdevsn</groupId>
         <artifactId>hetznercloud-api</artifactId>
-        <version>3.2.5</version>
+        <version>3.2.6</version>
     </dependency>
 </dependencies>
 ```
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    implementation "me.tomsdevsn:hetznercloud-api:3.2.5"
+    implementation "me.tomsdevsn:hetznercloud-api:3.2.6"
 }
 ```
 
@@ -49,7 +49,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("me.tomsdevsn:hetznercloud-api:3.2.5")
+    implementation("me.tomsdevsn:hetznercloud-api:3.2.6")
 }
 ```
 </details>
