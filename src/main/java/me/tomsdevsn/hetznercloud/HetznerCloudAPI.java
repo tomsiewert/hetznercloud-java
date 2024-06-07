@@ -422,7 +422,7 @@ public class HetznerCloudAPI {
     /**
      * Change the type from the server
      * <p>
-     * example: cx11 to cx21
+     * example: from cx11 to cpx21
      *
      * @param id                ID of the server
      * @param changeTypeRequest Request object

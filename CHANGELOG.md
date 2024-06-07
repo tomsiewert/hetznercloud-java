@@ -1,3 +1,9 @@
+# For next release
+  * **Tom Siewert**
+    * servertype: add new intel types to enum
+
+*Not released yet*
+
 # Patch Release v3.2.5 (2024-03-27)
   * **Tom Siewert**
     * Update dependencies
