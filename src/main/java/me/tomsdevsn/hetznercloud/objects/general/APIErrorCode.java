@@ -21,7 +21,10 @@ public enum APIErrorCode {
     conflict,
     unsupported_error,
     token_readonly,
-
+    unavailable,
+    unauthorized,
+    service_error,
+    
     //Certificate related
     caa_record_does_not_allow_ca,
     ca_dns_validation_failed,
