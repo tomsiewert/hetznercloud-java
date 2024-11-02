@@ -23,7 +23,7 @@ public enum APIErrorCode {
     token_readonly,
     unavailable,
     unauthorized,
-    
+
     //Certificate related
     caa_record_does_not_allow_ca,
     ca_dns_validation_failed,

@@ -1,3 +1,11 @@
+# Patch Release v3.2.7 (2024-11-02)
+  * **n0ise9914**
+    * api: add missing error codes
+  * **ogdabou**
+    * pricing: make Price class public
+
+*Released by Tan Siewert <tan@siewert.io>*
+
 # Patch Release v3.2.6 (2024-06-07)
   * **Tom Siewert**
     * servertype: add new intel types to enum
