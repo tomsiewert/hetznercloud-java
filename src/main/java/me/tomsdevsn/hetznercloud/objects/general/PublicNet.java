@@ -12,6 +12,7 @@ public class PublicNet {
     private IPv6 ipv6;
     @JsonProperty("floating_ips")
     private List<Long> floatingIPs;
+    private List<Firewall> firewalls;
 
     @Data
     public static class IPv4 {
@@ -29,5 +30,11 @@ public class PublicNet {
         private boolean blocked;
         @JsonProperty("dns_ptr")
         private List<DnsPTR> dnsPTR;
+    }
+
+    @Data
+    public static class Firewall {
+        private Long id;
+        private String status;
     }
 }
